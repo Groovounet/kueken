@@ -1,8 +1,0 @@
-/build
-*.pyc
-._*
-bjam
-project-config.jam
-bin.v2/
-dist/
-.\#*
