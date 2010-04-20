@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<sampler>
+  <!-- value: nearest, bilinear, trilinear -->
+  <filter value="trilinear" />
+  <!-- s, t, q: clamp, clamp-to-border, clamp-to-edge, mirrored-repeat, repeat -->
+  <wrap s="repeat" t="repeat" q="repeat" />
+  <!-- value: float -->
+  <anisotropy value="16.f" />
+
+  <!-- r, g, b, a: zero, one, red, green, blue, alpha -->
+  <swizzle r="r" g="g" b="b" a="a" />
+
+  <!-- min, max, bias: float -->
+  <lod min="-1000.f" max="1000.f" bias="0.0f" />
+
+</sampler>

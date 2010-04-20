@@ -1,0 +1,155 @@
+<?xml version="1.0" ?>
+
+<effect>
+  <assets>
+<!--
+    <mesh>
+      <build type="plane" />
+    </mesh>
+    
+    <buffer usage="static">
+      
+    </buffer>
+-->
+    <program id="0">
+      <shader target="vertex" path="../data/texture.vert" />
+      <shader target="fragment" path="../data/texture.frag" />
+    </program>
+
+    <blend id="0">
+      <!--ZERO, ONE, SRC_COLOR,
+        ONE_MINUS_SRC_COLOR, DST_COLOR,
+        ONE_MINUS_DST_COLOR, SRC_ALPHA,
+        ONE_MINUS_SRC_ALPHA, DST_ALPHA,
+        ONE_MINUS_DST_ALPHA, CONSTANT_COLOR,
+        ONE_MINUS_CONSTANT_COLOR, CONSTANT_ALPHA,
+        ONE_MINUS_CONSTANT_ALPHA, SRC_ALPHA_SATURATE-->
+      <source color="src_color" alpha="src_color" />
+
+      <!--ZERO, ONE, SRC_COLOR,
+        ONE_MINUS_SRC_COLOR, DST_COLOR,
+        ONE_MINUS_DST_COLOR, SRC_ALPHA,
+        ONE_MINUS_SRC_ALPHA, DST_ALPHA,
+        ONE_MINUS_DST_ALPHA, CONSTANT_COLOR,
+        ONE_MINUS_CONSTANT_COLOR, CONSTANT_ALPHA,
+        ONE_MINUS_CONSTANT_ALPHA, SRC_ALPHA_SATURATE-->
+      <destination color="one_minus_src_color" alpha="one_minus_src_color" />
+
+      <!-- ADD SUB REV MIN MAX -->
+      <equation color="add" alpha="add" />
+
+      <color-mask r="true" g="true" b="true" a="true" slot="0" />
+
+      <depth-mask depth="true" />
+
+      <stencil-mask front="0" back="0" />
+
+      <alpha-to-coverage enabled="false" />
+
+      <blend enabled="false" slot="0" />
+    </blend>
+
+    <test id="0">
+      <!-- enable: true/false -->
+      <depth enable="false" />
+      <!-- value: never, less, equal, lequal, greater, notequal, gequal, always -->
+      <depth-function value="less" />
+      <!-- near: float; far: float -->
+      <depth-range near="0" far="1" />
+
+      <!-- enable: true/false -->
+      <stencil enable="false" />
+
+      <!-- face: front back -->
+      <!-- function: never, less, equal, lequal, greater, notequal, gequal, always -->
+      <stencil-function face="front" function="always" ref="0" mask="0xff" />
+
+      <!-- face: front back -->
+      <!-- sfail, dpfail, dppass: keep, zero, replace, incr, incr_wrap, decr, decr_wrap -->
+      <stencil-operation face="front" sfail="keep" dpfail="keep" dppass="keep" />
+    </test>
+
+    <image id="0">
+      <!--
+    IMAGE1D,
+    IMAGE2D,
+    IMAGE3D,
+    ARRAY1D,
+    ARRAY2D,
+    RECT,
+    CUBE_POS_X,
+    CUBE_NEG_X,
+    CUBE_POS_Y,
+    CUBE_NEG_Y,
+    CUBE_POS_Z,
+    CUBE_NEG_Z,
+  -->
+      <file target="image2d" path="../data/kueken256.tga" />
+
+      <!--
+    value: true/false
+  -->
+      <generate-mipmaps value="true" />
+
+    </image>
+
+    <sampler id="0">
+      <!-- value: nearest, bilinear, trilinear -->
+      <filter value="trilinear" />
+      <!-- s, t, q: clamp, clamp-to-border, clamp-to-edge, mirrored-repeat, repeat -->
+      <wrap s="repeat" t="repeat" q="repeat" />
+      <!-- value: float -->
+      <anisotropy value="16.f" />
+
+      <!-- r, g, b, a: zero, one, red, green, blue, alpha -->
+      <swizzle r="r" g="g" b="b" a="a" />
+
+      <!-- min, max, bias: float -->
+      <lod min="-1000.f" max="1000.f" bias="0.0f" />
+
+    </sampler>
+
+    <rasterizer id="0" type="polygon">
+      <viewport x="0" y="0" w="640" h="480" />
+      <!-- int int int int -->
+      <multisample enable="false" />
+      <!-- true/false -->
+      <scissor enable="true" x="160" y="120" w="320" h="240" />
+      <!-- true/false int int int int -->
+      <frontface face="ccw" />
+      <!-- cw/ccw -->
+      <cullface face="none" />
+      <!-- none front back both -->
+      <offset factor="0.0" units="0.0" />
+      <!-- float float -->
+    </rasterizer>
+
+    <rasterizer id="1"  type="polygon">
+      <viewport x="0" y="0" w="640" h="480" />
+      <!-- int int int int -->
+      <multisample enable="false" />
+      <!-- true/false -->
+      <scissor enable="true" x="160" y="120" w="320" h="240" />
+      <!-- true/false int int int int -->
+      <frontface face="ccw" />
+      <!-- cw/ccw -->
+      <cullface face="none" />
+      <!-- none front back both -->
+      <offset factor="0.0" units="0.0" />
+      <!-- float float -->
+    </rasterizer>
+
+    <texture id="0" program="0" variable="Diffuse" sampler="0" image="0" />
+    <!--
+    <assembleur primitive="triangles">
+      <attribute slot="0" variable="position" type="f32vec2" stride="" />
+    </assembleur>
+    -->
+    
+  </assets>
+  
+  <!--pass>
+        
+  </pass-->
+  
+</effect>

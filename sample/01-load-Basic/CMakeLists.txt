@@ -1,0 +1,27 @@
+set(KUEKEN_SAMPLE_NAME kueken-load-sample01-basic)
+
+set(SHADER_FILES ../data/texture.vert ../data/texture.frag)
+
+file(GLOB SOURCE 
+	*.hpp
+	*.cpp)
+
+add_executable( 
+	${KUEKEN_SAMPLE_NAME} 
+	${SOURCE}
+	${SHADER_FILES})
+
+source_group("Shader Files" FILES ${SHADER_FILES})
+
+target_link_libraries(${KUEKEN_SAMPLE_NAME}
+	${KUEKEN_CORE_NAME} 
+	${KUEKEN_LOAD_NAME} 
+	${KUEKEN_FX_NAME} 
+	${GLF_LIBRARY_BINARY_FILE})
+
+add_dependencies(${KUEKEN_SAMPLE_NAME} ${KUEKEN_CORE_NAME})
+add_dependencies(${KUEKEN_SAMPLE_NAME} ${KUEKEN_LOAD_NAME})
+add_dependencies(${KUEKEN_SAMPLE_NAME} ${KUEKEN_SAMPLE_DATA})
+
+add_dependencies(${KUEKEN_SAMPLES_NAME} ${KUEKEN_SAMPLE_NAME})
+

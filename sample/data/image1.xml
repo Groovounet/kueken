@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<image>
+  <!--
+    IMAGE1D,
+    IMAGE2D,
+    IMAGE3D,
+    ARRAY1D,
+    ARRAY2D,
+    RECT,
+    CUBE_POS_X,
+    CUBE_NEG_X,
+    CUBE_POS_Y,
+    CUBE_NEG_Y,
+    CUBE_POS_Z,
+    CUBE_NEG_Z,
+  -->
+  <file target="image2d" path="../data/kueken256.tga" />
+
+  <!--
+    value: true/false
+  -->  
+  <generate-mipmaps value="true" />
+  
+</image>

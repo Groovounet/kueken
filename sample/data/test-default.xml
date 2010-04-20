@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<test>
+  <!-- enable: true/false -->
+  <depth enable="false" />
+  <!-- value: never, less, equal, lequal, greater, notequal, gequal, always -->
+  <depth-function value="less" />
+  <!-- near: float; far: float -->
+  <depth-range near="0" far="1" />
+
+  <!-- enable: true/false -->
+  <stencil enable="false" />
+
+  <!-- face: front back -->
+  <!-- function: never, less, equal, lequal, greater, notequal, gequal, always -->
+  <stencil-function face="front" function="always" ref="0" mask="0xff" />
+
+  <!-- face: front back -->
+  <!-- sfail, dpfail, dppass: keep, zero, replace, incr, incr_wrap, decr, decr_wrap -->
+  <stencil-operation face="front" sfail="keep" dpfail="keep" dppass="keep" />
+</test>

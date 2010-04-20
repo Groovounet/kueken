@@ -1,0 +1,5 @@
+namespace kueken
+{
+	
+
+}//namespace kueken

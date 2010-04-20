@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE kfx [
+  <!ELEMENT kfx (import*)>
+  <!ELEMENT import EMPTY>
+  <!ATTLIST import file CDATA #REQUIRED>
+  <!ELEMENT kfx (resources*)>
+  <!ELEMENT resources (blend* | clear* | image* | sampler*) >
+  
+  <!ELEMENT blend EMPTY>
+  <!ATTLIST blend id ID #REQUIRED>
+  <!ATTLIST blend enabled (true | false) "false">
+  <!ATTLIST blend slot (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) "0">
+  <!ATTLIST blend function-color (zero | one | src-color | one-minus-src-color | dst-color | one-minus-dst-color | src-alpha | one-minus-src-alpha | dst-alpha | one-minus-dst-alpha) "one">
+  <!ATTLIST blend function-alpha (zero | one | src-color | one-minus-src-color | dst-color | one-minus-dst-color | src-alpha | one-minus-src-alpha | dst-alpha | one-minus-dst-alpha) "one">
+  <!ATTLIST blend equation-color (add | sub | rev | min | max) "add">
+  <!ATTLIST blend equation-alpha (add | sub | rev | min | max) "add">
+  <!ATTLIST blend alpha-to-coverage (true | false) "false">
+  <!ATTLIST blend mask-r (true | false) "true">
+  <!ATTLIST blend mask-b (true | false) "true">
+  <!ATTLIST blend mask-g (true | false) "true">
+  <!ATTLIST blend mask-a (true | false) "true">
+  <!ATTLIST blend mask-depth (true | false) "true">
+  <!ATTLIST blend mask-stencil-front NMTOKEN "0">
+  <!ATTLIST blend mask-stencil-back NMTOKEN "0">
+
+  <!ELEMENT clear EMPTY>
+  <!ATTLIST clear id ID #REQUIRED>
+  <!ATTLIST clear red NMTOKEN "0.0">
+  <!ATTLIST clear green NMTOKEN "0.0">
+  <!ATTLIST clear blue NMTOKEN "0.0">
+  <!ATTLIST clear alpha NMTOKEN "0.0">
+  <!ATTLIST clear depth NMTOKEN "1.0">
+  <!ATTLIST clear stencil NMTOKEN "0">
+
+  <!ELEMENT image EMPTY>
+  <!ATTLIST image id ID #REQUIRED>
+  <!ATTLIST image file CDATA #REQUIRED>
+  <!ATTLIST image target (image1d | image2d | image3d | array1d | array2d | rect | cube-pos-x | cube-neg-x | cube-pos-y | cube-neg-y | cube-pos-z | cube-neg-z) #REQUIRED>
+  <!ATTLIST image generate-mipmaps (true | false) "false">
+
+  <!ELEMENT sampler EMPTY>
+  <!ATTLIST sampler id ID #REQUIRED>
+  <!ATTLIST sampler filter (nearest | bilinear | trilinear) "nearest">
+  <!ATTLIST sampler anisotropy (1 | 2 | 4 | 8 | 16) "1">
+  <!ATTLIST sampler target (image1d | image2d | image3d | array1d | array2d | rect | cube-pos-x | cube-neg-x | cube-pos-y | cube-neg-y | cube-pos-z | cube-neg-z) #REQUIRED>
+  <!ATTLIST sampler generate-mipmaps (true | false) "false">
+  <!ATTLIST sampler lod-min NMTOKEN "0.0">
+  <!ATTLIST sampler lod-max NMTOKEN "1000.0">
+  <!ATTLIST sampler lod-bias NMTOKEN "0.0">
+  <!ATTLIST sampler warp-s (clamp | clamp-to-border | clamp-to-edge | mirrored-repeat | repeat) "repeat">
+  <!ATTLIST sampler warp-t (clamp | clamp-to-border | clamp-to-edge | mirrored-repeat | repeat) "repeat">
+  <!ATTLIST sampler warp-q (clamp | clamp-to-border | clamp-to-edge | mirrored-repeat | repeat) "repeat">
+  <!ATTLIST sampler swizzle-r (r | g | b | a | 0 | 1) "r">
+  <!ATTLIST sampler swizzle-g (r | g | b | a | 0 | 1) "g">
+  <!ATTLIST sampler swizzle-b (r | g | b | a | 0 | 1) "b">
+  <!ATTLIST sampler swizzle-a (r | g | b | a | 0 | 1) "a">
+
+  <!ELEMENT test EMPTY>
+  <!ATTLIST test id ID #REQUIRED>
+  <!ATTLIST test depth-enabled (true | false) "false">
+  <!ATTLIST test depth-function (never | less | equal | lequal | greater | notequal | gequal | always) "less">
+  <!ATTLIST test depth-near NMTOKEN "0.0">
+  <!ATTLIST test depth-far NMTOKEN "1.0">
+  <!ATTLIST test stencil-enabled (true | false) "false">
+  <!ATTLIST test stencil-front-func (never | less | equal | lequal | greater | notequal | gequal | always) "always">
+  <!ATTLIST test stencil-front-ref NMTOKEN "0">
+  <!ATTLIST test stencil-front-mask NMTOKEN "0xFF">
+  <!ATTLIST test stencil-front-sfail (keep | zero | replace | incr | incr-wrap | decr | decr-wrap | invert) "0xFF">
+  <!ATTLIST test stencil-front-dpfail (keep | zero | replace | incr | incr-wrap | decr | decr-wrap | invert) "0xFF">
+  <!ATTLIST test stencil-front-dppass (keep | zero | replace | incr | incr-wrap | decr | decr-wrap | invert) "0xFF">
+  <!ATTLIST test stencil-back-func (never | less | equal | lequal | greater | notequal | gequal | always) "always">
+  <!ATTLIST test stencil-back-ref NMTOKEN "0">
+  <!ATTLIST test stencil-back-mask NMTOKEN "0xFF">
+  <!ATTLIST test stencil-back-sfail (keep | zero | replace | incr | incr-wrap | decr | decr-wrap | invert) "0xFF">
+  <!ATTLIST test stencil-back-dpfail (keep | zero | replace | incr | incr-wrap | decr | decr-wrap | invert) "0xFF">
+  <!ATTLIST test stencil-back-dppass (keep | zero | replace | incr | incr-wrap | decr | decr-wrap | invert) "0xFF">
+
+  <!ELEMENT kfx (technique*)> 
+  <!ELEMENT technique (pass*)> 
+]>
+
+
+
+void setDepthEnable(bool Enabled);
+void setDepthFunc(function Func);
+void setDepthRange(float Near, float Far);
+
+void setStencilEnable(bool Enabled);
+void setStencilFunc(face Face, function Func, int Ref, glm::uint Mask);
+void setStencilOp(face Face, action sfail, action dpfail, action dppass);
+
+<kfx>
+  <ressources>
+    <blend id="" >
+      <func color="" alpha="" />
+      <func color="" alpha="" />
+    </blend>
+  </ressources>
+
+  <technique path="">
+    <pass index="1">
+      <bind-blend object="" slot="" />
+    </pass>
+    <pass index="2">
+
+    </pass>
+  </technique>
+</kfx>

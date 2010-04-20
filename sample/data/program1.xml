@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+
+<program>
+  <shader target="vertex" path="../data/texture.vert" />
+  <shader target="fragment" path="../data/texture.frag" />
+</program>

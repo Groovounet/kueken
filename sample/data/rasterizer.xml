@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+
+<rasterizer type="polygon">
+  <viewport x="0" y="0" w="640" h="480" /><!-- int int int int -->
+  <multisample enable="false" /><!-- true/false -->
+  <scissor enable="true" x="160" y="120" w="320" h="240" /><!-- true/false int int int int -->
+  <frontface face="ccw" /><!-- cw/ccw -->
+  <cullface face="none" /><!-- none front back both -->
+  <offset factor="0.0" units="0.0" /><!-- float float -->
+</rasterizer>
