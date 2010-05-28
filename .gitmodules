@@ -1,0 +1,6 @@
+[submodule "external/glm"]
+	path = external/glm
+	url = git://ogl-math.git.sourceforge.net/gitroot/ogl-math/ogl-math
+[submodule "external/gli"]
+	path = external/gli
+	url = git://ogl-image.git.sourceforge.net/gitroot/ogl-image/ogl-image
