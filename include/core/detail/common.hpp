@@ -12,7 +12,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/raw_data.hpp>
 #include <glm/gtx/number_precision.hpp>
-#include <glm/gtx/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // STL
 #include <cassert>

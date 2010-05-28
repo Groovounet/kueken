@@ -61,7 +61,7 @@ set(GLF_LIBRARY_BINARY_FILE ${GLF_LIBRARY_BINARY_FILE_SDL} ${GLF_LIBRARY_BINARY_
 ############
 # Boost 
 
-set(BOOST_VERSION "boost-1.41.0") 
+set(BOOST_VERSION "boost-1.43.0") 
 set(BOOST_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${BOOST_VERSION})
 
 include_directories("${BOOST_DIRECTORY}")
@@ -126,7 +126,7 @@ set(GL_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GL_VERSION})
 ###########
 # Add GLM 
 
-set(GLM_VERSION "glm-0.9.B.1")
+set(GLM_VERSION "glm")
 set(GLM_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLM_VERSION})
 
 include_directories("${GLM_DIRECTORY}")
@@ -142,7 +142,7 @@ include_directories("${GLV_DIRECTORY}")
 ###########
 # Add GLI
 
-set(GLI_VERSION "gli-0.2.1.0")
+set(GLI_VERSION "gli")
 set(GLI_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLI_VERSION})
 
 include_directories("${GLI_DIRECTORY}")
