@@ -38,7 +38,6 @@ namespace effect
 		kueken::rendertarget::name loadRendertarget(void * Node);
 		kueken::sampler::name loadSampler(void * Node);
 		kueken::test::name loadTest(void * Node);
-		kueken::texture::name loadTexture(void * Node);
 
 		kueken::assembler::name loadAssembler(std::string const & Filename);
 		kueken::blend::name loadBlend(std::string const & Filename);
@@ -56,7 +55,6 @@ namespace effect
 		kueken::rendertarget::name loadRendertarget(std::string const & Filename);
 		kueken::sampler::name loadSampler(std::string const & Filename);
 		kueken::test::name loadTest(std::string const & Filename);
-		kueken::texture::name loadTexture(std::string const & Filename);
 
 		kueken::assembler::name findAssembler(glm::uint Id) const;
 		kueken::blend::name findBlend(glm::uint Id) const;
@@ -74,7 +72,6 @@ namespace effect
 		kueken::rendertarget::name findRendertarget(glm::uint Id) const;
 		kueken::sampler::name findSampler(glm::uint Id) const;
 		kueken::test::name findTest(glm::uint Id) const;
-		kueken::texture::name findTexture(glm::uint Id) const;
 
 	private:
 		void loadAssets(void* Pointer);
@@ -95,7 +92,6 @@ namespace effect
 		std::map<glm::uint, kueken::rendertarget::name> Rendertargets;
 		std::map<glm::uint, kueken::sampler::name> Samplers;
 		std::map<glm::uint, kueken::test::name> Tests;
-		std::map<glm::uint, kueken::texture::name> Textures;
 
 		kueken::renderer * Renderer;
 	};

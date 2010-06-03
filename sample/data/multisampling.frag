@@ -1,7 +1,7 @@
-#version 120
+#version 400
 
 uniform sampler2D Diffuse;
-varying in vec2 VertTexcoord;
+in vec2 VertTexcoord;
 
 vec3 saturate(vec3 Color, float Saturation)
 {

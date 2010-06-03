@@ -30,9 +30,7 @@ namespace
 	kueken::program::name Program;
 
 	kueken::sampler::name SamplerSplash;
-	kueken::texture::name TextureSplash;
 	kueken::sampler::name SamplerDiffuse;
-	kueken::texture::name TextureDiffuse;
 
 	kueken::buffer::name ArrayBuffer;
 	kueken::buffer::name ElementBuffer;
@@ -152,7 +150,9 @@ void CMain::Render()
 		Renderer->unmap(UniformBuffer);
 		VariableMVP.set(UniformBuffer);
 
-		Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
+		Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
+		Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
+		VariableDiffuse.set(0);
 		Renderer->exec(DrawMesh);
 
 		Renderer->bind(RendertargetMultisample, kueken::rendertarget::READ);
@@ -175,7 +175,10 @@ void CMain::Render()
 		Renderer->bind(RendertargetFramebuffer, kueken::rendertarget::EXEC);
 		Renderer->exec(Clear);
 
-		Renderer->bind(TextureSplash, kueken::texture::SLOT0);
+		Renderer->bind(SamplerSplash, kueken::sampler::SLOT0);
+		Renderer->bind(ImageRendertarget, kueken::image::SLOT0);
+		VariableDiffuse.set(0);
+
 		Renderer->exec(DrawSplash);
 	}
 
@@ -266,7 +269,6 @@ bool CMain::initImage2D()
 		kueken::image::creator Creator;
 		Creator.setFormat(kueken::image::RGB8);
 		Creator.setTarget(kueken::image::IMAGE2D);
-		Creator.setGenerateMipmaps(true);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -276,6 +278,9 @@ bool CMain::initImage2D()
 		}
 
 		ImageDiffuse = Renderer->create(Creator);
+		kueken::image::object * ImageDiffuseObject = Renderer->map(ImageDiffuse);
+		ImageDiffuseObject->generateMipmaps();
+		Renderer->unmap(ImageDiffuse);
 	}
 
 
@@ -328,7 +333,7 @@ bool CMain::initSampler()
 	{
 		kueken::sampler::creator Creator;
 		Creator.setFilter(kueken::sampler::NEAREST);
-		Creator.setWrap(kueken::sampler::CLAMP, kueken::sampler::CLAMP, kueken::sampler::CLAMP);
+		Creator.setWrap(kueken::sampler::REPEAT, kueken::sampler::REPEAT, kueken::sampler::REPEAT);
 		Creator.setAnisotropy(1.f);
 		SamplerSplash = Renderer->create(Creator);
 	}
@@ -338,21 +343,21 @@ bool CMain::initSampler()
 
 bool CMain::initTexture2D()
 {
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(SamplerDiffuse);
-		Creator.setImage(ImageDiffuse);
-		TextureDiffuse = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(SamplerDiffuse);
+	//	Creator.setImage(ImageDiffuse);
+	//	TextureDiffuse = Renderer->create(Creator);
+	//}
 
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(SamplerSplash);
-		Creator.setImage(ImageRendertarget);
-		TextureSplash = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(SamplerSplash);
+	//	Creator.setImage(ImageRendertarget);
+	//	TextureSplash = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

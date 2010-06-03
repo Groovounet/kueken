@@ -49,7 +49,7 @@ namespace
 
 	kueken::image::name ImageHeightmap;
 	kueken::sampler::name SamplerHeightmap;
-	kueken::texture::name TextureHeightmap;
+	//kueken::texture::name TextureHeightmap;
 
 	kueken::rendertarget::name Rendertarget;
 
@@ -135,7 +135,9 @@ void CMain::Render()
 		glm::mat4 MVP = Projection * ModelView;
 		VariableMVPPass1.set(MVP);
 
-		Renderer->bind(TextureHeightmap, kueken::texture::SLOT0);
+		Renderer->bind(ImageHeightmap, kueken::image::SLOT0);
+		Renderer->bind(SamplerHeightmap, kueken::sampler::SLOT0);
+		VariableDiffusePass1.set(0);
 
 		Renderer->bind(AssemblerPass1);
 		Renderer->exec(DrawPass1);
@@ -263,7 +265,6 @@ bool CMain::initTexture2D()
 			kueken::image::creator Creator;
 			Creator.setFormat(kueken::image::RGB8);
 			Creator.setTarget(kueken::image::IMAGE2D);
-			Creator.setGenerateMipmaps(false);
 			for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 			{
 				Creator.setMipmap(
@@ -284,13 +285,13 @@ bool CMain::initTexture2D()
 			SamplerHeightmap = Renderer->create(Creator);
 		}
 
-		{
-			kueken::texture::creator<kueken::texture::image> Creator;
-			Creator.setVariable(VariableDiffusePass1);
-			Creator.setSampler(SamplerHeightmap);
-			Creator.setImage(ImageHeightmap);
-			TextureHeightmap = Renderer->create(Creator);
-		}
+		//{
+		//	kueken::texture::creator<kueken::texture::image> Creator;
+		//	Creator.setVariable(VariableDiffusePass1);
+		//	Creator.setSampler(SamplerHeightmap);
+		//	Creator.setImage(ImageHeightmap);
+		//	TextureHeightmap = Renderer->create(Creator);
+		//}
 	}
 
 	return glf::checkError("initTexture2D");

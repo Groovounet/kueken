@@ -22,7 +22,8 @@ namespace detail{
 			InternalFormat(GL_RGBA),
 			Format(GL_RGBA),
 			Type(GL_UNSIGNED_BYTE),
-			Compressed(false)
+			Compressed(false),
+			Swizzle(GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA)
 		{}
 
 		GLenum Target;
@@ -30,8 +31,8 @@ namespace detail{
 		GLenum Format;
 		GLenum Type;
 		//GLsizei Size;
-		bool GenerateMipmaps;
 		bool Compressed;
+		glm::ivec4 Swizzle;
 
 		std::vector<mipmap> Mipmaps;
 	};
@@ -126,6 +127,19 @@ namespace detail{
 		FORMAT_MAX
 	};
 
+	enum slot
+	{
+		SLOT0,
+		SLOT1,
+		SLOT2,
+		SLOT3,
+		SLOT4,
+		SLOT5,
+		SLOT6,
+		SLOT7,
+		SLOT_MAX
+	};
+
 	class creator// : public kueken::detail::creator
 	{
 		friend class object;
@@ -133,7 +147,6 @@ namespace detail{
 	public:
 		void setTarget(target Target);
 		void setFormat(format Format);
-		void setGenerateMipmaps(bool GenerateMipmaps);
 		void setMipmap(
 			std::size_t Level, 
 			glm::uvec3 const & Size,

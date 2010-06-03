@@ -28,10 +28,10 @@ namespace
 	kueken::program::name Program;
 	kueken::image::name ImageDiffuse;
 	kueken::sampler::name SamplerDiffuse;
-	kueken::texture::name TextureDiffuse;
+	//kueken::texture::name TextureDiffuse;
 	kueken::image::name ImageSpecular;
 	kueken::sampler::name SamplerSpecular;
-	kueken::texture::name TextureSpecular;
+	//kueken::texture::name TextureSpecular;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
@@ -133,8 +133,12 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
-	Renderer->bind(TextureSpecular, kueken::texture::SLOT1);
+	Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
+	Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
+	Renderer->bind(ImageSpecular, kueken::image::SLOT1);
+	Renderer->bind(SamplerSpecular, kueken::sampler::SLOT1);
+	VariableDiffuse.set(0);
+	VariableSpecular.set(1);
 
 	Renderer->bind(Program);
 
@@ -235,13 +239,13 @@ bool CMain::initTexture2D()
 		SamplerDiffuse = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(SamplerDiffuse);
-		Creator.setImage(ImageDiffuse);
-		TextureDiffuse = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(SamplerDiffuse);
+	//	Creator.setImage(ImageDiffuse);
+	//	TextureDiffuse = Renderer->create(Creator);
+	//}
 
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_SPECULAR);
@@ -273,13 +277,13 @@ bool CMain::initTexture2D()
 		SamplerSpecular = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableSpecular);
-		Creator.setSampler(SamplerSpecular);
-		Creator.setImage(ImageSpecular);
-		TextureSpecular = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableSpecular);
+	//	Creator.setSampler(SamplerSpecular);
+	//	Creator.setImage(ImageSpecular);
+	//	TextureSpecular = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

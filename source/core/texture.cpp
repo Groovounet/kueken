@@ -216,7 +216,7 @@ namespace detail
 		kueken::manager& Manager = kueken::manager::instance();
 
 		Manager.Image.getObject(Data.Image).bind();
-		Manager.Sampler.getObject(Data.Sampler).bind();
+		Manager.Sampler.getObject(Data.Sampler).bind(0);
 	}
 
 	GLuint objectImage::getName() const

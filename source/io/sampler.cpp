@@ -2,26 +2,26 @@
 
 namespace
 {
-	GLenum sampler_target_cast(kueken::sampler::target Target)
-	{
-		static GLenum const CastSamplerTarget[kueken::sampler::TARGET_MAX] =
-		{
-			GL_TEXTURE_1D,						// IMAGE_1D
-			GL_TEXTURE_2D,						// IMAGE_2D
-			GL_TEXTURE_3D,						// IMAGE_3D
-			GL_TEXTURE_1D_ARRAY_EXT,			// ARRAY_1D
-			GL_TEXTURE_2D_ARRAY_EXT,			// ARRAY_2D
-			GL_TEXTURE_RECTANGLE_ARB,			// RECT
-			GL_TEXTURE_CUBE_MAP_POSITIVE_X,		// CUBE_POS_X
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_X,		// CUBE_NEG_X
-			GL_TEXTURE_CUBE_MAP_POSITIVE_Y,		// CUBE_POS_Y
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,		// CUBE_NEG_Y
-			GL_TEXTURE_CUBE_MAP_POSITIVE_Z,		// CUBE_POS_Z
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_Z		// CUBE_NEG_Z
-		};
+	//GLenum sampler_target_cast(kueken::sampler::target Target)
+	//{
+	//	static GLenum const CastSamplerTarget[kueken::sampler::TARGET_MAX] =
+	//	{
+	//		GL_TEXTURE_1D,						// IMAGE_1D
+	//		GL_TEXTURE_2D,						// IMAGE_2D
+	//		GL_TEXTURE_3D,						// IMAGE_3D
+	//		GL_TEXTURE_1D_ARRAY_EXT,			// ARRAY_1D
+	//		GL_TEXTURE_2D_ARRAY_EXT,			// ARRAY_2D
+	//		GL_TEXTURE_RECTANGLE_ARB,			// RECT
+	//		GL_TEXTURE_CUBE_MAP_POSITIVE_X,		// CUBE_POS_X
+	//		GL_TEXTURE_CUBE_MAP_NEGATIVE_X,		// CUBE_NEG_X
+	//		GL_TEXTURE_CUBE_MAP_POSITIVE_Y,		// CUBE_POS_Y
+	//		GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,		// CUBE_NEG_Y
+	//		GL_TEXTURE_CUBE_MAP_POSITIVE_Z,		// CUBE_POS_Z
+	//		GL_TEXTURE_CUBE_MAP_NEGATIVE_Z		// CUBE_NEG_Z
+	//	};
 
-		return CastSamplerTarget[Target];
-	}
+	//	return CastSamplerTarget[Target];
+	//}
 
 	GLenum sampler_min_cast(kueken::sampler::filter Filter)
 	{
@@ -104,18 +104,18 @@ namespace sampler
 		Data.Anisotropy = Anisotropy;
 	}
 
-	void creator::setTarget(target Target)
-	{
-		Data.Target = Target;
-	}
+	//void creator::setTarget(target Target)
+	//{
+	//	Data.Target = Target;
+	//}
 
-	void creator::setSwizzle(swizzle R, swizzle G, swizzle B, swizzle A)
-	{
-		Data.Swizzle[0] = sampler_swizzle_cast(R);
-		Data.Swizzle[1] = sampler_swizzle_cast(G);
-		Data.Swizzle[2] = sampler_swizzle_cast(B);
-		Data.Swizzle[3] = sampler_swizzle_cast(A);
-	}
+	//void creator::setSwizzle(swizzle R, swizzle G, swizzle B, swizzle A)
+	//{
+	//	Data.Swizzle[0] = sampler_swizzle_cast(R);
+	//	Data.Swizzle[1] = sampler_swizzle_cast(G);
+	//	Data.Swizzle[2] = sampler_swizzle_cast(B);
+	//	Data.Swizzle[3] = sampler_swizzle_cast(A);
+	//}
 
 	void creator::setLod(float Min, float Max, float Bias)
 	{

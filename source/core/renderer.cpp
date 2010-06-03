@@ -240,10 +240,26 @@ namespace kueken
 
 	void renderer::free
 	(
-		image::name& Name
+		image::name & Name
 	)
 	{
 		manager::instance().Image.release(Name);
+	}
+
+	void renderer::bind
+	(
+		image::name const & Name, 
+		image::slot const & Slot
+	)
+	{
+		manager& Manager = manager::instance();
+
+#if KUEKEN_REDUCE_CHANGES
+		if(Manager.Image.isCurrent(Slot, Name))
+			return;
+#endif//KUEKEN_REDUCE_CHANGES
+
+		Manager.Image.setCurrentObject(Slot, Name).bind(Slot);
 	}
 
 	image::object* renderer::map(image::name& Name)
@@ -478,10 +494,26 @@ namespace kueken
 
 	void renderer::free
 	(
-		sampler::name& Name
+		sampler::name & Name
 	)
 	{
 		manager::instance().Sampler.release(Name);
+	}
+
+	void renderer::bind
+	(
+		sampler::name const & Name, 
+		sampler::slot const & Slot
+	)
+	{
+		manager & Manager = manager::instance();
+
+#if KUEKEN_REDUCE_CHANGES
+		if(Manager.Sampler.isCurrent(Slot, Name))
+			return;
+#endif//KUEKEN_REDUCE_CHANGES
+
+		Manager.Sampler.setCurrentObject(Slot, Name).bind(Slot);
 	}
 
 	///////////////////////////
@@ -523,54 +555,51 @@ namespace kueken
 	///////////////////////////
 	// texture
 
-	template <>
-	texture::name renderer::create
-	(
-		texture::creator<texture::buffer> const & Creator
-	)
-	{
-		texture::object * Object = new texture::detail::objectBuffer(Creator);
-		return manager::instance().Texture.reserve(Object);
-		//return manager::instance().Texture.create(Creator);
-	}
-
-	template <>
-	texture::name renderer::create
-	(
-		texture::creator<texture::image> const & Creator
-	)
-	{
-		texture::object * Object = new texture::detail::objectImage(Creator);
-		return manager::instance().Texture.reserve(Object);
-		//return manager::instance().Texture.create(Creator);
-	}
-
-	void renderer::free
-	(
-		texture::name& Name
-	)
-	{
-		manager::instance().Texture.release(Name);
-	}
-
-	void renderer::bind
-	(
-		texture::name const & Name,
-		texture::slot Slot
-	)
-	{
-		manager& Manager = manager::instance();
-
-#if KUEKEN_REDUCE_CHANGES
-		if(Manager.Texture.isCurrent(Slot, Name))
-			return;
-#endif//KUEKEN_REDUCE_CHANGES
-
-		assert(glGetError() == GL_NO_ERROR);
-		texture::object& Object = Manager.Texture.setCurrentObject(Slot, Name);
-		assert(glGetError() == GL_NO_ERROR);
-		Object.bind(Slot);
-		assert(glGetError() == GL_NO_ERROR);
-	}
+//	template <>
+//	texture::name renderer::create
+//	(
+//		texture::creator<texture::buffer> const & Creator
+//	)
+//	{
+//		texture::object * Object = new texture::detail::objectBuffer(Creator);
+//		return manager::instance().Texture.reserve(Object);
+//		//return manager::instance().Texture.create(Creator);
+//	}
+//
+//	template <>
+//	texture::name renderer::create
+//	(
+//		texture::creator<texture::image> const & Creator
+//	)
+//	{
+//		texture::object * Object = new texture::detail::objectImage(Creator);
+//		return manager::instance().Texture.reserve(Object);
+//		//return manager::instance().Texture.create(Creator);
+//	}
+//
+//	void renderer::free
+//	(
+//		texture::name& Name
+//	)
+//	{
+//		manager::instance().Texture.release(Name);
+//	}
+//
+//	void renderer::bind
+//	(
+//		texture::name const & Name,
+//		texture::slot Slot
+//	)
+//	{
+//		manager& Manager = manager::instance();
+//
+//#if KUEKEN_REDUCE_CHANGES
+//		if(Manager.Texture.isCurrent(Slot, Name))
+//			return;
+//#endif//KUEKEN_REDUCE_CHANGES
+//
+//		texture::object & Object = Manager.Texture.setCurrentObject(Slot, Name);
+//		Object.bind(Slot);
+//	}
 
 }//namespace kueken

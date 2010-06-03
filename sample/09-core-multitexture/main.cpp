@@ -35,11 +35,11 @@ namespace
 
 	kueken::image::name ImageDiffuse;
 	kueken::sampler::name SamplerDiffuse;
-	kueken::texture::name TextureDiffuse;
+	//kueken::texture::name TextureDiffuse;
 
 	kueken::image::name ImageDetail;
 	kueken::sampler::name SamplerDetail;
-	kueken::texture::name TextureDetail;
+	//kueken::texture::name TextureDetail;
 
 	kueken::program::variable VariablePosition;
 	kueken::program::variable VariableTexcoord;
@@ -135,8 +135,16 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(Program);
-	Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
-	Renderer->bind(TextureDetail, kueken::texture::SLOT1);
+
+	VariableDiffuse.set(kueken::image::SLOT0);
+	VariableDetail.set(kueken::image::SLOT1);
+	Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
+	Renderer->bind(ImageDetail, kueken::image::SLOT1);
+	Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
+	Renderer->bind(SamplerDetail, kueken::sampler::SLOT1);
+
+	//Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
+	//Renderer->bind(TextureDetail, kueken::texture::SLOT1);
 
 	Renderer->exec(Draw);
 
@@ -232,13 +240,13 @@ bool CMain::initTexture2D()
 		SamplerDiffuse = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(SamplerDiffuse);
-		Creator.setImage(ImageDiffuse);
-		TextureDiffuse = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(SamplerDiffuse);
+	//	Creator.setImage(ImageDiffuse);
+	//	TextureDiffuse = Renderer->create(Creator);
+	//}
 
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DETAIL);
@@ -265,13 +273,13 @@ bool CMain::initTexture2D()
 		SamplerDetail = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDetail);
-		Creator.setSampler(SamplerDetail);
-		Creator.setImage(ImageDetail);
-		TextureDetail = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDetail);
+	//	Creator.setSampler(SamplerDetail);
+	//	Creator.setImage(ImageDetail);
+	//	TextureDetail = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

@@ -28,7 +28,6 @@ namespace
 	kueken::program::name Program;
 	kueken::image::name Image;
 	kueken::sampler::name Sampler;
-	kueken::texture::name Texture;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
@@ -115,6 +114,7 @@ void CMain::Render()
 	glm::mat4 MVP = Projection * View * Model;
  
 	VariableMVP.set(MVP);
+	VariableDiffuse.set(0);
 
 	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
 
@@ -127,7 +127,8 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(Program);
-	Renderer->bind(Texture, kueken::texture::SLOT0);
+	Renderer->bind(Image, kueken::image::SLOT0);
+	Renderer->bind(Sampler, kueken::sampler::SLOT0);
 
 	Renderer->exec(Draw);
 
@@ -213,7 +214,6 @@ bool CMain::initTexture2D()
 		kueken::image::creator Creator;
 		Creator.setFormat(kueken::image::RGB8);
 		Creator.setTarget(kueken::image::IMAGE2D);
-		Creator.setGenerateMipmaps(false);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -235,14 +235,6 @@ bool CMain::initTexture2D()
 		Creator.setWrap(kueken::sampler::REPEAT, kueken::sampler::REPEAT, kueken::sampler::REPEAT);
 		Creator.setAnisotropy(16.f);
 		Sampler = Renderer->create(Creator);
-	}
-	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(Sampler);
-		Creator.setImage(Image);
-		Texture = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initTexture2D");

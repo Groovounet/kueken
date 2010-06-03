@@ -83,22 +83,22 @@ namespace detail
 						ImageFile[Level].data());
 				}
 			}
-			else if(std::string(Child->Value()) == std::string("generate-mipmaps"))
-			{
-				bool GenerateMipmaps = false;
+			//else if(std::string(Child->Value()) == std::string("generate-mipmaps"))
+			//{
+			//	bool GenerateMipmaps = false;
 
-				TiXmlAttribute* Attribute = Child->FirstAttribute();
-				do
-				{
-					if(!strcmp("value", Attribute->Name()))
-						GenerateMipmaps = std::string(Attribute->Value()) == std::string("true") ? true : false;
-					else
-						assert(0);
-				}    
-				while (Attribute = Attribute->Next());
+			//	TiXmlAttribute* Attribute = Child->FirstAttribute();
+			//	do
+			//	{
+			//		if(!strcmp("value", Attribute->Name()))
+			//			GenerateMipmaps = std::string(Attribute->Value()) == std::string("true") ? true : false;
+			//		else
+			//			assert(0);
+			//	}    
+			//	while (Attribute = Attribute->Next());
 
-				Creator.setGenerateMipmaps(GenerateMipmaps);
-			}
+			//	Creator.setGenerateMipmaps(GenerateMipmaps);
+			//}
 			else
 			{
 				assert(0);

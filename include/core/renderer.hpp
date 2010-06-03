@@ -41,8 +41,9 @@ namespace kueken
 
 		image::name create(image::creator const & Creator);
 		void free(image::name& Name);
-		image::object* map(image::name& Name);
-		void unmap(image::name& Name);
+		void bind(image::name const & Name, image::slot const & Slot);
+		image::object* map(image::name & Name);
+		void unmap(image::name & Name);
 
 		program::name create(program::creator const & Creator);
 		void free(program::name& Name);
@@ -62,16 +63,17 @@ namespace kueken
 		void bind(rasterizer::name const & Name);
 
 		sampler::name create(sampler::creator const & Creator);
-		void free(sampler::name& Name);		
+		void free(sampler::name& Name);
+		void bind(sampler::name const & Name, sampler::slot const & Slot);
 
 		test::name create(test::creator const & Creator);
 		void free(test::name& Name);
 		void bind(test::name const & Name);
 
-		template <texture::type Type>
-		texture::name create(texture::creator<Type> const & Creator);
-		void free(texture::name& Name);		
-		void bind(texture::name const & Name, texture::slot Slot);
+		//template <texture::type Type>
+		//texture::name create(texture::creator<Type> const & Creator);
+		//void free(texture::name& Name);		
+		//void bind(texture::name const & Name, texture::slot Slot);
 
 		readpixels::name create(readpixels::creator const & Creator);
 		void free(readpixels::name& Name);

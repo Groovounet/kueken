@@ -33,7 +33,6 @@ namespace
 	kueken::program::name Program;
 	kueken::image::name Image;
 	kueken::sampler::name Sampler;
-	kueken::texture::name Texture;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
@@ -127,7 +126,8 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(Program);
-	Renderer->bind(Texture, kueken::texture::SLOT1);
+	Renderer->bind(Image, kueken::image::SLOT1);
+	Renderer->bind(Sampler, kueken::sampler::SLOT1);
 
 	Renderer->exec(Draw);
 
@@ -199,11 +199,11 @@ bool CMain::initTexture2D()
 	}
 	
 	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(Sampler);
-		Creator.setImage(Image);
-		Texture = Renderer->create(Creator);
+		//kueken::texture::creator<kueken::texture::image> Creator;
+		//Creator.setVariable(VariableDiffuse);
+		//Creator.setSampler(Sampler);
+		//Creator.setImage(Image);
+		//Texture = Renderer->create(Creator);
 	}
 
 

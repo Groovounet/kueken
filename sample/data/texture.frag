@@ -1,7 +1,7 @@
-#version 120
+#version 330
 
 uniform sampler2D Diffuse;
-varying in vec2 VertTexcoord;
+in vec2 VertTexcoord;
 
 void main(void)
 {

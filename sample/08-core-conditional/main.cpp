@@ -26,7 +26,7 @@ namespace
 	kueken::clear::name Clear;
 	kueken::image::name Image;
 	kueken::sampler::name Sampler;
-	kueken::texture::name Texture;
+	//kueken::texture::name Texture;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::buffer::name UniformBuffer;
@@ -144,7 +144,10 @@ void CMain::Render()
 
 	Renderer->bind(Blend2);
 	Renderer->bind(Program2);
-	Renderer->bind(Texture, kueken::texture::SLOT0);
+	Renderer->bind(Image, kueken::image::SLOT0);
+	Renderer->bind(Sampler, kueken::sampler::SLOT0);
+	VariableDiffuse2.set(0);
+
 	Renderer->bind(Assembler2);
 
 	Renderer->begin(Query, kueken::query::CONDITION);
@@ -261,13 +264,13 @@ bool CMain::initTexture2D()
 		Sampler = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse2);
-		Creator.setSampler(Sampler);
-		Creator.setImage(Image);
-		Texture = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse2);
+	//	Creator.setSampler(Sampler);
+	//	Creator.setImage(Image);
+	//	Texture = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

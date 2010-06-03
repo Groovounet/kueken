@@ -2,26 +2,26 @@
 
 namespace
 {
-	GLenum sampler_target_cast(kueken::sampler::target Target)
-	{
-		static GLenum const CastSamplerTarget[kueken::sampler::TARGET_MAX] =
-		{
-			GL_TEXTURE_1D,						// IMAGE_1D
-			GL_TEXTURE_2D,						// IMAGE_2D
-			GL_TEXTURE_3D,						// IMAGE_3D
-			GL_TEXTURE_1D_ARRAY_EXT,			// ARRAY_1D
-			GL_TEXTURE_2D_ARRAY_EXT,			// ARRAY_2D
-			GL_TEXTURE_RECTANGLE_ARB,			// RECT
-			GL_TEXTURE_CUBE_MAP_POSITIVE_X,		// CUBE_POS_X
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_X,		// CUBE_NEG_X
-			GL_TEXTURE_CUBE_MAP_POSITIVE_Y,		// CUBE_POS_Y
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,		// CUBE_NEG_Y
-			GL_TEXTURE_CUBE_MAP_POSITIVE_Z,		// CUBE_POS_Z
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_Z		// CUBE_NEG_Z
-		};
+	//GLenum sampler_target_cast(kueken::sampler::target Target)
+	//{
+	//	static GLenum const CastSamplerTarget[kueken::sampler::TARGET_MAX] =
+	//	{
+	//		GL_TEXTURE_1D,						// IMAGE_1D
+	//		GL_TEXTURE_2D,						// IMAGE_2D
+	//		GL_TEXTURE_3D,						// IMAGE_3D
+	//		GL_TEXTURE_1D_ARRAY_EXT,			// ARRAY_1D
+	//		GL_TEXTURE_2D_ARRAY_EXT,			// ARRAY_2D
+	//		GL_TEXTURE_RECTANGLE_ARB,			// RECT
+	//		GL_TEXTURE_CUBE_MAP_POSITIVE_X,		// CUBE_POS_X
+	//		GL_TEXTURE_CUBE_MAP_NEGATIVE_X,		// CUBE_NEG_X
+	//		GL_TEXTURE_CUBE_MAP_POSITIVE_Y,		// CUBE_POS_Y
+	//		GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,		// CUBE_NEG_Y
+	//		GL_TEXTURE_CUBE_MAP_POSITIVE_Z,		// CUBE_POS_Z
+	//		GL_TEXTURE_CUBE_MAP_NEGATIVE_Z		// CUBE_NEG_Z
+	//	};
 
-		return CastSamplerTarget[Target];
-	}
+	//	return CastSamplerTarget[Target];
+	//}
 
 	GLenum sampler_min_cast(kueken::sampler::filter Filter)
 	{
@@ -51,7 +51,6 @@ namespace
 	{
 		static GLenum const Cast[kueken::sampler::WRAP_MAX] = 
 		{
-			GL_CLAMP,						// CLAMP
 			GL_CLAMP_TO_BORDER,				// CLAMP_TO_BORDER
 			GL_CLAMP_TO_EDGE,				// CLAMP_TO_EDGE
 			GL_MIRRORED_REPEAT,				// MIRRORED_REPEAT
@@ -74,6 +73,24 @@ namespace
 		};
 
 		return Cast[Swizzle];
+	}
+
+	GLenum sampler_compare_cast(kueken::sampler::compare Compare)
+	{
+		static GLenum const Cast[kueken::sampler::COMPARE_MAX] = 
+		{
+			GL_NONE,	//NONE,
+			GL_LEQUAL,	//LEQUAL,
+			GL_GEQUAL,	//GEQUAL,
+			GL_LESS,	//LESS,
+			GL_GREATER,	//GREATER,
+			GL_EQUAL,	//EQUAL
+			GL_NOTEQUAL,//NOTEQUAL
+			GL_ALWAYS,	//ALWAYS
+			GL_NEVER	//NEVER
+		};
+
+		return Cast[Compare];
 	}
 
 }//namespace
@@ -104,24 +121,22 @@ namespace sampler
 		Data.Anisotropy = Anisotropy;
 	}
 
-	void creator::setTarget(target Target)
-	{
-		Data.Target = Target;
-	}
-
-	void creator::setSwizzle(swizzle R, swizzle G, swizzle B, swizzle A)
-	{
-		Data.Swizzle[0] = sampler_swizzle_cast(R);
-		Data.Swizzle[1] = sampler_swizzle_cast(G);
-		Data.Swizzle[2] = sampler_swizzle_cast(B);
-		Data.Swizzle[3] = sampler_swizzle_cast(A);
-	}
-
 	void creator::setLod(float Min, float Max, float Bias)
 	{
 		Data.LodMin = Min;
 		Data.LodMax = Max;
 		Data.LodBias = Bias;
+	}
+
+	void creator::setBorderColor(glm::vec4 const & Color)
+	{
+		Data.BorderColor = Color;
+	}
+
+	void creator::setCompare(compare const & Compare)
+	{
+		Data.CompareMode = sampler_compare_cast(Compare) == kueken::sampler::NONE ? GL_NONE : GL_COMPARE_REF_TO_TEXTURE;
+		Data.CompareFunc = sampler_compare_cast(Compare);
 	}
 
 	bool creator::validate()
@@ -135,175 +150,33 @@ namespace sampler
 	object::object
 	(
 		creator const & Creator
-	) :
-		Data(Creator.Data)
+	)
 	{
-#if KUEKEN_STATE_OBJECTS
-		Name = glGenLists(1);
+		glGenSamplers(1, &Name);
 
-		glNewList(Name, GL_COMPILE);
-			run();
-		glEndList();
-#endif//KUEKEN_STATE_OBJECTS	
+		glSamplerParameteri(Name, GL_TEXTURE_MIN_FILTER, Creator.Data.Min);
+		glSamplerParameteri(Name, GL_TEXTURE_MAG_FILTER, Creator.Data.Mag);
+		glSamplerParameterf(Name, GL_TEXTURE_MAX_ANISOTROPY_EXT, Creator.Data.Anisotropy);
+		glSamplerParameteri(Name, GL_TEXTURE_WRAP_S, Creator.Data.WrapS);
+		glSamplerParameteri(Name, GL_TEXTURE_WRAP_T, Creator.Data.WrapT);
+		glSamplerParameteri(Name, GL_TEXTURE_WRAP_R, Creator.Data.WrapQ);
+		glSamplerParameterf(Name, GL_TEXTURE_MIN_LOD, Creator.Data.LodMin);
+		glSamplerParameterf(Name, GL_TEXTURE_MAX_LOD, Creator.Data.LodMax);
+		glSamplerParameterf(Name, GL_TEXTURE_LOD_BIAS, Creator.Data.LodBias);
+		glSamplerParameterfv(Name, GL_TEXTURE_BORDER_COLOR, &Creator.Data.BorderColor[0]);
+		glSamplerParameteri(Name, GL_TEXTURE_COMPARE_MODE, Creator.Data.CompareMode);
+		if(Creator.Data.CompareFunc != GL_NONE)
+			glSamplerParameteri(Name, GL_TEXTURE_COMPARE_FUNC, Creator.Data.CompareFunc);
 	}
 
 	object::~object()
 	{
-#		if KUEKEN_STATE_OBJECTS
-			glDeleteLists(Name, 1); 
-#		endif//KUEKEN_STATE_OBJECTS
-	}
-
-	void object::bind()
-	{
-#		if KUEKEN_STATE_OBJECTS
-			glCallList(Name);
-#		else
-			run();
-#		endif//KUEKEN_STATE_OBJECTS
+		glDeleteSamplers(1, &Name);
 	}
 
 	void object::bind(std::size_t Unit)
 	{
-		run(GL_TEXTURE0 + GLenum(Unit));
-	}
-
-	void object::run()
-	{
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexParameteri(
-			Data.Target,
-			GL_TEXTURE_MIN_FILTER,
-			Data.Min);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexParameteri(
-			Data.Target,
-			GL_TEXTURE_MAG_FILTER,
-			Data.Mag);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexParameteri(
-			Data.Target,
-			GL_TEXTURE_WRAP_S,
-			Data.WrapS);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexParameteri(
-			Data.Target,
-			GL_TEXTURE_WRAP_T,
-			Data.WrapT);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexParameteri(
-			Data.Target,
-			GL_TEXTURE_WRAP_R,
-			Data.WrapQ);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexParameterf(
-			Data.Target,
-			GL_TEXTURE_MAX_ANISOTROPY_EXT,
-			Data.Anisotropy);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-        glTexParameteriv(
-			Data.Target,
-			GL_TEXTURE_SWIZZLE_RGBA_EXT,
-			Data.Swizzle);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-        glTexParameterf(
-			Data.Target,
-			GL_TEXTURE_MIN_LOD,
-			Data.LodMin);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-        glTexParameterf(
-			Data.Target,
-			GL_TEXTURE_MAX_LOD,
-			Data.LodMax);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-        glTexParameterf(
-			Data.Target,
-			GL_TEXTURE_LOD_BIAS,
-			Data.LodBias);
-
-		assert(glGetError() == GL_NO_ERROR);
-	}
-
-	void object::run(GLenum Unit)
-	{
-		glMultiTexParameteriEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_MIN_FILTER, 
-			Data.Min);
-
-		glMultiTexParameteriEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_MAG_FILTER, 
-			Data.Mag);
-
-		glMultiTexParameteriEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_WRAP_S, 
-			Data.WrapS);
-
-		glMultiTexParameteriEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_WRAP_T, 
-			Data.WrapT);
-
-		glMultiTexParameteriEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_WRAP_R, 
-			Data.WrapQ);
-
-		glMultiTexParameterfEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_MAX_ANISOTROPY_EXT, 
-			Data.Anisotropy);
-
-        glMultiTexParameterivEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_SWIZZLE_RGBA_EXT, 
-			Data.Swizzle);
-
-        glMultiTexParameterfEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_MIN_LOD, 
-			Data.LodMin);
-
-        glMultiTexParameterfEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_MAX_LOD, 
-			Data.LodMax);
-
-        glMultiTexParameterfEXT(
-			Unit, 
-			Data.Target, 
-			GL_TEXTURE_LOD_BIAS, 
-			Data.LodBias);
+		glBindSampler(Unit, Name);
 	}
 
 }//namespace sampler

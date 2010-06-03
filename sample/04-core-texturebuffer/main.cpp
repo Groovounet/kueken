@@ -29,8 +29,8 @@ namespace
 
 	kueken::image::name ImageDiffuse;
 	kueken::sampler::name SamplerDiffuse;
-	kueken::texture::name TextureDiffuse;
-	kueken::texture::name TextureMVP;
+	//kueken::texture::name TextureDiffuse;
+	//kueken::texture::name TextureMVP;
 
 	kueken::buffer::name ArrayBuffer;
 	kueken::buffer::name ElementBuffer;
@@ -137,8 +137,12 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(Program);
-	Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
-	Renderer->bind(TextureMVP, kueken::texture::SLOT1);
+	Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
+	Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
+	VariableDiffuse.set(0);
+	Renderer->bind(ImageMVP, kueken::image::SLOT1);
+	Renderer->bind(SamplerMVP, kueken::sampler::SLOT1);
+	VariableDiffuse.set(0);
 
 	Renderer->exec(Draw);
 
@@ -203,7 +207,6 @@ bool CMain::initImage2D()
 		kueken::image::creator Creator;
 		Creator.setFormat(kueken::image::RGB8);
 		Creator.setTarget(kueken::image::IMAGE2D);
-		Creator.setGenerateMipmaps(true);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -213,6 +216,9 @@ bool CMain::initImage2D()
 		}
 
 		ImageDiffuse = Renderer->create(Creator);
+		//image::object * ImageDiffuseObject = Renderer->map(ImageDiffuse);
+		//ImageDiffuseObject->generateMipmaps();
+		//Renderer->unmap(ImageDiffuse);
 	}
 
 
@@ -257,13 +263,13 @@ bool CMain::initSampler()
 
 bool CMain::initTexture2D()
 {
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(SamplerDiffuse);
-		Creator.setImage(ImageDiffuse);
-		TextureDiffuse = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(SamplerDiffuse);
+	//	Creator.setImage(ImageDiffuse);
+	//	TextureDiffuse = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

@@ -22,9 +22,7 @@ namespace detail
 
 	kueken::sampler::wrap wrap_cast(char const * String)
 	{
-		if(!strcmp("clamp", String))
-			return kueken::sampler::CLAMP;
-		else if(!strcmp("clamp-to-border", String))
+		if(!strcmp("clamp-to-border", String))
 			return kueken::sampler::CLAMP_TO_BORDER;
 		else if(!strcmp("clamp-to-edge", String))
 			return kueken::sampler::CLAMP_TO_EDGE;
@@ -139,31 +137,6 @@ namespace detail
 				while (Attribute = Attribute->Next());
 
 				Creator.setAnisotropy(Anisotropy);
-			}
-			else if(std::string(Child->Value()) == std::string("swizzle"))
-			{
-				kueken::sampler::swizzle SwizzleR = kueken::sampler::RED;
-				kueken::sampler::swizzle SwizzleG = kueken::sampler::GREEN;
-				kueken::sampler::swizzle SwizzleB = kueken::sampler::BLUE;
-				kueken::sampler::swizzle SwizzleA = kueken::sampler::ALPHA;
-
-				TiXmlAttribute* Attribute = Child->FirstAttribute();
-				do
-				{
-					if(!strcmp("r", Attribute->Name()))
-						SwizzleR = detail::swizzle_cast(Attribute->Value());
-					else if(!strcmp("g", Attribute->Name()))
-						SwizzleG = detail::swizzle_cast(Attribute->Value());
-					else if(!strcmp("b", Attribute->Name()))
-						SwizzleB = detail::swizzle_cast(Attribute->Value());
-					else if(!strcmp("a", Attribute->Name()))
-						SwizzleA = detail::swizzle_cast(Attribute->Value());
-					else
-						assert(0);
-				}    
-				while (Attribute = Attribute->Next());
-
-				Creator.setSwizzle(SwizzleR, SwizzleG, SwizzleB, SwizzleA);
 			}
 			else if(std::string(Child->Value()) == std::string("lod"))
 			{

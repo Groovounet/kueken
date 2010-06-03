@@ -1,11 +1,11 @@
-#version 120
+#version 330
 
 uniform mat4 MVP;
 
 attribute vec2 Position;
 attribute vec2 Texcoord;
 
-varying vec2 VertTexcoord;
+out vec2 VertTexcoord;
 
 void main()
 {	

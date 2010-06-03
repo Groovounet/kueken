@@ -9,22 +9,6 @@ namespace texture
 //	kueken::texture::name load(effect & Effect, void * Pointer);
 //	kueken::texture::name load(effect & Effect, std::string const & Filename);
 
-	class command : public kueken::detail::command
-	{
-	public:
-		command();
-		command(
-			kueken::renderer* Renderer,
-			kueken::texture::name Texture,
-			kueken::texture::slot Slot);
-		virtual void exec();
-
-	private:
-		kueken::renderer* Renderer;
-		kueken::texture::name Texture;
-		kueken::texture::slot Slot;
-	};
-
 }//namespace texture
 }//namespace fx
 

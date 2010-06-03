@@ -100,22 +100,6 @@ namespace detail
 						ImageFile[Level].data());
 				}
 			}
-			else if(std::string(Child->Value()) == std::string("generate-mipmaps"))
-			{
-				bool GenerateMipmaps = false;
-
-				TiXmlAttribute* Attribute = Child->FirstAttribute();
-				do
-				{
-					if(!strcmp("value", Attribute->Name()))
-						GenerateMipmaps = std::string(Attribute->Value()) == std::string("true") ? true : false;
-					else
-						assert(0);
-				}    
-				while (Attribute = Attribute->Next());
-
-				Creator.setGenerateMipmaps(GenerateMipmaps);
-			}
 			else
 			{
 				assert(0);
@@ -141,6 +125,32 @@ namespace detail
 
 		return loadImage((void*)Root);
 	}
+
+	//else if(std::string(Child->Value()) == std::string("swizzle"))
+	//{
+	//	kueken::sampler::swizzle SwizzleR = kueken::sampler::RED;
+	//	kueken::sampler::swizzle SwizzleG = kueken::sampler::GREEN;
+	//	kueken::sampler::swizzle SwizzleB = kueken::sampler::BLUE;
+	//	kueken::sampler::swizzle SwizzleA = kueken::sampler::ALPHA;
+
+	//	TiXmlAttribute* Attribute = Child->FirstAttribute();
+	//	do
+	//	{
+	//		if(!strcmp("r", Attribute->Name()))
+	//			SwizzleR = detail::swizzle_cast(Attribute->Value());
+	//		else if(!strcmp("g", Attribute->Name()))
+	//			SwizzleG = detail::swizzle_cast(Attribute->Value());
+	//		else if(!strcmp("b", Attribute->Name()))
+	//			SwizzleB = detail::swizzle_cast(Attribute->Value());
+	//		else if(!strcmp("a", Attribute->Name()))
+	//			SwizzleA = detail::swizzle_cast(Attribute->Value());
+	//		else
+	//			assert(0);
+	//	}    
+	//	while (Attribute = Attribute->Next());
+
+	//	Creator.setSwizzle(SwizzleR, SwizzleG, SwizzleB, SwizzleA);
+	//}
 
 }//namespace effect
 }//namespace fx

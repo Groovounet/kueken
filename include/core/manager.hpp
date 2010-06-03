@@ -16,7 +16,6 @@
 #include "rendertarget.hpp"
 #include "sampler.hpp"
 #include "test.hpp"
-#include "texture.hpp"
 
 namespace kueken{
 namespace detail{
@@ -46,7 +45,6 @@ public:
 	rendertarget::manager Rendertarget;
 	sampler::manager Sampler; 
 	test::manager Test; 
-	texture::manager Texture;
 
 private:
 	static manager* Manager;

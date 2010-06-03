@@ -43,12 +43,12 @@ namespace
 	kueken::program::variable VariableDiffuseSpecular;
 	kueken::image::name ImageDiffuseSpecular;
 	kueken::sampler::name SamplerDiffuseSpecular;
-	kueken::texture::name TextureDiffuseSpecular;
+	//kueken::texture::name TextureDiffuseSpecular;
 
 	kueken::program::variable VariableNormalmap;
 	kueken::image::name ImageNormal;
 	kueken::sampler::name SamplerNormal;
-	kueken::texture::name TextureNormal;
+	//kueken::texture::name TextureNormal;
 }
 
 CMain::CMain
@@ -140,8 +140,12 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(TextureDiffuseSpecular, kueken::texture::SLOT1);
-	Renderer->bind(TextureNormal, kueken::texture::SLOT0);
+	Renderer->bind(ImageDiffuseSpecular, kueken::image::SLOT1);
+	Renderer->bind(SamplerDiffuseSpecular, kueken::sampler::SLOT1);
+	VariableDiffuseSpecular.set(1);
+	Renderer->bind(ImageNormal, kueken::image::SLOT0);
+	Renderer->bind(SamplerNormal, kueken::sampler::SLOT0);
+	VariableNormal.set(0);
 
 	Renderer->bind(Program);
 
@@ -234,13 +238,13 @@ bool CMain::initTexture2D()
 		SamplerDiffuseSpecular = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuseSpecular);
-		Creator.setSampler(SamplerDiffuseSpecular);
-		Creator.setImage(ImageDiffuseSpecular);
-		TextureDiffuseSpecular = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuseSpecular);
+	//	Creator.setSampler(SamplerDiffuseSpecular);
+	//	Creator.setImage(ImageDiffuseSpecular);
+	//	TextureDiffuseSpecular = Renderer->create(Creator);
+	//}
 
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_NORMAL);
@@ -267,13 +271,13 @@ bool CMain::initTexture2D()
 		SamplerNormal = Renderer->create(Creator);
 	}
 	
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableNormalmap);
-		Creator.setSampler(SamplerNormal);
-		Creator.setImage(ImageNormal);
-		TextureNormal = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableNormalmap);
+	//	Creator.setSampler(SamplerNormal);
+	//	Creator.setImage(ImageNormal);
+	//	TextureNormal = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

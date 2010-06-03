@@ -30,10 +30,10 @@ namespace
 	kueken::query::name Query;
 
 	kueken::image::name ImageDiffuse;
-	kueken::texture::name TextureDiffuse;
+	//kueken::texture::name TextureDiffuse;
 
 	kueken::image::name ImageTexture;
-	kueken::texture::name TextureTexture;
+	//kueken::texture::name TextureTexture;
 
 	kueken::rendertarget::name RendertargetTexture;
 	kueken::rasterizer::name RasterizerTexture;
@@ -136,7 +136,9 @@ void CMain::Render()
 		Renderer->exec(ClearTexture);
 
 		VariableMVP.set(MVP);
-		Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
+		Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
+		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		VariableDiffuse.set(0);
 		Renderer->exec(Draw);
 
 		kueken::image::object* Object = Renderer->map(ImageTexture);
@@ -153,7 +155,9 @@ void CMain::Render()
 		Renderer->exec(ClearFramebuffer);
 
 		VariableMVP.set(MVP);
-		Renderer->bind(TextureTexture, kueken::texture::SLOT0);
+		Renderer->bind(ImageTexture, kueken::image::SLOT0);
+		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		//VariableTexture.set(0);
 		Renderer->exec(Draw);
 	}
 
@@ -267,21 +271,21 @@ bool CMain::initTexture2D()
 		ImageTexture = Renderer->create(Creator);
 	}
 
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(Sampler);
-		Creator.setImage(ImageDiffuse);
-		TextureDiffuse = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(Sampler);
+	//	Creator.setImage(ImageDiffuse);
+	//	TextureDiffuse = Renderer->create(Creator);
+	//}
 
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(Sampler);
-		Creator.setImage(ImageTexture);
-		TextureTexture = Renderer->create(Creator);
-	}
+	//{
+	//	kueken::texture::creator<kueken::texture::image> Creator;
+	//	Creator.setVariable(VariableDiffuse);
+	//	Creator.setSampler(Sampler);
+	//	Creator.setImage(ImageTexture);
+	//	TextureTexture = Renderer->create(Creator);
+	//}
 
 	return glf::checkError("initTexture2D");
 }

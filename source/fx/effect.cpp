@@ -75,12 +75,6 @@ namespace effect
 				kueken::test::name Name = loadTest(Child);
 				//Tests.insert(std::make_pair(Name.id(), Name));
 			}
-			else if(std::string(Child->Value()) == std::string("texture"))
-			{
-				loadTexture(Child);
-				//kueken::texture::name Name = loadTexture(Child);
-				//Textures.insert(std::make_pair(Name.id(), Name));
-			}
 			else
 			{
 				assert(0);
@@ -220,15 +214,6 @@ namespace effect
 		std::map<glm::uint, kueken::test::name>::const_iterator it = Tests.find(Id);
 		if(it == Tests.end())
 			return kueken::test::name::Null();
-		else
-			return it->second;
-	}
-
-	kueken::texture::name object::findTexture(glm::uint Id) const
-	{
-		std::map<glm::uint, kueken::texture::name>::const_iterator it = Textures.find(Id);
-		if(it == Textures.end())
-			return kueken::texture::name::Null();
 		else
 			return it->second;
 	}

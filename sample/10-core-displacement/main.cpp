@@ -30,8 +30,6 @@ namespace
 	kueken::image::name ImageHeightmap;
 	kueken::sampler::name SamplerDiffuse;
 	kueken::sampler::name SamplerHeightmap;
-	kueken::texture::name TextureDiffuse;
-	kueken::texture::name TextureHeightmap;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
@@ -133,8 +131,8 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(Program);
-	Renderer->bind(TextureHeightmap, kueken::texture::SLOT0);
-	Renderer->bind(TextureDiffuse, kueken::texture::SLOT1);
+	Renderer->bind(ImageHeightmap, kueken::image::SLOT0);
+	Renderer->bind(ImageDiffuse, kueken::image::SLOT1);
 
 	Renderer->exec(Draw);
 
@@ -228,14 +226,6 @@ bool CMain::initTexture2D()
 	}
 
 	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableDiffuse);
-		Creator.setSampler(SamplerDiffuse);
-		Creator.setImage(ImageDiffuse);
-		TextureDiffuse = Renderer->create(Creator);
-	}
-
-	{
 		gli::image ImageFile = gli::import_as(TEXTURE_HEIGHTMAP);
 
 		kueken::image::creator Creator;
@@ -258,14 +248,6 @@ bool CMain::initTexture2D()
 		Creator.setWrap(kueken::sampler::REPEAT, kueken::sampler::REPEAT, kueken::sampler::REPEAT);
 		Creator.setAnisotropy(16.f);
 		SamplerHeightmap = Renderer->create(Creator);
-	}
-
-	{
-		kueken::texture::creator<kueken::texture::image> Creator;
-		Creator.setVariable(VariableHeightmap);
-		Creator.setSampler(SamplerHeightmap);
-		Creator.setImage(ImageHeightmap);
-		TextureHeightmap = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initTexture2D");

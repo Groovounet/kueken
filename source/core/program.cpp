@@ -8,7 +8,7 @@ namespace
 		static GLenum const Cast[kueken::program::SHADER_MAX] = 
 		{
 			GL_VERTEX_SHADER,			//VERTEX,
-			GL_GEOMETRY_SHADER_ARB,		//GEOMETRY,
+			GL_GEOMETRY_SHADER,			//GEOMETRY,
 			GL_FRAGMENT_SHADER,			//FRAGMENT
 			GL_NONE,					//LIBRARY
 		};
@@ -20,8 +20,8 @@ namespace
 	{
 		static GLenum const Cast[kueken::buffer::MODE_MAX] = 
 		{
-			GL_INTERLEAVED_ATTRIBS_EXT,		//INTERLEAVED,
-			GL_SEPARATE_ATTRIBS_EXT			//SEPARATED,
+			GL_INTERLEAVED_ATTRIBS,		//INTERLEAVED,
+			GL_SEPARATE_ATTRIBS			//SEPARATED,
 		};
 
 		return Cast[Mode];

@@ -16,16 +16,15 @@ namespace kueken
 		Buffer(buffer::TARGET_MAX),
 		Clear(0),
 		Draw(0),
-		Image(0),
+		Image(image::SLOT_MAX),
 		Program(1),
 		Query(0),
 		Rasterizer(1),
 		ReadPixels(0),
 		Renderbuffer(0),
 		Rendertarget(1),
-		Sampler(0),
-		Test(1),
-		Texture(texture::SLOT_MAX)
+		Sampler(sampler::SLOT_MAX),
+		Test(1)
 	{}
 
 	manager& manager::instance()

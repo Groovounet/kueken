@@ -9,9 +9,9 @@ namespace
 			GL_TEXTURE_1D,						// IMAGE_1D
 			GL_TEXTURE_2D,						// IMAGE_2D
 			GL_TEXTURE_3D,						// IMAGE_3D
-			GL_TEXTURE_1D_ARRAY_EXT,			// ARRAY_1D
-			GL_TEXTURE_2D_ARRAY_EXT,			// ARRAY_2D
-			GL_TEXTURE_RECTANGLE_ARB,			// RECT
+			GL_TEXTURE_1D_ARRAY,				// ARRAY_1D
+			GL_TEXTURE_2D_ARRAY,				// ARRAY_2D
+			GL_TEXTURE_RECTANGLE,				// RECT
 			GL_TEXTURE_CUBE_MAP_POSITIVE_X,		// CUBE_POS_X
 			GL_TEXTURE_CUBE_MAP_NEGATIVE_X,		// CUBE_NEG_X
 			GL_TEXTURE_CUBE_MAP_POSITIVE_Y,		// CUBE_POS_Y
@@ -343,11 +343,6 @@ namespace image
 		Data.Compressed = image_compressed_cast(Format);
 	}
 
-	void creator::setGenerateMipmaps(bool GenerateMipmaps)
-	{
-		Data.GenerateMipmaps = GenerateMipmaps;
-	}
-
 	void creator::setMipmap
 	(
 		std::size_t Level, 
@@ -408,6 +403,12 @@ namespace image
 		//	Data.Target, 
 		//	GL_TEXTURE_BASE_LEVEL, 
 		//	1);
+
+        glTextureParameterivEXT(
+			Name, 
+			Data.Target, 
+			GL_TEXTURE_SWIZZLE_RGBA, 
+			&Data.Swizzle[0]);
 
 		assert(glGetError() == GL_NO_ERROR);
 
@@ -470,9 +471,6 @@ namespace image
 					Data.Type, 
 					Data.Mipmaps[Level].Data);
 			}
-
-			if(Data.GenerateMipmaps)
-				glGenerateTextureMipmapEXT(Name, Data.Target);
 		}
 
 		assert(glGetError() == GL_NO_ERROR);
