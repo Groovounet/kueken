@@ -116,29 +116,24 @@ namespace detail
 		//GLuint Previous = 0;
 		//glGetIntegerv(GL_TEXTURE_BUFFER_EXT, &Previous);
 
-		assert(glGetError() == GL_NO_ERROR);
+		//glGenTextures(1, &Name);
+		//glActiveTexture(GL_TEXTURE0 + 0);
 
-		glGenTextures(1, &Name);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glActiveTexture(GL_TEXTURE0 + 0);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glBindTexture(
-			GL_TEXTURE_BUFFER_EXT, 
-			Name);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glTexBufferEXT(
-			GL_TEXTURE_BUFFER_EXT, 
-			Data.Format, 
-			Data.Buffer);
 		//glBindTexture(
 		//	GL_TEXTURE_BUFFER_EXT, 
-		//	Previous);
+		//	Name);
+
+		//glTexBuffer(
+		//	GL_TEXTURE_BUFFER, 
+		//	Data.Format, 
+		//	Data.Buffer);
+
+		glGenTextures(1, &Name);
+		glTextureBufferEXT(
+			Name, 
+			GL_TEXTURE_BUFFER, 
+			Data.Format,
+			Data.Buffer);
 
 		assert(glGetError() == GL_NO_ERROR);
 	}
