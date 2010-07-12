@@ -70,11 +70,11 @@ link_directories("${BOOST_DIRECTORY}/binary/${BINARY_DIRECTORY}")
 ############
 # TinyXML 
 
-set(TINYXML_VERSION "tinyxml-2.5.3") 
+set(TINYXML_VERSION "tinyxml-2.6.1") 
 set(TINYXML_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${TINYXML_VERSION})
 
 include_directories("${TINYXML_DIRECTORY}/include")
-link_directories("${TINYXML_DIRECTORY}/lib/${BINARY_DIRECTORY}")
+link_directories("${TINYXML_DIRECTORY}/library/${BINARY_DIRECTORY}")
 
 ###########
 # Add SDL 
