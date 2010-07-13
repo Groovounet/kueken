@@ -13,7 +13,8 @@ namespace texture{
 	enum type
 	{
 		buffer,
-		image
+		image,
+		multisample
 	};
 
 	enum format
