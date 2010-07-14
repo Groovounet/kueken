@@ -41,6 +41,8 @@ namespace detail{
 		TARGET_MAX
 	};
 
+	typedef std::size_t slot;
+
 	enum usage
 	{
 		STREAM_DRAW, 
@@ -76,7 +78,7 @@ namespace detail{
 		object(creator const & Creator);
 		~object();
 
-		void bind(target Target);
+		void bind(slot const & Slot, target const & Target);
 		//void* map();
 		//void unmap();
 		//void flush();

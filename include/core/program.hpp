@@ -7,27 +7,37 @@
 namespace kueken{
 namespace program
 {
-	enum shader
+	enum target
 	{
+		UNIFIED,
 		VERTEX,
-		GEOMETRY,
-		FRAGMENT,
-		LIBRARY,
-		SHADER_MAX
+		CONTROL,
+		EVALUATION,
+		PRIMITIVE,
+        FRAGMENT,
+		TARGET_MAX
 	};
+
+	typedef std::size_t slot;
+
+namespace detail
+{
+	GLenum program_target_cast(kueken::program::target Target);
+}//namespace detail
 
 	class creator// : public kueken::detail::creator
 	{
 		friend class object;
 
 	public:
-		void attachShader(shader Shader, std::string const & Source);
+		void attachShader(target const & Target, std::string const & Source);
+		void setStage(target const & Target);
 		void setFeedbackVariable(std::vector<std::string> const & Names, buffer::mode const & Mode);
 
 		virtual bool validate(){return true;}
 
 	private:
-		std::string Sources[SHADER_MAX];
+		std::string Sources[TARGET_MAX];
 		std::vector<std::string> FeedbackVariables;
 		GLenum BufferMode;
 	};

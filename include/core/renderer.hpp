@@ -24,30 +24,33 @@ namespace kueken
 		void exec(blit::name const & Name);
 
 		buffer::name create(buffer::creator const & Creator);
-		void free(buffer::name& Name);
-		void bind(buffer::name const & Name, buffer::target const & Target);
+		void free(buffer::name & Name);
+		void bind(
+			buffer::slot const & Slot, 
+			buffer::target const & Target, 
+			buffer::name const & Name);
 		buffer::object* map(buffer::name& Name);
 		void unmap(buffer::name& Name);
 
 		clear::name create(clear::creator const & Creator);
-		void free(clear::name& Name);
+		void free(clear::name & Name);
 		void exec(clear::name const & Name);
 
 		draw::name create(draw::creator const & Creator);
-		void free(draw::name& Name);
+		void free(draw::name & Name);
 		void exec(draw::name const & Name);
 		draw::object* map(draw::name& Name);
 		void unmap(draw::name& Name);
 
 		image::name create(image::creator const & Creator);
-		void free(image::name& Name);
+		void free(image::name & Name);
 		void bind(image::name const & Name, image::slot const & Slot);
 		image::object* map(image::name & Name);
 		void unmap(image::name & Name);
 
 		program::name create(program::creator const & Creator);
 		void free(program::name& Name);
-		void bind(program::name const & Name);
+		void bind(program::slot const & Slot, program::target const & Target, program::name const & Name);
 		program::object* map(program::name& Name);
 		void unmap(program::name& Name);
 
@@ -64,7 +67,10 @@ namespace kueken
 
 		sampler::name create(sampler::creator const & Creator);
 		void free(sampler::name& Name);
-		void bind(sampler::name const & Name, sampler::slot const & Slot);
+		void bind(
+			sampler::slot const & Slot, 
+			sampler::target const & Target, 
+			sampler::name const & Name);
 
 		test::name create(test::creator const & Creator);
 		void free(test::name& Name);

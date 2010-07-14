@@ -79,18 +79,12 @@ namespace detail{
 	//	TARGET_MAX
 	//};
 
-	enum slot
+	enum target
 	{
-		SLOT0,
-		SLOT1,
-		SLOT2,
-		SLOT3,
-		SLOT4,
-		SLOT5,
-		SLOT6,
-		SLOT7,
-		SLOT_MAX
+		SAMPLER
 	};
+
+	typedef std::size_t slot;
 
 	enum swizzle
 	{
