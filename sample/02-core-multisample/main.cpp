@@ -121,7 +121,7 @@ bool CMain::End()
 
 void CMain::Render()
 {
-	Renderer->bind(Program);
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	Renderer->bind(Assembler);
 	Renderer->bind(Test);
 	Renderer->bind(Blend);
@@ -150,7 +150,7 @@ void CMain::Render()
 		Renderer->unmap(UniformBuffer);
 		VariableMVP.set(UniformBuffer);
 
-		Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
 		Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
 		VariableDiffuse.set(0);
 		Renderer->exec(DrawMesh);
@@ -175,7 +175,7 @@ void CMain::Render()
 		Renderer->bind(RendertargetFramebuffer, kueken::rendertarget::EXEC);
 		Renderer->exec(Clear);
 
-		Renderer->bind(SamplerSplash, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerSplash);
 		Renderer->bind(ImageRendertarget, kueken::image::SLOT0);
 		VariableDiffuse.set(0);
 

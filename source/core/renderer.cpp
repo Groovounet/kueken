@@ -127,11 +127,12 @@ namespace kueken
 
 	void renderer::bind
 	(
-		buffer::name const & Name,
-		buffer::target const & Target
+		buffer::slot const & Slot,
+		buffer::target const & Target,
+		buffer::name const & Name
 	)
 	{
-		manager& Manager = manager::instance();
+		manager & Manager = manager::instance();
 
 		if(Name == buffer::name::Null())
 		{
@@ -144,7 +145,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Buffer.setCurrentObject(Target, Name).bind(Target);
+		Manager.Buffer.setCurrentObject(Target, Name).bind(Slot, Target);
 	}
 
 	buffer::object* renderer::map(buffer::name& Name)
@@ -287,7 +288,12 @@ namespace kueken
 		manager::instance().Program.release(Name);
 	}
 
-	void renderer::bind(program::name const & Name)
+	void renderer::bind
+	(
+		program::slot const & Slot,
+		program::target const & Target,
+		program::name const & Name
+	)
 	{
 		manager& Manager = manager::instance();
 
@@ -502,8 +508,9 @@ namespace kueken
 
 	void renderer::bind
 	(
-		sampler::name const & Name, 
-		sampler::slot const & Slot
+		sampler::slot const & Slot,
+		sampler::target const & Target,
+		sampler::name const & Name
 	)
 	{
 		manager & Manager = manager::instance();
@@ -513,7 +520,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Sampler.setCurrentObject(Slot, Name).bind(Slot);
+		Manager.Sampler.setCurrentObject(Slot, Name).bind(Slot, Target);
 	}
 
 	///////////////////////////

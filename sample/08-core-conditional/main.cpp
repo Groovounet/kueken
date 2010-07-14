@@ -133,7 +133,7 @@ void CMain::Render()
 	Renderer->bind(Test);
 
 	Renderer->bind(Blend1);
-	Renderer->bind(Program1);
+	Renderer->bind(0, kueken::program::UNIFIED, Program1);
 	Renderer->bind(Assembler1);
 	
 	Renderer->begin(Query, kueken::query::RECORD);
@@ -143,7 +143,7 @@ void CMain::Render()
 	printf("\rSamples: %d", Renderer->get(Query));
 
 	Renderer->bind(Blend2);
-	Renderer->bind(Program2);
+	Renderer->bind(0, kueken::program::UNIFIED, Program2);
 	Renderer->bind(Image, kueken::image::SLOT0);
 	Renderer->bind(Sampler, kueken::sampler::SLOT0);
 	VariableDiffuse2.set(0);

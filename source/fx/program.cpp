@@ -6,12 +6,16 @@ namespace fx{
 namespace effect{
 namespace detail
 {
-	kueken::program::shader shader_cast(char const * String)
+	kueken::program::target program_target_cast(char const * String)
 	{
 		if(!strcmp("vertex", String))
 			return kueken::program::VERTEX;
-		else if(!strcmp("geometry", String))
-			return kueken::program::GEOMETRY;
+		else if(!strcmp("control", String))
+			return kueken::program::CONTROL;
+		else if(!strcmp("evaluation", String))
+			return kueken::program::EVALUATION;
+		else if(!strcmp("primitive", String))
+			return kueken::program::PRIMITIVE;
 		else if(!strcmp("fragment", String))
 			return kueken::program::FRAGMENT;
 		else 
@@ -66,14 +70,14 @@ namespace detail
 		{
 			if(std::string(Child->Value()) == std::string("shader"))
 			{
-				kueken::program::shader Target;
+				kueken::program::target Target;
 				std::string Path;
 
 				TiXmlAttribute* Attribute = Child->FirstAttribute();
 				do
 				{
 					if(!strcmp("target", Attribute->Name()))
-						Target = detail::shader_cast(Attribute->Value());
+						Target = detail::program_target_cast(Attribute->Value());
 					else if(!strcmp("path", Attribute->Name()))
 						Path = std::string(Attribute->Value());
 					else
@@ -128,7 +132,7 @@ namespace program
 	
 	void command::exec()
 	{
-		Renderer->bind(Program);
+		Renderer->bind(0, kueken::program::UNIFIED, Program);
 	}	
 
 }//namespace program

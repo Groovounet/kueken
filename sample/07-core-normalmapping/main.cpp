@@ -147,7 +147,7 @@ void CMain::Render()
 	Renderer->bind(SamplerNormal, kueken::sampler::SLOT0);
 	VariableNormal.set(0);
 
-	Renderer->bind(Program);
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
 
 	Renderer->exec(Draw);
 

@@ -140,7 +140,7 @@ void CMain::Render()
 	VariableDiffuse.set(0);
 	VariableSpecular.set(1);
 
-	Renderer->bind(Program);
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
 
 	Renderer->exec(Draw);
 

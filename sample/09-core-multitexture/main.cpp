@@ -134,7 +134,7 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(Program);
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
 
 	VariableDiffuse.set(kueken::image::SLOT0);
 	VariableDetail.set(kueken::image::SLOT1);

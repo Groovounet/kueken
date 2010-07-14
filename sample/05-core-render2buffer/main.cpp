@@ -129,7 +129,7 @@ void CMain::Render()
 	{
 		Renderer->bind(RasterizerPass1);
 
-		Renderer->bind(ProgramPass1);
+		Renderer->bind(0, kueken::program::UNIFIED, ProgramPass1);
 		glm::mat4 Projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
 		glm::mat4 ModelView = glm::mat4(1.0f);
 		glm::mat4 MVP = Projection * ModelView;
@@ -147,7 +147,7 @@ void CMain::Render()
 	{
 		Renderer->bind(RasterizerPass2);
 
-		Renderer->bind(ProgramPass2);
+		Renderer->bind(0, kueken::program::UNIFIED, ProgramPass2);
 		glm::mat4 Projection = glm::perspective(45.0f, float(windowSize.x) / windowSize.y, 0.1f, 100.0f);
 		glm::mat4 ModelView(1.0f);
 		ModelView = glm::translate(ModelView, glm::vec3(0.0f, 0.0f, -tranlationCurrent.y));

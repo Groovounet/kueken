@@ -13,17 +13,17 @@ namespace kueken
  		Assembler(1),
 		Blend(1),
 		Blit(0),
-		Buffer(buffer::TARGET_MAX),
+		Buffer(8),
 		Clear(0),
 		Draw(0),
-		Image(image::SLOT_MAX),
+		Image(8),
 		Program(1),
 		Query(0),
 		Rasterizer(1),
 		ReadPixels(0),
 		Renderbuffer(0),
 		Rendertarget(1),
-		Sampler(sampler::SLOT_MAX),
+		Sampler(8),
 		Test(1)
 	{}
 

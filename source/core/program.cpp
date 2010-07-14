@@ -3,19 +3,6 @@
 
 namespace
 {
-	GLenum program_shader_cast(kueken::program::shader Shader)
-	{
-		static GLenum const Cast[kueken::program::SHADER_MAX] = 
-		{
-			GL_VERTEX_SHADER,			//VERTEX,
-			GL_GEOMETRY_SHADER,			//GEOMETRY,
-			GL_FRAGMENT_SHADER,			//FRAGMENT
-			GL_NONE,					//LIBRARY
-		};
-
-		return Cast[Shader];
-	}
-
 	GLenum program_buffer_mode_cast(kueken::buffer::mode Mode)
 	{
 		static GLenum const Cast[kueken::buffer::MODE_MAX] = 
@@ -67,13 +54,28 @@ namespace
 
 namespace kueken{
 namespace program{
-namespace detail{
+namespace detail
+{
+	GLenum program_target_cast(kueken::program::target Target)
+	{
+		static GLenum const Cast[kueken::program::TARGET_MAX] = 
+		{
+			GL_VERTEX_SHADER,			//VERTEX,
+			GL_TESS_CONTROL_SHADER,		//CONTROL,
+			GL_TESS_EVALUATION_SHADER,	//EVALUATION,
+			GL_GEOMETRY_SHADER,			//PRIMITIVE,
+			GL_FRAGMENT_SHADER,			//FRAGMENT
+			GL_NONE,					//LIBRARY
+		};
+
+		return Cast[Target];
+	}
 
 }//namespace detail
 
-	void creator::attachShader(shader Shader, std::string const & Source)
+	void creator::attachShader(target const & Target, std::string const & Source)
 	{
-		Sources[Shader] += Source;
+		Sources[Target] += Source;
 	}
 
 	void creator::setFeedbackVariable
@@ -155,7 +157,7 @@ namespace detail{
 		GLuint VertexShaderName = 0;
 		if(Success)
 		{
-			std::string Source = Creator.Sources[LIBRARY] + Creator.Sources[VERTEX];
+			std::string Source = Creator.Sources[VERTEX];
 			char const * SourcePtr = Source.c_str();
 			VertexShaderName = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(VertexShaderName, 1, &SourcePtr, NULL);
@@ -168,7 +170,7 @@ namespace detail{
 		GLuint FragmentShaderName = 0;
 		if(Success)
 		{
-			std::string Source = Creator.Sources[LIBRARY] + Creator.Sources[FRAGMENT];
+			std::string Source = Creator.Sources[FRAGMENT];
 			char const * SourcePtr = Source.c_str();
 			FragmentShaderName = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(FragmentShaderName, 1, &SourcePtr, NULL);

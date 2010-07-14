@@ -185,7 +185,7 @@ void CMain::Render()
 	Renderer->bind(Rasterizer);
 
 	{
-		Renderer->bind(ProgramBlur);
+		Renderer->bind(0, kueken::program::UNIFIED, ProgramBlur);
 
 		glm::mat4 Projection = glm::ortho(0.0f, float(), 0.0f, float(),-1.0f, 1.0f);//glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 		glm::mat4 MVP = Projection * View * Model;
@@ -234,7 +234,7 @@ void CMain::Render()
 
 		assert(glGetError() == GL_NO_ERROR);
 
-		Renderer->bind(ProgramTex);
+		Renderer->bind(0, kueken::program::UNIFIED, ProgramTex);
 		Renderer->bind(ImageBlurred, kueken::image::SLOT0);
 		Renderer->bind(Sampler, kueken::sampler::SLOT0);
 		VariableBlurDiffuse.set(0);

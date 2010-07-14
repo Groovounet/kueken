@@ -121,7 +121,7 @@ void CMain::Render()
 	glm::mat4 Model = glm::mat4(1.0f);
 
 	{
-		Renderer->bind(Program);
+		Renderer->bind(0, kueken::program::UNIFIED, Program);
 		Renderer->bind(Test);
 		Renderer->bind(Blend);
 		Renderer->bind(Assembler);

@@ -121,7 +121,7 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(Program);
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	Renderer->bind(Sampler, kueken::sampler::SLOT0);
 	Renderer->bind(Image, kueken::image::SLOT0);
 

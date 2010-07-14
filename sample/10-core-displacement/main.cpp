@@ -130,7 +130,7 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(Program);
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	Renderer->bind(ImageHeightmap, kueken::image::SLOT0);
 	Renderer->bind(ImageDiffuse, kueken::image::SLOT1);
 

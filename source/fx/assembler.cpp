@@ -140,8 +140,9 @@ namespace detail
 		for(std::size_t i = 0; i < Creator.Data.Attributes.size(); ++i)
 		{
 			Creator.Data.Renderer->bind(
-				Creator.Data.Attributes[i].Buffer,
-				kueken::buffer::ARRAY);
+				0,
+				kueken::buffer::ARRAY,
+				Creator.Data.Attributes[i].Buffer);
 
 			glVertexAttribPointer(
 				Creator.Data.Attributes[i].Location, 
@@ -155,7 +156,7 @@ namespace detail
 				Creator.Data.Attributes[i].Location);
 
 			if(ElementFormat != GL_NONE)
-				Renderer->bind(ElementBuffer, kueken::buffer::ELEMENT);
+				Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 		}
 		glBindVertexArray(0);
 
