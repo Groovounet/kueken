@@ -19,6 +19,7 @@ namespace detail{
 		void clear();
 
 		bool isCurrent(std::size_t Slot, NAME const & Name) const;
+		NAME getCurrentName(std::size_t Slot = 0) const;
 		OBJECT& getCurrentObject(std::size_t Slot = 0) const;
 		OBJECT& setCurrentObject(std::size_t Slot, NAME const & Name);
 		
@@ -126,7 +127,14 @@ namespace detail{
 	) const
 	{
 		assert(Slot < Binded.size());
-		return Binded[Slot] == Name;
+		return this->Binded[Slot] == Name;
+	}
+
+	template <typename NAME, typename OBJECT>
+	inline NAME manager<NAME, OBJECT>::getCurrentName(std::size_t Slot) const
+	{
+		assert(Slot < Binded.size());
+		return this->Binded[Slot];
 	}
 
 }//namespace detail

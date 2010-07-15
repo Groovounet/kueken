@@ -336,14 +336,15 @@ namespace detail{
 		assert(glGetError() == GL_NO_ERROR);
 
 		glPointSize(Data.PointSize);
-		glPointParameterf(GL_POINT_SIZE_MIN, Data.PointMin);
-		glPointParameterf(GL_POINT_SIZE_MAX, Data.PointMax);
-		glPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, Data.PointFade);
-		glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, &Data.PointAttenuation[0]);
-		if(Data.PointSmooth)
-			glEnable(GL_POINT_SMOOTH);
-		else
-			glDisable(GL_POINT_SMOOTH);
+
+		assert(glGetError() == GL_NO_ERROR);
+		//glPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, Data.PointFade);
+		assert(glGetError() == GL_NO_ERROR);
+
+		//if(Data.PointSmooth)
+		//	glEnable(GL_POINT_SMOOTH);
+		//else
+		//	glDisable(GL_POINT_SMOOTH);
 
 		assert(glGetError() == GL_NO_ERROR);
 
@@ -356,9 +357,9 @@ namespace detail{
 		assert(glGetError() == GL_NO_ERROR);
 
 		if(Data.Discard)
-			glEnable(GL_RASTERIZER_DISCARD_EXT);
+			glEnable(GL_RASTERIZER_DISCARD);
 		else
-			glDisable(GL_RASTERIZER_DISCARD_EXT);
+			glDisable(GL_RASTERIZER_DISCARD);
 
 		assert(glGetError() == GL_NO_ERROR);
 	}

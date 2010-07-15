@@ -488,11 +488,15 @@ namespace image
 			Name);
 	}
 
-	void object::bind(std::size_t Slot)
+	void object::bind
+	(
+		std::size_t const & Slot,
+		image::target const & Target
+	)
 	{
 		glBindMultiTextureEXT(
 			GL_TEXTURE0 + GLenum(Slot), 
-			Data.Target, 
+			Target,//Data.Target, 
 			Name);
 	}
 

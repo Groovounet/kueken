@@ -29,8 +29,9 @@ namespace kueken
 			buffer::slot const & Slot, 
 			buffer::target const & Target, 
 			buffer::name const & Name);
-		buffer::object* map(buffer::name& Name);
-		void unmap(buffer::name& Name);
+		buffer::name getBinding(buffer::slot const & Slot) const;
+		buffer::object * map(buffer::name & Name);
+		void unmap(buffer::name & Name);
 
 		clear::name create(clear::creator const & Creator);
 		void free(clear::name & Name);
@@ -44,7 +45,10 @@ namespace kueken
 
 		image::name create(image::creator const & Creator);
 		void free(image::name & Name);
-		void bind(image::name const & Name, image::slot const & Slot);
+		void bind(
+			image::slot const & Slot, 
+			image::target const & Target,
+			image::name const & Name);
 		image::object* map(image::name & Name);
 		void unmap(image::name & Name);
 
@@ -91,7 +95,9 @@ namespace kueken
 		template <rendertarget::type Type>
 		rendertarget::name create(rendertarget::creator<Type> const & Creator);
 		void free(rendertarget::name& Name);		
-		void bind(rendertarget::name const & Name, rendertarget::target const & Target);
+		void bind(
+			rendertarget::name const & Name, 
+			rendertarget::target const & Target);
 
 		//query::name create(query::creator const & Creator);
 		//void free(query::name& Name);

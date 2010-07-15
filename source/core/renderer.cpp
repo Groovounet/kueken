@@ -148,6 +148,11 @@ namespace kueken
 		Manager.Buffer.setCurrentObject(Target, Name).bind(Slot, Target);
 	}
 
+	buffer::name renderer::getBinding(buffer::slot const & Slot) const
+	{
+		return manager::instance().Buffer.getCurrentName(Slot);
+	}
+
 	buffer::object* renderer::map(buffer::name& Name)
 	{
 		return manager::instance().Buffer.mapObject(Name);
@@ -249,8 +254,10 @@ namespace kueken
 
 	void renderer::bind
 	(
-		image::name const & Name, 
-		image::slot const & Slot
+
+		image::slot const & Slot,
+		image::target const & Target,
+		image::name const & Name		
 	)
 	{
 		manager& Manager = manager::instance();
@@ -260,15 +267,15 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Image.setCurrentObject(Slot, Name).bind(Slot);
+		Manager.Image.setCurrentObject(Slot, Name).bind(Slot, Target);
 	}
 
-	image::object* renderer::map(image::name& Name)
+	image::object* renderer::map(image::name & Name)
 	{
 		return manager::instance().Image.mapObject(Name);
 	}
 
-	void renderer::unmap(image::name& Name)
+	void renderer::unmap(image::name & Name)
 	{
 		manager::instance().Image.unmapObject(Name);
 	}
@@ -520,7 +527,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Sampler.setCurrentObject(Slot, Name).bind(Slot, Target);
+		Manager.Sampler.setCurrentObject(Slot, Name).bind(Target);
 	}
 
 	///////////////////////////

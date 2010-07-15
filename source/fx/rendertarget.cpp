@@ -107,7 +107,7 @@ namespace rendertarget
 	(
 		creator<CUSTOM> const & Creator
 	) :
-		Renderbuffer(kueken::image::SLOT_MAX, 0),
+		Renderbuffer(8, 0),
 		Data(Creator.Data),
 		Name(0)
 	{

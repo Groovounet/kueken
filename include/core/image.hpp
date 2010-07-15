@@ -127,18 +127,7 @@ namespace detail{
 		FORMAT_MAX
 	};
 
-	enum slot
-	{
-		SLOT0,
-		SLOT1,
-		SLOT2,
-		SLOT3,
-		SLOT4,
-		SLOT5,
-		SLOT6,
-		SLOT7,
-		SLOT_MAX
-	};
+	typedef std::size_t slot;
 
 	class creator// : public kueken::detail::creator
 	{
@@ -165,7 +154,9 @@ namespace detail{
 		~object();
 
 		void bind();
-		void bind(std::size_t Slot);
+		void bind(
+			std::size_t const & Slot,
+			image::target const & Target);
 		//void* map();
 		//void unmap();
 		//void flush();

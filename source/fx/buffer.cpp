@@ -79,9 +79,16 @@ namespace buffer
 		glDeleteBuffers(1, &Name);
 	}
 
-	void object::bind(target Target)
+	void object::bind
+	(
+		slot const & Slot, 
+		target const & Target
+	)
 	{
-		glBindBuffer(buffer_target_cast(Target), Name);
+		if(Slot > 0)
+			glBindBufferBase(buffer_target_cast(Target), Slot, Name);
+		else
+			glBindBuffer(buffer_target_cast(Target), Name);
 	}
 
 	GLuint object::GetName() const
