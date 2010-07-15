@@ -137,12 +137,12 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
-	Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
+	Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
 	VariableDiffuse.set(0);
-	Renderer->bind(ImageMVP, kueken::image::SLOT1);
-	Renderer->bind(SamplerMVP, kueken::sampler::SLOT1);
-	VariableDiffuse.set(0);
+	Renderer->bind(1, kueken::image::IMAGE2D, ImageMVP);
+	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerMVP);
+	VariableMVP.set(1);
 
 	Renderer->exec(Draw);
 

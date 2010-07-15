@@ -135,8 +135,8 @@ void CMain::Render()
 		glm::mat4 MVP = Projection * ModelView;
 		VariableMVPPass1.set(MVP);
 
-		Renderer->bind(ImageHeightmap, kueken::image::SLOT0);
-		Renderer->bind(SamplerHeightmap, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageHeightmap);
+		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerHeightmap);
 		VariableDiffusePass1.set(0);
 
 		Renderer->bind(AssemblerPass1);
@@ -157,7 +157,7 @@ void CMain::Render()
 		glm::mat4 MVP = Projection * ModelView;
 		VariableMVPPass2.set(MVP);
 
-		Renderer->bind(ArrayBufferPass2, kueken::buffer::PIXEL_PACK);
+		Renderer->bind(0, kueken::buffer::PIXEL_PACK, ArrayBufferPass2);
 		Renderer->exec(ReadPixels);
 
 		Renderer->bind(AssemblerPass2);

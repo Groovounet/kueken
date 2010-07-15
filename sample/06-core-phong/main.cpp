@@ -133,10 +133,10 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
-	Renderer->bind(SamplerDiffuse, kueken::sampler::SLOT0);
-	Renderer->bind(ImageSpecular, kueken::image::SLOT1);
-	Renderer->bind(SamplerSpecular, kueken::sampler::SLOT1);
+	Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
+	Renderer->bind(1, kueken::image::IMAGE2D, ImageSpecular);
+	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerSpecular);
 	VariableDiffuse.set(0);
 	VariableSpecular.set(1);
 

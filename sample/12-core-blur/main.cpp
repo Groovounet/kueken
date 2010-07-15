@@ -195,8 +195,8 @@ void CMain::Render()
 		Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
 		VariableBlurWeight.set(Blur[0].Weight, 16);
 		VariableBlurOffset.set(Blur[0].Offset, 16);
-		Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
-		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableTexDiffuse.set(0);
 
 		Renderer->bind(AssemblerBlur);
@@ -210,8 +210,8 @@ void CMain::Render()
 		Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
 		VariableBlurWeight.set(Blur[1].Weight, 16);
 		VariableBlurOffset.set(Blur[1].Offset, 16);
-		Renderer->bind(ImageBlurredH, kueken::image::SLOT0);
-		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageBlurredH);
+		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableBlurDiffuse.set(0);
 		
 		assert(glGetError() == GL_NO_ERROR);
@@ -235,8 +235,8 @@ void CMain::Render()
 		assert(glGetError() == GL_NO_ERROR);
 
 		Renderer->bind(0, kueken::program::UNIFIED, ProgramTex);
-		Renderer->bind(ImageBlurred, kueken::image::SLOT0);
-		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageBlurred);
+		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableBlurDiffuse.set(0);
 
 		assert(glGetError() == GL_NO_ERROR);

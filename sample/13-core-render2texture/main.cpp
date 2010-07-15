@@ -136,8 +136,8 @@ void CMain::Render()
 		Renderer->exec(ClearTexture);
 
 		VariableMVP.set(MVP);
-		Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
-		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableDiffuse.set(0);
 		Renderer->exec(Draw);
 
@@ -155,8 +155,8 @@ void CMain::Render()
 		Renderer->exec(ClearFramebuffer);
 
 		VariableMVP.set(MVP);
-		Renderer->bind(ImageTexture, kueken::image::SLOT0);
-		Renderer->bind(Sampler, kueken::sampler::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageTexture);
+		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		//VariableTexture.set(0);
 		Renderer->exec(Draw);
 	}

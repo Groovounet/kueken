@@ -16,7 +16,7 @@ namespace
 	const char* SAMPLE_NAME = "Kueken sample 01";	
 	const char* VERTEX_SHADER_SOURCE = "../data/texture.vert";
 	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
-	const char* TEXTURE_DIFFUSE = "../data/küken256.tga";
+	const char* TEXTURE_DIFFUSE = "../data/kueken256.tga";
 
 	kueken::renderer* Renderer = 0;
 	
@@ -65,8 +65,8 @@ bool CMain::Begin(glm::ivec2 const & WindowSize)
 	//Effect = new kueken::effect("test.kfx");
 
 	bool Result = true;
-	if(Result)
-		Result = initQuery();
+	//if(Result)
+	//	Result = initQuery();
 	if(Result)
 		Result = initBlend();
 	if(Result)
@@ -127,8 +127,8 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(Image, kueken::image::SLOT0);
-	Renderer->bind(Sampler, kueken::sampler::SLOT0);
+	//Renderer->bind(0, kueken::image::IMAGE2D, Image);
+	//Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 
 	Renderer->exec(Draw);
 
@@ -138,9 +138,7 @@ void CMain::Render()
 bool CMain::initBlend()
 {
 	kueken::blend::creator Creator;
-	Creator.setColorMask(
-		kueken::blend::SLOT0, 
-		glm::bvec4(true, true, true, true));
+	Creator.setColorMask(kueken::blend::SLOT0, glm::bvec4(true));
 	Blend = Renderer->create(Creator);
 
 	return glf::checkError("initBlend");
@@ -149,7 +147,7 @@ bool CMain::initBlend()
 bool CMain::initClear()
 {
 	kueken::clear::creator Creator;
-	Creator.setColor(glm::vec4(1.0f));
+	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 	Clear = Renderer->create(Creator);
 
 	return glf::checkError("initClear");

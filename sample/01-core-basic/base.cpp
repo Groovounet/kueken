@@ -28,14 +28,16 @@ namespace
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 0);
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-		SDL_Surface* Surface = NULL;
 		if((Surface = SDL_SetVideoMode(Width, Height, 32, VideoFlags)) == 0)
 			return NULL;
 
 		SDL_WM_SetCaption(Name, Name);
 
 		glewInit();
+		glf::checkError("");
 
 		//SDL_SysWMinfo wmInfo;
 		//SDL_GetWMInfo(&wmInfo);
@@ -265,62 +267,8 @@ namespace glf
 
 	bool IBase::Run()
 	{
-		bool Exit = false;
-		while(!Exit)
+		while(1)
 		{
-			//gluxEvent Event;
-			//while(gluxGrabEvent(&Event))
-			//{
-			//	switch(Event.Type)
-			//	{
-			//		case GLUX_QUIT:
-			//		{
-			//			Exit = true;
-			//			break;
-			//		}
-			//		case GLUX_MOUSEDOWN:
-			//		{
-			//			switch(Event.Mouse.Button)
-			//			{
-			//			default:
-			//				break;
-			//			case gluxButton::Left:
-			//				OnMouseDown(MOUSE_BUTTON_LEFT);
-			//				break;
-			//			case gluxButton::Right:
-			//				OnMouseDown(MOUSE_BUTTON_RIGHT);
-			//				break;
-			//			case gluxButton::Middle:
-			//				OnMouseDown(MOUSE_BUTTON_MIDDLE);
-			//				break;
-			//			}
-			//		}
-			//		case GLUX_MOUSEUP:
-			//		{
-			//			switch(Event.Mouse.Button)
-			//			{
-			//			default:
-			//				break;
-			//			case gluxButton::Left:
-			//				OnMouseUp(MOUSE_BUTTON_LEFT);
-			//				break;
-			//			case gluxButton::Right:
-			//				OnMouseUp(MOUSE_BUTTON_RIGHT);
-			//				break;
-			//			case gluxButton::Middle:
-			//				OnMouseUp(MOUSE_BUTTON_MIDDLE);
-			//				break;
-			//			}
-			//		}
-			//		case GLUX_MOUSEMOTION:
-			//		{
-			//			glm::ivec2 Coord;
-			//			gluxGrabRelativeMousePos(&Coord.x, &Coord.y);
-			//			OnMouseMove(glm::vec2(Coord.x, WINDOW_HEIGHT - Coord.y));
-			//		}
-			//	}
-			//}
-
 			SDL_Event Event;
 			while(SDL_PollEvent(&Event))
 			{
@@ -328,8 +276,7 @@ namespace glf
 				{
 				case SDL_QUIT:
 				case SDL_KEYUP:
-					Exit = true;
-					break;
+					return true;
 				case SDL_MOUSEMOTION:
 					{
 					SDL_MouseMotionEvent* MotionEvent = (SDL_MouseMotionEvent*) &Event;
@@ -374,11 +321,10 @@ namespace glf
 
 			Render();
 
-			//SwapBufferGLUX();
 			SwapBufferSDL();
 		}
 
-		return Exit;
+		return true;
 	}
 }//namespace glf
 

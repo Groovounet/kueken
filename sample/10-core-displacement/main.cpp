@@ -131,8 +131,10 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(ImageHeightmap, kueken::image::SLOT0);
-	Renderer->bind(ImageDiffuse, kueken::image::SLOT1);
+
+	Renderer->bind(0, kueken::image::IMAGE2D, ImageHeightmap);
+	Renderer->bind(1, kueken::image::IMAGE2D, ImageDiffuse);
+
 
 	Renderer->exec(Draw);
 

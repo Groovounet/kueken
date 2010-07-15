@@ -151,7 +151,7 @@ void CMain::Render()
 		VariableMVP.set(UniformBuffer);
 
 		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
-		Renderer->bind(ImageDiffuse, kueken::image::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
 		VariableDiffuse.set(0);
 		Renderer->exec(DrawMesh);
 
@@ -176,7 +176,7 @@ void CMain::Render()
 		Renderer->exec(Clear);
 
 		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerSplash);
-		Renderer->bind(ImageRendertarget, kueken::image::SLOT0);
+		Renderer->bind(0, kueken::image::IMAGE2D, ImageRendertarget);
 		VariableDiffuse.set(0);
 
 		Renderer->exec(DrawSplash);

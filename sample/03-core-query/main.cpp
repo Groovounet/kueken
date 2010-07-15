@@ -122,8 +122,8 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(Sampler, kueken::sampler::SLOT0);
-	Renderer->bind(Image, kueken::image::SLOT0);
+	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
+	Renderer->bind(0, kueken::image::IMAGE2D, Image);
 
 	Renderer->begin(QuerySamples, kueken::query::RECORD);
 		Renderer->exec(Draw);
