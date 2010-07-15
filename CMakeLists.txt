@@ -79,7 +79,7 @@ link_directories("${TINYXML_DIRECTORY}/library/${BINARY_DIRECTORY}")
 ###########
 # Add SDL 
 
-set(SDL_VERSION "sdl-1.3.0-5206") 
+set(SDL_VERSION "sdl-1.3.0-4526") 
 set(SDL_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION})
 
 if(MSVC)
@@ -109,7 +109,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION}/include
 ############
 # Add GLEW 
 
-set(GLEW_VERSION "glew-1.5.4") 
+set(GLEW_VERSION "glew-1.5.5") 
 set(GLEW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLEW_VERSION})
 
 if(MSVC)
