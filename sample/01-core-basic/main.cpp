@@ -116,8 +116,11 @@ void sample::render()
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 MVP = Projection * View * Model;
  
-	VariableMVP.set(MVP);
-	VariableDiffuse.set(0);
+	kueken::program::object * Object = Renderer->map(Program);
+	Object->setUniform("Diffuse", 0);
+	Object->setUniform("MVP", MVP);
+	Renderer->unmap(Program);
+
 	glf::checkError("Render 2");
 
 	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);

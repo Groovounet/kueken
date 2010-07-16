@@ -54,7 +54,10 @@ namespace kueken
 
 		program::name create(program::creator const & Creator);
 		void free(program::name& Name);
-		void bind(program::slot const & Slot, program::target const & Target, program::name const & Name);
+		void bind(
+			program::slot const & Slot, 
+			program::target const & Target, 
+			program::name const & Name);
 		program::object* map(program::name& Name);
 		void unmap(program::name& Name);
 

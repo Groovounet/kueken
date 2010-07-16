@@ -77,6 +77,11 @@ namespace detail
 		~object();
 
 		void bind();
+
+		void setUniform(std::string const & Name, int const & Value);
+		void setUniform(std::string const & Name, glm::vec4 const & Value);
+		void setUniform(std::string const & Name, glm::mat4 const & Value);
+
 		variable get(std::string const & Name, type Type);
 
 	private:
