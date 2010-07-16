@@ -222,6 +222,18 @@ namespace detail
 		glUseProgram(Name);
 	}
 
+	void object::setSampler
+	(
+		std::string const & VarName, 
+		int const & Value
+	)
+	{
+		GLuint Location = glGetUniformLocation(this->Name, VarName.c_str());
+		glProgramUniform1iEXT(
+			this->Name, Location, 
+			Value);
+	}
+
 	void object::setUniform
 	(
 		std::string const & VarName, 

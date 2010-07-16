@@ -78,6 +78,7 @@ namespace detail
 
 		void bind();
 
+		void setSampler(std::string const & Name, int const & Value);
 		void setUniform(std::string const & Name, int const & Value);
 		void setUniform(std::string const & Name, glm::vec4 const & Value);
 		void setUniform(std::string const & Name, glm::mat4 const & Value);

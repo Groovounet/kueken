@@ -38,8 +38,6 @@ namespace
 
 	kueken::program::variable VariablePosition;
 	kueken::program::variable VariableTexcoord;
-	kueken::program::variable VariableDiffuse;
-	kueken::program::variable VariableMVP;
 }
 
 sample::sample
@@ -120,7 +118,7 @@ void sample::render()
 	glm::mat4 MVP = Projection * View * Model;
  
 	kueken::program::object * Object = Renderer->map(Program);
-	Object->setUniform("Diffuse", 0);
+	Object->setSampler("Diffuse", 0);
 	Object->setUniform("MVP", MVP);
 	Renderer->unmap(Program);
 
@@ -279,8 +277,6 @@ bool sample::initProgram()
 	kueken::program::object* Object = Renderer->map(Program);
 	VariablePosition = Object->get("Position", kueken::program::ATTRIB);
 	VariableTexcoord = Object->get("Texcoord", kueken::program::ATTRIB);
-	VariableDiffuse = Object->get("Diffuse", kueken::program::SAMPLER);
-	VariableMVP = Object->get("MVP", kueken::program::UNIFORM);
 	Renderer->unmap(Program);
 
 	return glf::checkError("initProgram");
