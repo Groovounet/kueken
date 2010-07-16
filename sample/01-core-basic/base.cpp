@@ -39,81 +39,26 @@ namespace
 		glewInit();
 		glf::checkError("");
 
-		//SDL_SysWMinfo wmInfo;
-		//SDL_GetWMInfo(&wmInfo);
-		//HWND hWnd = wmInfo.window;
-		//DeviceContext = GetDC(hWnd);
-
-		//// Create an OpenGL 3.0 context.
-		//int AttribList[6] =
-		//{
-		//	WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-		//	WGL_CONTEXT_MINOR_VERSION_ARB, 0,
-		//	0, 0
-		//};
-		//
-		//RenderContext = wglCreateContextAttribsARB(DeviceContext, 0, AttribList);
-		//wglMakeCurrent(DeviceContext, RenderContext);				
-
 		return Surface;
 	}
 
 	void DeleteWindowSDL()
 	{
-		//wglDeleteContext(RenderContext);
-		//RenderContext = NULL;
-
 		if(Surface)
 			SDL_FreeSurface(Surface);
 		SDL_Quit();
 	}
 
-	void MakeCurrent()
-	{
-		//wglMakeCurrent(DeviceContext, RenderContext);
-	}
-
-	void SwapBufferSDL()
-	{
-		//SwapBuffers(DeviceContext);
-		SDL_GL_SwapBuffers();
-	}
-
-	//gluxDisplay* Display = NULL;
-
-	//void CreateWindowGLUX(const char* Name, int Width, int Height, bool Fullscreen)
-	//{
-	//	gluxDisplaySettings Settings;
-	//	Settings.BitsPerPixel = 32;
-	//	Settings.RedSize = 8;
-	//	Settings.GreenSize = 8;
-	//	Settings.BlueSize = 8;
-	//	Settings.AlphaSize = 8;
-	//	Settings.MultisampleBuffers = 1;
-	//	Settings.MultisampleSamples = 2;
-
-	//	Display = gluxCreateDisplay(
-	//		Width, 
-	//		Height, 
-	//		Settings,
-	//		GLUX_DOUBLEBUFFER | GLUX_RGBA | GLUX_MULTISAMPLE, 
-	//		"Coucou");
-	//}
-
-	//void DestroyDisplayGLUX()
-	//{
-	//	gluxDestroyDisplay(Display);
-	//}
-
-	//void SwapBufferGLUX()
-	//{
-	//	gluxSwapBuffers(Display);
-	//}
-
 }//namespace
 
 namespace glf
 {
+	void swapbuffers()
+	{
+		SDL_GL_SwapBuffers();
+		glGetError();
+	}
+
 	std::string loadFile(const char* Filename)
 	{
 		std::ifstream stream(Filename, std::ios::in);
@@ -194,7 +139,7 @@ namespace glf
 		return Cast[Type];
 	}
 
-	IBase::IBase
+	base::base
 	(
 		std::string const & Title,
 		glm::ivec2 const & WindowSize
@@ -204,31 +149,29 @@ namespace glf
 		mouseOrigin(0),
 		rotationCurrent(0.f),
 		rotationOrigin(0.f),
-		tranlationOrigin(0.f, 2.f),
+		tranlationOrigin(0.f, 8.f),
 		tranlationCurrent(0.f, 0.f),
 		indexCurrent(0),
 		indexMax(10),
 		title(Title),
 		windowSize(WindowSize)
 	{
-		//CreateWindowGLUX(title.c_str(), WindowSize.x, WindowSize.y, WINDOW_FULLSCREEN);
 		CreateWindowSDL(title.c_str(), WindowSize.x, WindowSize.y, WINDOW_FULLSCREEN);
 	}
 
-	IBase::~IBase()
+	base::~base()
 	{
 		DeleteWindowSDL();
-		//DestroyDisplayGLUX();
 	}
 
-	void IBase::OnMouseMove(glm::vec2 const & MouseCurrent)
+	void base::onMouseMove(glm::vec2 const & MouseCurrent)
 	{
 		mouseCurrent = MouseCurrent;
 		tranlationCurrent = mouseButtonFlags & MOUSE_BUTTON_LEFT ? tranlationOrigin + (mouseCurrent - mouseOrigin) / 10.f : tranlationOrigin;
 		rotationCurrent = mouseButtonFlags & MOUSE_BUTTON_RIGHT ? rotationOrigin + (mouseCurrent - mouseOrigin) : rotationOrigin;
 	}
 
-	void IBase::OnMouseDown(EMouseButton MouseButton)
+	void base::onMouseDown(EMouseButton MouseButton)
 	{
 		mouseButtonFlags |= MouseButton;
 
@@ -244,7 +187,7 @@ namespace glf
 		}
 	}
 
-	void IBase::OnMouseUp(EMouseButton MouseButton)
+	void base::onMouseUp(EMouseButton MouseButton)
 	{
 		mouseButtonFlags &= ~MouseButton;
 
@@ -265,70 +208,58 @@ namespace glf
 		}
 	}
 
-	bool IBase::Run()
+	bool base::event()
 	{
-		while(1)
+		SDL_Event Event;
+		while(SDL_PollEvent(&Event))
 		{
-			SDL_Event Event;
-			while(SDL_PollEvent(&Event))
+			switch(Event.type)
 			{
-				switch(Event.type)
+			case SDL_QUIT:
+			case SDL_KEYUP:
+				return false;
+			case SDL_MOUSEMOTION:
 				{
-				case SDL_QUIT:
-				case SDL_KEYUP:
-					return true;
-				case SDL_MOUSEMOTION:
-					{
 					SDL_MouseMotionEvent* MotionEvent = (SDL_MouseMotionEvent*) &Event;
-					OnMouseMove(glm::vec2(float(MotionEvent->x), float(WINDOW_HEIGHT - MotionEvent->y)));
-					}
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					switch(((SDL_MouseButtonEvent*)&Event)->button)
-					{
-					default:
-						break;
-					case SDL_BUTTON_LEFT:
-						OnMouseDown(MOUSE_BUTTON_LEFT);
-						break;
-					case SDL_BUTTON_RIGHT:
-						OnMouseDown(MOUSE_BUTTON_RIGHT);
-						break;
-					case SDL_BUTTON_MIDDLE:
-						OnMouseDown(MOUSE_BUTTON_MIDDLE);
-						break;
-					}
-					break;
-				case SDL_MOUSEBUTTONUP:
-					switch(((SDL_MouseButtonEvent*)&Event)->button)
-					{
-					default:
-						break;
-					case SDL_BUTTON_LEFT:
-						OnMouseUp(MOUSE_BUTTON_LEFT);
-						break;
-					case SDL_BUTTON_RIGHT:
-						OnMouseUp(MOUSE_BUTTON_RIGHT);
-						break;
-					case SDL_BUTTON_MIDDLE:
-						OnMouseUp(MOUSE_BUTTON_MIDDLE);
-						break;
-					}
-					break;
-				break;
+					onMouseMove(glm::vec2(float(MotionEvent->x), float(WINDOW_HEIGHT - MotionEvent->y)));
 				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				switch(((SDL_MouseButtonEvent*)&Event)->button)
+				{
+				default:
+					break;
+				case SDL_BUTTON_LEFT:
+					onMouseDown(MOUSE_BUTTON_LEFT);
+					break;
+				case SDL_BUTTON_RIGHT:
+					onMouseDown(MOUSE_BUTTON_RIGHT);
+					break;
+				case SDL_BUTTON_MIDDLE:
+					onMouseDown(MOUSE_BUTTON_MIDDLE);
+					break;
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
+				switch(((SDL_MouseButtonEvent*)&Event)->button)
+				{
+				default:
+					break;
+				case SDL_BUTTON_LEFT:
+					onMouseUp(MOUSE_BUTTON_LEFT);
+					break;
+				case SDL_BUTTON_RIGHT:
+					onMouseUp(MOUSE_BUTTON_RIGHT);
+					break;
+				case SDL_BUTTON_MIDDLE:
+					onMouseUp(MOUSE_BUTTON_MIDDLE);
+					break;
+				}
+				break;
+			break;
 			}
-
-			Render();
-
-			SwapBufferSDL();
 		}
 
 		return true;
 	}
 }//namespace glf
-
-int main(int argc, char* argv[])
-{
-	return run();
-}

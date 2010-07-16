@@ -368,42 +368,6 @@ namespace image
 	{
 		glGenTextures(1, &Name);
 
-		glTextureParameteriEXT(
-			Name, 
-			Data.Target, 
-			GL_TEXTURE_MAG_FILTER, 
-			GL_LINEAR);
-
-		glTextureParameteriEXT(
-			Name, 
-			Data.Target, 
-			GL_TEXTURE_MIN_FILTER, 
-			GL_LINEAR);
-
-		glTextureParameteriEXT(
-			Name, 
-			Data.Target, 
-			GL_TEXTURE_WRAP_S, 
-			GL_CLAMP_TO_EDGE);
-
-		glTextureParameteriEXT(
-			Name, 
-			Data.Target, 
-			GL_TEXTURE_WRAP_T, 
-			GL_CLAMP_TO_EDGE);
-
-		glTextureParameteriEXT(
-			Name, 
-			Data.Target, 
-			GL_TEXTURE_WRAP_R, 
-			GL_CLAMP_TO_EDGE);
-
-		//glTextureParameterfEXT(
-		//	Name, 
-		//	Data.Target, 
-		//	GL_TEXTURE_BASE_LEVEL, 
-		//	1);
-
         glTextureParameterivEXT(
 			Name, 
 			Data.Target, 
@@ -425,9 +389,6 @@ namespace image
 				Data.Target, 
 				GL_TEXTURE_MAX_LEVEL, 
 				GLint(Data.Mipmaps.size()));
-
-			//! ToDo: To remove!
-			glBindTexture(GL_TEXTURE_2D, Name);
 
 			std::size_t BlockSize = Data.InternalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 8 : 16;
 
@@ -451,9 +412,6 @@ namespace image
 
 				assert(glGetError() == GL_NO_ERROR);
 			}
-
-			//! ToDo: To remove!
-			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 		else
 		{
@@ -481,13 +439,6 @@ namespace image
 		glDeleteTextures(1, &Name);
 	}
 
-	void object::bind()
-	{
-		glBindTexture(
-			Data.Target, 
-			Name);
-	}
-
 	void object::bind
 	(
 		std::size_t const & Slot,
@@ -496,7 +447,7 @@ namespace image
 	{
 		glBindMultiTextureEXT(
 			GL_TEXTURE0 + GLenum(Slot), 
-			Target,//Data.Target, 
+			image_target_cast(Target),//Data.Target, 
 			Name);
 	}
 

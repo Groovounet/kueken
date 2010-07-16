@@ -18,12 +18,13 @@ namespace
 	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
 	const char* TEXTURE_DIFFUSE = "../data/kueken256.tga";
 
-	kueken::renderer* Renderer = 0;
+	kueken::renderer * Renderer = 0;
 	
 	kueken::blend::name Blend;
 	kueken::rasterizer::name RasterizerBackground;
 	kueken::rasterizer::name RasterizerScene;
-	kueken::clear::name Clear;
+	kueken::clear::name ClearBackground;
+	kueken::clear::name ClearScene;
 	kueken::draw::name Draw;
 	kueken::program::name Program;
 	kueken::image::name Image;
@@ -40,23 +41,23 @@ namespace
 	kueken::program::variable VariableMVP;
 }
 
-CMain::CMain
+sample::sample
 (
 	std::string const & Name, 
 	glm::ivec2 const & WindowSize
 ) :
-	IBase(Name, WindowSize)
+	base(Name, WindowSize)
 {}
 
-CMain::~CMain()
+sample::~sample()
 {}
 
-bool CMain::Check() const
+bool sample::check() const
 {
 	return true;//GLEW_VERSION_2_1 == GL_TRUE;
 }
 
-bool CMain::Begin(glm::ivec2 const & WindowSize)
+bool sample::begin(glm::ivec2 const & WindowSize)
 {
 	windowSize = WindowSize;
 
@@ -65,8 +66,8 @@ bool CMain::Begin(glm::ivec2 const & WindowSize)
 	//Effect = new kueken::effect("test.kfx");
 
 	bool Result = true;
-	//if(Result)
-	//	Result = initQuery();
+	if(Result)
+		Result = initQuery();
 	if(Result)
 		Result = initBlend();
 	if(Result)
@@ -92,7 +93,7 @@ bool CMain::Begin(glm::ivec2 const & WindowSize)
 	return Result;
 }
 
-bool CMain::End()
+bool sample::end()
 {
 	delete Renderer;
 	Renderer = 0;
@@ -103,10 +104,12 @@ bool CMain::End()
 	return glf::checkError("End");
 }
 
-void CMain::Render()
+void sample::render()
 {
+	glf::checkError("Render 0");
+
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -tranlationCurrent.y);
+	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -8.0f);//-tranlationCurrent.y);
 	glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, rotationCurrent.y,-1.f, 0.f, 0.f);
 	glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotationCurrent.x, 0.f, 1.f, 0.f);
 	glm::mat4 View = ViewRotateY;
@@ -115,27 +118,40 @@ void CMain::Render()
  
 	VariableMVP.set(MVP);
 	VariableDiffuse.set(0);
+	glf::checkError("Render 2");
 
 	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
+	glf::checkError("Render 3");
 
 	Renderer->bind(RasterizerBackground);
-	Renderer->exec(Clear);
+	Renderer->exec(ClearBackground);
+	glf::checkError("Render 4");
 
 	Renderer->bind(RasterizerScene);
+	Renderer->exec(ClearScene);
+	glf::checkError("Render 5");
+
 	Renderer->bind(Test);
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
+	glf::checkError("Render 6");
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	//Renderer->bind(0, kueken::image::IMAGE2D, Image);
-	//Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
+	glf::checkError("Render 7");
+	
+	Renderer->bind(0, kueken::image::IMAGE2D, Image);
+	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
+
+	glf::checkError("Render 8");
 
 	Renderer->exec(Draw);
 
+	glf::checkError("Render 9");
+	glf::swapbuffers();
 	glf::checkError("Render");
 }
 
-bool CMain::initBlend()
+bool sample::initBlend()
 {
 	kueken::blend::creator Creator;
 	Creator.setColorMask(kueken::blend::SLOT0, glm::bvec4(true));
@@ -144,16 +160,18 @@ bool CMain::initBlend()
 	return glf::checkError("initBlend");
 }
 
-bool CMain::initClear()
+bool sample::initClear()
 {
 	kueken::clear::creator Creator;
 	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
-	Clear = Renderer->create(Creator);
+	ClearBackground = Renderer->create(Creator);
+	Creator.setColor(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
+	ClearScene = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
 }
 
-bool CMain::initQuery()
+bool sample::initQuery()
 {
 	kueken::query::creator Creator;
 	Creator.setTarget(kueken::query::SAMPLES);
@@ -162,7 +180,7 @@ bool CMain::initQuery()
 	return glf::checkError("initQuery");	
 }
 
-bool CMain::initDraw()
+bool sample::initDraw()
 {
 	kueken::draw::creator Creator;
 	Creator.setFirst(0);
@@ -172,7 +190,7 @@ bool CMain::initDraw()
 	return glf::checkError("initDraw");
 }
 
-bool CMain::initTest()
+bool sample::initTest()
 {
 	kueken::test::creator Creator;
 	Creator.setDepthEnable(false);
@@ -181,14 +199,14 @@ bool CMain::initTest()
 	return glf::checkError("initTest");
 }
 
-bool CMain::initRasterizer()
+bool sample::initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator;
 		Creator.setViewport(
 			glm::ivec4(0, 0, windowSize));
 		Creator.setScissor(
-			true, glm::ivec4(windowSize >> 2, windowSize >> 1));
+			false, glm::ivec4(0));
 		RasterizerBackground = Renderer->create(Creator);
 	}
 
@@ -197,14 +215,14 @@ bool CMain::initRasterizer()
 		Creator.setViewport(
 			glm::ivec4(0, 0, windowSize));
 		Creator.setScissor(
-			false, glm::ivec4(0));
+			true, glm::ivec4(windowSize >> 2, windowSize >> 1));
 		RasterizerScene = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initRasterizer");
 }
 
-bool CMain::initTexture2D()
+bool sample::initTexture2D()
 {
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
@@ -219,7 +237,6 @@ bool CMain::initTexture2D()
 				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
 		}
-
 		Image = Renderer->create(Creator);
 
 		kueken::image::object* Object = Renderer->map(Image);
@@ -238,7 +255,7 @@ bool CMain::initTexture2D()
 	return glf::checkError("initTexture2D");
 }
 
-bool CMain::initProgram()
+bool sample::initProgram()
 {
 	kueken::program::creator Creator;
 	Creator.attachShader(
@@ -259,7 +276,7 @@ bool CMain::initProgram()
 	return glf::checkError("initProgram");
 }
 
-bool CMain::initAssembler()
+bool sample::initAssembler()
 {
 	kueken::assembler::creator Creator;
 	Creator.setPrimitive(kueken::assembler::TRIANGLES);
@@ -281,7 +298,7 @@ bool CMain::initAssembler()
 	return glf::checkError("initAssembler");
 }
 
-bool CMain::initArrayBuffer()
+bool sample::initArrayBuffer()
 {
 	mesh = glv::buildPlane(glv::POSITION2_BIT | glv::TEXCOORD_BIT, glm::vec2(1.0f));
 
@@ -294,7 +311,7 @@ bool CMain::initArrayBuffer()
 	return glf::checkError("initArrayBuffer");
 }
 
-bool CMain::initRendertarget()
+bool sample::initRendertarget()
 {
 	kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
 	Creator.setFramebuffer();
@@ -303,21 +320,25 @@ bool CMain::initRendertarget()
 	return glf::checkError("initRendertarget");
 }
 
-int run()
+int main(int argc, char* argv[])
 {
 	glm::ivec2 ScreenSize = glm::ivec2(640, 480);
 
-	CMain* Main = new CMain(SAMPLE_NAME, ScreenSize);
-	if(Main->Check())
+	sample * Sample = new sample(SAMPLE_NAME, ScreenSize);
+	if(Sample->check())
 	{
-		Main->Begin(ScreenSize);
-		Main->Run();
-		Main->End();
+		Sample->begin(ScreenSize);
+		do
+		{
+			Sample->render();
+		}
+		while(1);//Sample->event());
+		Sample->end();
 
-		delete Main;
+		delete Sample;
 		return 0;
 	}
 
-	delete Main;
+	delete Sample;
 	return 1;
 }

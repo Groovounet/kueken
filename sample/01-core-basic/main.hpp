@@ -5,16 +5,16 @@
 #include <core/kueken.hpp>
 #include <fx/effect.hpp>
 
-class CMain : public glf::IBase
+class sample : public glf::base
 {
 public:
-	CMain(std::string const & Name, glm::ivec2 const & WindowSize);
-	virtual ~CMain();
+	sample(std::string const & Name, glm::ivec2 const & WindowSize);
+	virtual ~sample();
 
-	virtual bool Check() const;
-    virtual bool Begin(const glm::ivec2& WindowSize);
-    virtual bool End();
-    virtual void Render();
+	virtual bool check() const;
+    virtual bool begin(glm::ivec2 const & WindowSize);
+    virtual bool end();
+    virtual void render();
 
 private:
 	bool initArrayBuffer();

@@ -153,7 +153,6 @@ namespace detail{
 		object(creator const & Creator);
 		~object();
 
-		void bind();
 		void bind(
 			std::size_t const & Slot,
 			image::target const & Target);
