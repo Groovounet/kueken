@@ -281,6 +281,45 @@ namespace kueken
 	}
 
 	///////////////////////////
+	// layout
+
+	layout::name renderer::create
+	(
+		layout::creator const & Creator
+	)
+	{
+		//return manager::instance().Image.create(Creator);
+		layout::object * Object = new layout::object(Creator);
+		return manager::instance().Layout.reserve(Object);
+	}
+
+	void renderer::free
+	(
+		layout::name & Name
+	)
+	{
+		manager::instance().Layout.release(Name);
+	}
+
+	void renderer::bind
+	(
+
+		layout::slot const & Slot,
+		layout::target const & Target,
+		layout::name const & Name		
+	)
+	{
+		manager & Manager = manager::instance();
+
+#if KUEKEN_REDUCE_CHANGES
+		if(Manager.Layout.isCurrent(Slot, Name))
+			return;
+#endif//KUEKEN_REDUCE_CHANGES
+
+		Manager.Layout.setCurrentObject(Slot, Name).bind();
+	}
+
+	///////////////////////////
 	// program
 
 	program::name renderer::create(program::creator const & Creator)

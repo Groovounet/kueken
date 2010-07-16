@@ -166,7 +166,7 @@ namespace detail{
 
 		if(IndexType != GL_NONE)
 		{
-			glDrawElementsInstancedARB(
+			glDrawElementsInstanced(
 				Primitive, 
 				Data.Count, 
 				IndexType,
@@ -175,7 +175,7 @@ namespace detail{
 		}
 		else
 		{
-			glDrawArraysInstancedARB(
+			glDrawArraysInstanced(
 				Primitive, 
 				Data.First, 
 				Data.Count, 

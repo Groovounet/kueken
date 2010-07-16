@@ -28,6 +28,7 @@ namespace
 	kueken::draw::name Draw;
 	kueken::program::name Program;
 	kueken::image::name Image;
+	kueken::layout::name Layout;
 	kueken::sampler::name Sampler;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
@@ -80,6 +81,8 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 		Result = initArrayBuffer();
 	if(Result)
 		Result = initProgram();
+	if(Result)
+		Result = initLayout();
 	if(Result)
 		Result = initAssembler();
 	if(Result)
@@ -136,6 +139,9 @@ void sample::render()
 
 	Renderer->bind(Test);
 	Renderer->bind(Blend);
+	
+	//Renderer->bind(0, kueken::buffer::ARRAY, ArrayBuffer);
+	//Renderer->bind(0, kueken::layout::LAYOUT, Layout);
 	Renderer->bind(Assembler);
 	glf::checkError("Render 6");
 
@@ -147,6 +153,7 @@ void sample::render()
 
 	glf::checkError("Render 8");
 
+	//glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.vertexCount(), 1);
 	Renderer->exec(Draw);
 
 	glf::checkError("Render 9");
@@ -277,6 +284,28 @@ bool sample::initProgram()
 	Renderer->unmap(Program);
 
 	return glf::checkError("initProgram");
+}
+
+bool sample::initLayout()
+{
+	kueken::layout::creator Creator;
+	Creator.setVertexArray(
+		0, 
+		kueken::layout::POSITION,
+		kueken::layout::F32VEC2,
+		mesh.stride(glv::SLOT0),
+		mesh.offset(glv::POSITION2), 
+		1);
+	Creator.setVertexArray(
+		0, 
+		kueken::layout::TEXCOORD,
+		kueken::layout::F32VEC2,
+		mesh.stride(glv::SLOT0),
+		mesh.offset(glv::TEXCOORD), 
+		1);
+	Layout = Renderer->create(Creator);
+
+	return glf::checkError("initLayout");
 }
 
 bool sample::initAssembler()

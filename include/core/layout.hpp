@@ -9,6 +9,11 @@ namespace kueken
 
 namespace layout
 {
+	enum target
+	{
+		LAYOUT
+	};
+
 	enum semantic
 	{
 		POSITION		= 0,

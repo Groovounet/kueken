@@ -52,6 +52,13 @@ namespace kueken
 		image::object* map(image::name & Name);
 		void unmap(image::name & Name);
 
+		layout::name create(layout::creator const & Creator);
+		void free(layout::name & Name);
+		void bind(
+			layout::slot const & Slot, 
+			layout::target const & Target,
+			layout::name const & Name);
+
 		program::name create(program::creator const & Creator);
 		void free(program::name& Name);
 		void bind(

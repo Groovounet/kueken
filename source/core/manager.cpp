@@ -17,6 +17,7 @@ namespace kueken
 		Clear(0),
 		Draw(0),
 		Image(8),
+		Layout(1),
 		Program(1),
 		Query(0),
 		Rasterizer(1),

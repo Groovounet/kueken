@@ -22,6 +22,7 @@ private:
 	bool initBlend();
 	bool initClear();
 	bool initDraw();
+	bool initLayout();
 	bool initProgram();
 	bool initQuery();
 	bool initRendertarget();

@@ -8,6 +8,7 @@
 #include "clear.hpp"
 #include "draw.hpp"
 #include "image.hpp"
+#include "layout.hpp"
 #include "program.hpp"
 #include "query.hpp"
 #include "rasterizer.hpp"
@@ -37,6 +38,7 @@ public:
 	clear::manager Clear; 
 	draw::manager Draw;
 	image::manager Image; 
+	layout::manager Layout; 
 	program::manager Program;
 	query::manager Query; 
 	rasterizer::manager Rasterizer; 
