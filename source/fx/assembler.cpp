@@ -15,9 +15,9 @@ namespace
 		return CastAssemblerPrimitive[Primitive];
 	}
 
-	std::size_t assembler_componant_cast(kueken::assembler::array Array)
+	GLint assembler_componant_cast(kueken::assembler::array Array)
 	{
-		static std::size_t const CastAssemblerComponant[kueken::assembler::ARRAY_MAX] =
+		static GLint const CastAssemblerComponant[kueken::assembler::ARRAY_MAX] =
 		{
 			1, //F16VEC1,
 			2, //F16VEC2,
@@ -120,7 +120,7 @@ namespace detail
 		Attribute.Size = assembler_componant_cast(Array);
 		Attribute.Type = assembler_type_cast(Array);
 		//Attribute.Normalize = Normalize ? GL_TRUE : GL_FALSE;
-		Attribute.Stride = Stride;
+		Attribute.Stride = GLsizei(Stride);
 		Attribute.Pointer = KUEKEN_BUFFER_OFFSET(Offset);
 		Data.Attributes.push_back(Attribute);
 	}
