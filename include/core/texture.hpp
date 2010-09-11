@@ -3,11 +3,13 @@
 
 #include "detail/detail.hpp"
 #include "program.hpp"
-#include "image.hpp"
-#include "sampler.hpp"
-#include "assembler.hpp"
 
 namespace kueken{
+namespace rendertarget
+{
+	class object;
+}//namespace rendertarget
+
 namespace texture{
 
 	enum type
@@ -145,7 +147,7 @@ namespace detail
 	};
 
 }//namespace detail
-
+/*
 	enum slot
 	{
 		SLOT0,
@@ -158,7 +160,8 @@ namespace detail
 		SLOT7,
 		SLOT_MAX
 	};
-
+*/
+	typedef std::size_t slot;
 	typedef std::size_t level;
 /*
 	class creator
@@ -194,6 +197,8 @@ namespace detail
 
 	class object : boost::noncopyable
 	{
+		friend class rendertarget::object;
+
 	public:
 		object(creator const & Creator);
 		~object();
@@ -211,8 +216,6 @@ namespace detail
 			void const * const Pointer);
 
 		void generateMipmaps();
-
-		GLuint getName() const;
 
 	private:
 		void run();

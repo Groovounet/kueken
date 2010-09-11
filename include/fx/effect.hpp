@@ -29,7 +29,7 @@ namespace effect
 		kueken::clear::name loadClear(void * Node);
 		kueken::draw::name loadDraw(void * Node);
 		//kueken::feedback::name loadFeedback(void * Node);
-		kueken::image::name loadImage(void * Node);
+		kueken::texture::name loadTexture(void * Node);
 		kueken::program::name loadProgram(void * Node);
 		kueken::query::name loadQuery(void * Node);
 		kueken::rasterizer::name loadRasterizer(void * Node);
@@ -46,7 +46,7 @@ namespace effect
 		kueken::clear::name loadClear(std::string const & Filename);
 		kueken::draw::name loadDraw(std::string const & Filename);
 		//kueken::feedback::name loadFeedback(std::string const & Filename);
-		kueken::image::name loadImage(std::string const & Filename);
+		kueken::texture::name loadTexture(std::string const & Filename);
 		kueken::program::name loadProgram(std::string const & Filename);
 		kueken::query::name loadQuery(std::string const & Filename);
 		kueken::rasterizer::name loadRasterizer(std::string const & Filename);
@@ -63,7 +63,7 @@ namespace effect
 		kueken::clear::name findClear(glm::uint Id) const;
 		kueken::draw::name findDraw(glm::uint Id) const;
 		//kueken::feedback::name findFeedback(glm::uint Id) const;
-		kueken::image::name findImage(glm::uint Id) const;
+		kueken::texture::name findTexture(glm::uint Id) const;
 		kueken::program::name findProgram(glm::uint Id) const;
 		kueken::query::name findQuery(glm::uint Id) const;
 		kueken::rasterizer::name findRasterizer(glm::uint Id) const;
@@ -83,7 +83,7 @@ namespace effect
 		std::map<glm::uint, kueken::clear::name> Clears;
 		std::map<glm::uint, kueken::draw::name> Draws;
 		//std::map<glm::uint, kueken::feedback::name> Feedbacks;
-		std::map<glm::uint, kueken::image::name> Images;
+		std::map<glm::uint, kueken::texture::name> Textures;
 		std::map<glm::uint, kueken::program::name> Programs;
 		std::map<glm::uint, kueken::query::name> Querys;
 		std::map<glm::uint, kueken::rasterizer::name> Rasterizers;

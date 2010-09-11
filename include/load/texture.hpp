@@ -5,7 +5,7 @@
 
 namespace load
 {
-	kueken::image::name image(
+	kueken::texture::name texture(
 		kueken::renderer & Renderer, 
 		std::string const & Filename);
 

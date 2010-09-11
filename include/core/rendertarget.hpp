@@ -2,7 +2,7 @@
 #define KUEKEN_RENDERTARGET_INCLUDED
 
 #include "detail/detail.hpp"
-#include "image.hpp"
+#include "texture.hpp"
 #include "renderbuffer.hpp"
 
 namespace kueken{
@@ -41,7 +41,7 @@ namespace detail{
 
 	enum type
 	{
-		IMAGE,
+		TEXTURE,
 		RENDERBUFFER,
 		FRAMEBUFFER
 	};
@@ -50,7 +50,7 @@ namespace detail{
 	{
 		type Type;
 		renderbuffer::name Renderbuffer;
-		image::name Image;
+		texture::name Texture;
 		glm::uint Level;
 		GLenum Attachment;
 	};
@@ -90,7 +90,7 @@ namespace detail{
 
 	public:
 		creator(){}
-		void setImage(slot const & Slot, image::name const & Image, glm::uint Level);
+		void setTexture(slot const & Slot, texture::name const & Texture, glm::uint Level);
 		void setRenderbuffer(slot const & Slot, renderbuffer::name const & Renderbuffer);
 		void setFramebuffer();
 

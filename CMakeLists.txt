@@ -20,7 +20,7 @@ macro(add_sample_target_GTC SampleName GroupName DataName SourceFiles)
 	add_executable(${SampleName} ${SourceFiles})
 	target_link_libraries(${SampleName} ${GLF_LIBRARY_BINARY_FILE})
 
-	source_group("Shader Files" FILES "*.vert" "*.geom" "*.frag")
+	source_group("Shader Files" FILES "*.vert" "*.cont" "*.eval" "*.geom" "*.frag")
 
 	add_dependencies(${SampleName} ${KUEKEN_CORE_NAME})
 	add_dependencies(${GroupName} ${SampleName})
@@ -109,7 +109,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION}/include
 ############
 # Add GLEW 
 
-set(GLEW_VERSION "glew-1.5.5") 
+set(GLEW_VERSION "glew-1.5.5-gl4.1") 
 set(GLEW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLEW_VERSION})
 
 if(MSVC)

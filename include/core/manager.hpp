@@ -7,7 +7,6 @@
 #include "blit.hpp"
 #include "clear.hpp"
 #include "draw.hpp"
-#include "image.hpp"
 #include "layout.hpp"
 #include "program.hpp"
 #include "query.hpp"
@@ -17,6 +16,7 @@
 #include "rendertarget.hpp"
 #include "sampler.hpp"
 #include "test.hpp"
+#include "texture.hpp"
 
 namespace kueken{
 namespace detail{
@@ -37,7 +37,6 @@ public:
 	buffer::manager Buffer; 
 	clear::manager Clear; 
 	draw::manager Draw;
-	image::manager Image; 
 	layout::manager Layout; 
 	program::manager Program;
 	query::manager Query; 
@@ -47,9 +46,10 @@ public:
 	rendertarget::manager Rendertarget;
 	sampler::manager Sampler; 
 	test::manager Test; 
+	texture::manager Texture; 
 
 private:
-	static manager* Manager;
+	static manager * Manager;
 };
 
 }//namespace kueken

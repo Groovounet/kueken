@@ -3,7 +3,6 @@
 
 #include "tinyxml.h"
 #include "blend.hpp"
-#include "image.hpp"
 #include "program.hpp"
 #include "query.hpp"
 #include "rasterizer.hpp"
@@ -11,5 +10,6 @@
 #include "rendertarget.hpp"
 #include "sampler.hpp"
 #include "test.hpp"
+#include "texture.hpp"
 
 #endif//KUEKEN_LOAD_LOAD_INCLUDED
