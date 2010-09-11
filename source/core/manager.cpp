@@ -16,7 +16,6 @@ namespace kueken
 		Buffer(8),
 		Clear(0),
 		Draw(0),
-		Image(8),
 		Layout(1),
 		Program(1),
 		Query(0),
@@ -25,7 +24,8 @@ namespace kueken
 		Renderbuffer(0),
 		Rendertarget(1),
 		Sampler(8),
-		Test(1)
+		Test(1),
+		Texture(8)
 	{}
 
 	manager& manager::instance()

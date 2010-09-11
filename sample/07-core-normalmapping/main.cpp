@@ -41,14 +41,12 @@ namespace
 	kueken::program::variable VariableTexcoord;
 
 	kueken::program::variable VariableDiffuseSpecular;
-	kueken::image::name ImageDiffuseSpecular;
 	kueken::sampler::name SamplerDiffuseSpecular;
-	//kueken::texture::name TextureDiffuseSpecular;
+	kueken::texture::name TextureDiffuseSpecular;
 
 	kueken::program::variable VariableNormalmap;
-	kueken::image::name ImageNormal;
 	kueken::sampler::name SamplerNormal;
-	//kueken::texture::name TextureNormal;
+	kueken::texture::name TextureNormal;
 }
 
 CMain::CMain
@@ -140,12 +138,13 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(1, kueken::image::IMAGE2D, ImageDiffuseSpecular);
-	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerDiffuseSpecular);
 	VariableDiffuseSpecular.set(1);
-	Renderer->bind(0, kueken::image::IMAGE2D, ImageNormal);
-	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerNormal);
 	VariableNormal.set(0);
+
+	Renderer->bind(1, kueken::texture::IMAGE2D, TextureDiffuseSpecular);
+	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerDiffuseSpecular);
+	Renderer->bind(0, kueken::texture::IMAGE2D, TextureNormal);
+	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerNormal);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 
@@ -216,9 +215,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE_SPECULAR);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -227,7 +226,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuseSpecular = Renderer->create(Creator);
+		TextureDiffuseSpecular = Renderer->create(Creator);
 	}
 
 	{
@@ -238,20 +237,12 @@ bool CMain::initTexture2D()
 		SamplerDiffuseSpecular = Renderer->create(Creator);
 	}
 	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuseSpecular);
-	//	Creator.setSampler(SamplerDiffuseSpecular);
-	//	Creator.setImage(ImageDiffuseSpecular);
-	//	TextureDiffuseSpecular = Renderer->create(Creator);
-	//}
-
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_NORMAL);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -260,7 +251,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageNormal = Renderer->create(Creator);
+		TextureNormal = Renderer->create(Creator);
 	}
 
 	{
@@ -271,14 +262,6 @@ bool CMain::initTexture2D()
 		SamplerNormal = Renderer->create(Creator);
 	}
 	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableNormalmap);
-	//	Creator.setSampler(SamplerNormal);
-	//	Creator.setImage(ImageNormal);
-	//	TextureNormal = Renderer->create(Creator);
-	//}
-
 	return glf::checkError("initTexture2D");
 }
 

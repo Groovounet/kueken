@@ -27,10 +27,8 @@ namespace
 	kueken::draw::name Draw;
 	kueken::program::name Program;
 
-	kueken::image::name ImageDiffuse;
 	kueken::sampler::name SamplerDiffuse;
-	//kueken::texture::name TextureDiffuse;
-	//kueken::texture::name TextureMVP;
+	kueken::texture::name TextureDiffuse;
 
 	kueken::buffer::name ArrayBuffer;
 	kueken::buffer::name ElementBuffer;
@@ -122,6 +120,9 @@ void CMain::Render()
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 MVP = Projection * View * Model;
  
+	VariableDiffuse.set(0);
+	VariableMVP.set(1);
+
 	{
 		kueken::buffer::object* Object = Renderer->map(TextureBuffer);
 		Object->set(0, sizeof(glm::mat4), &MVP[0][0]);
@@ -137,12 +138,11 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+	Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
 	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
-	VariableDiffuse.set(0);
-	Renderer->bind(1, kueken::image::IMAGE2D, ImageMVP);
+
+	Renderer->bind(1, kueken::texture::IMAGE2D, TextureMVP);
 	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerMVP);
-	VariableMVP.set(1);
 
 	Renderer->exec(Draw);
 
@@ -204,9 +204,9 @@ bool CMain::initImage2D()
 		gli::export_as(ImageCopy, "../data/küken256_copy.tga");
 		gli::export_as(ImageCrop, "../data/küken128_crop.tga");
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -215,10 +215,10 @@ bool CMain::initImage2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
-		//image::object * ImageDiffuseObject = Renderer->map(ImageDiffuse);
-		//ImageDiffuseObject->generateMipmaps();
-		//Renderer->unmap(ImageDiffuse);
+		TextureDiffuse = Renderer->create(Creator);
+		//texture::object * TextureDiffuseObject = Renderer->map(TextureDiffuse);
+		//TextureDiffuseObject->generateMipmaps();
+		//Renderer->unmap(TextureDiffuse);
 	}
 
 

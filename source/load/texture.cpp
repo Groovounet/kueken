@@ -1,50 +1,50 @@
-#include <load/image.hpp>
+#include <load/texture.hpp>
 #include <gli/gli.hpp>
 
 namespace load{
 namespace detail
 {
-	kueken::image::target target_cast(char const * String)
+	kueken::texture::target target_cast(char const * String)
 	{
 		if(!strcmp("image1d", String))
-			return kueken::image::IMAGE1D;
+			return kueken::texture::IMAGE1D;
 		else if(!strcmp("image2d", String))
-			return kueken::image::IMAGE2D;
+			return kueken::texture::IMAGE2D;
 		else if(!strcmp("image3d", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("array1d", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("array2d", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("rect", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("cube-pos-x", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("cube-neg-x", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("cube-pos-y", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("cube-neg-y", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("cube-pos-z", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else if(!strcmp("cube-neg-z", String))
-			return kueken::image::IMAGE3D;
+			return kueken::texture::IMAGE3D;
 		else 
 		{
-			return kueken::image::IMAGE2D;
+			return kueken::texture::IMAGE2D;
 			assert(0);
 		}
 	}
 }//namespace detail
 
-	kueken::image::name image
+	kueken::texture::name texture
 	(
 		kueken::renderer & Renderer,
 		void * Pointer
 	)
 	{
-		kueken::image::creator Creator;
+		kueken::texture::creator Creator;
 		gli::image ImageFile;
 		glm::uint Id = 0;
 
@@ -56,7 +56,7 @@ namespace detail
 			if(std::string(Child->Value()) == std::string("file"))
 			{
 				std::string Path;
-				kueken::image::target Target = kueken::image::IMAGE2D;
+				kueken::texture::target Target = kueken::texture::IMAGE2D;
 
 				TiXmlAttribute* Attribute = Child->FirstAttribute();
 				do
@@ -72,8 +72,8 @@ namespace detail
 
 				ImageFile = gli::import_as(Path);
 
-				//Creator.setFormat(kueken::image::format(ImageFile.format()));
-				Creator.setFormat(kueken::image::RGB8);//format(ImageFile.format()));
+				//Creator.setFormat(kueken::texture::format(ImageFile.format()));
+				Creator.setFormat(kueken::texture::RGB8);//format(ImageFile.format()));
 				Creator.setTarget(Target);
 				for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 				{
@@ -109,7 +109,7 @@ namespace detail
 		return Renderer.create(Creator);
 	}
 
-	kueken::image::name image
+	kueken::texture::name texture
 	(
 		kueken::renderer & Renderer,
 		std::string const & Filename
@@ -119,9 +119,9 @@ namespace detail
 		Document.LoadFile();
 		TiXmlElement* Root = Document.RootElement();
 		if(std::string(Root->Value()) != std::string("image"))
-			return kueken::image::name::Null();
+			return kueken::texture::name::Null();
 
-		return image(Renderer, (void*)Root);
+		return texture(Renderer, (void*)Root);
 	}
 
 }//namespace load

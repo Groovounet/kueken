@@ -232,52 +232,52 @@ namespace kueken
 	}
 
 	///////////////////////////
-	// image
+	// texture
 
-	image::name renderer::create
+	texture::name renderer::create
 	(
-		image::creator const & Creator
+		texture::creator const & Creator
 	)
 	{
 		//return manager::instance().Image.create(Creator);
-		image::object * Object = new image::object(Creator);
-		return manager::instance().Image.reserve(Object);
+		texture::object * Object = new texture::object(Creator);
+		return manager::instance().Texture.reserve(Object);
 	}
 
 	void renderer::free
 	(
-		image::name & Name
+		texture::name & Name
 	)
 	{
-		manager::instance().Image.release(Name);
+		manager::instance().Texture.release(Name);
 	}
 
 	void renderer::bind
 	(
 
-		image::slot const & Slot,
-		image::target const & Target,
-		image::name const & Name		
+		texture::slot const & Slot,
+		texture::target const & Target,
+		texture::name const & Name		
 	)
 	{
-		manager& Manager = manager::instance();
+		manager & Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
-		if(Manager.Image.isCurrent(Slot, Name))
+		if(Manager.Texture.isCurrent(Slot, Name))
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Image.setCurrentObject(Slot, Name).bind(Slot, Target);
+		Manager.Texture.setCurrentObject(Slot, Name).bind(Slot, Target);
 	}
 
-	image::object* renderer::map(image::name & Name)
+	texture::object* renderer::map(texture::name & Name)
 	{
-		return manager::instance().Image.mapObject(Name);
+		return manager::instance().Texture.mapObject(Name);
 	}
 
-	void renderer::unmap(image::name & Name)
+	void renderer::unmap(texture::name & Name)
 	{
-		manager::instance().Image.unmapObject(Name);
+		manager::instance().Texture.unmapObject(Name);
 	}
 
 	///////////////////////////

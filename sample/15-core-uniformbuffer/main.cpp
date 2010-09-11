@@ -27,7 +27,7 @@ namespace
 	kueken::draw::name Draw;
 	kueken::program::name Program;
 
-	kueken::image::name ImageDiffuse;
+	kueken::texture::name TextureDiffuse;
 	kueken::sampler::name SamplerDiffuse;
 
 	kueken::buffer::name ArrayBuffer;
@@ -135,7 +135,7 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+	Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
 	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
 	VariableDiffuse.set(0);
 
@@ -199,9 +199,9 @@ bool CMain::initImage2D()
 		gli::export_as(ImageCopy, "../data/küken256_copy.tga");
 		gli::export_as(ImageCrop, "../data/küken128_crop.tga");
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		//Creator.setGenerateMipmaps(true);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
@@ -211,7 +211,7 @@ bool CMain::initImage2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 	}
 
 

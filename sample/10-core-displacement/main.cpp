@@ -26,8 +26,8 @@ namespace
 	kueken::clear::name Clear;
 	kueken::draw::name Draw;
 	kueken::program::name Program;
-	kueken::image::name ImageDiffuse;
-	kueken::image::name ImageHeightmap;
+	kueken::texture::name TextureDiffuse;
+	kueken::texture::name TextureHeightmap;
 	kueken::sampler::name SamplerDiffuse;
 	kueken::sampler::name SamplerHeightmap;
 	kueken::buffer::name ArrayBuffer;
@@ -132,8 +132,8 @@ void CMain::Render()
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 
-	Renderer->bind(0, kueken::image::IMAGE2D, ImageHeightmap);
-	Renderer->bind(1, kueken::image::IMAGE2D, ImageDiffuse);
+	Renderer->bind(0, kueken::texture::IMAGE2D, TextureHeightmap);
+	Renderer->bind(1, kueken::texture::IMAGE2D, TextureDiffuse);
 
 
 	Renderer->exec(Draw);
@@ -205,9 +205,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -216,7 +216,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 	}
 
 	{
@@ -230,9 +230,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_HEIGHTMAP);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -241,7 +241,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageHeightmap = Renderer->create(Creator);
+		TextureHeightmap = Renderer->create(Creator);
 	}
 
 	{

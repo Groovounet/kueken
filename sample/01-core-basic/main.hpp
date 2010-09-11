@@ -30,7 +30,7 @@ private:
 	bool initTest();
 	bool initTexture2D();
 
-	glv::mesh mesh;
+	glv::mesh Mesh;
 };
 
 #endif//GLF_MAIN_INCLUDED

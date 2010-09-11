@@ -25,9 +25,8 @@ namespace
 	kueken::clear::name Clear;
 	kueken::draw::name Draw;
 	kueken::program::name Program;
-	kueken::image::name Image;
 	kueken::sampler::name Sampler;
-	//kueken::texture::name Texture;
+	kueken::texture::name Texture;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
@@ -131,7 +130,7 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(1, kueken::image::IMAGE2D, Image);
+	Renderer->bind(1, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(1, kueken::sampler::SAMPLER, Sampler);
 	VariableDiffuse.set(1);
 
@@ -208,9 +207,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -219,7 +218,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		Image = Renderer->create(Creator);
+		Texture = Renderer->create(Creator);
 	}
 
 	{
@@ -230,14 +229,6 @@ bool CMain::initTexture2D()
 		Sampler = Renderer->create(Creator);
 	}
 	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(Image);
-	//	Texture = Renderer->create(Creator);
-	//}
-
 	return glf::checkError("initTexture2D");
 }
 

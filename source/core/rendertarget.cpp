@@ -51,23 +51,23 @@ namespace rendertarget
 	{
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
 		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::Null();
-		Data.Slot[COLOR0].Image = image::name::Null();
+		Data.Slot[COLOR0].Texture = texture::name::Null();
 		Data.Slot[COLOR0].Attachment = rendertarget_attachment_cast(COLOR0);
 	}
 
 	////////////////////////////////////
 	// creator<CUSTOM>
 
-	void creator<CUSTOM>::setImage
+	void creator<CUSTOM>::setTexture
 	(
 		slot const & Slot, 
-		image::name const & Image,
+		texture::name const & Texture,
 		glm::uint Level
 	)
 	{
-		Data.Slot[Slot].Type = detail::IMAGE;
+		Data.Slot[Slot].Type = detail::TEXTURE;
 		Data.Slot[Slot].Renderbuffer = renderbuffer::name::Null();
-		Data.Slot[Slot].Image = Image;
+		Data.Slot[Slot].Texture = Texture;
 		Data.Slot[Slot].Level = Level;
 		Data.Slot[Slot].Attachment = rendertarget_attachment_cast(Slot);
 	}
@@ -80,7 +80,7 @@ namespace rendertarget
 	{
 		Data.Slot[Slot].Type = detail::RENDERBUFFER;
 		Data.Slot[Slot].Renderbuffer = Renderbuffer;
-		Data.Slot[Slot].Image = image::name::Null();
+		Data.Slot[Slot].Texture = texture::name::Null();
 		Data.Slot[Slot].Attachment = rendertarget_attachment_cast(Slot);
 	}
 
@@ -88,7 +88,7 @@ namespace rendertarget
 	{
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
 		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::Null();
-		Data.Slot[COLOR0].Image = image::name::Null();
+		Data.Slot[COLOR0].Texture = texture::name::Null();
 		Data.Slot[COLOR0].Attachment = rendertarget_attachment_cast(COLOR0);
 	}
 
@@ -114,24 +114,23 @@ namespace rendertarget
 		if(Data.Slot[COLOR0].Type == detail::FRAMEBUFFER)
 			return;
 
-		kueken::manager& Manager = kueken::manager::instance();
+		kueken::manager & Manager = kueken::manager::instance();
 
 		glGenFramebuffersEXT(1, &Name);
 
-		for(std::size_t i = 0; i < SLOT_MAX; ++i)
+		for(int i = 0; i < SLOT_MAX; ++i)
 		{
 			switch(Data.Slot[i].Type)
 			{
-				case detail::IMAGE:
+				case detail::TEXTURE:
 				{
-					image::object& Object = Manager.Image.getObject(
-						Data.Slot[i].Image);
+					texture::object & Object = Manager.Texture.getObject(
+						Data.Slot[i].Texture);
 
-					glNamedFramebufferTexture2DEXT(
+					glNamedFramebufferTextureEXT(
 						Name, 
 						Data.Slot[i].Attachment, 
-						Object.GetTarget(),//GL_TEXTURE_2D, 
-						Object.GetName(), 
+						Object.Name, 
 						Data.Slot[i].Level); // Level
 
 

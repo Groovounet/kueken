@@ -29,11 +29,8 @@ namespace
 	kueken::assembler::name Assembler;
 	kueken::query::name Query;
 
-	kueken::image::name ImageDiffuse;
-	//kueken::texture::name TextureDiffuse;
-
-	kueken::image::name ImageTexture;
-	//kueken::texture::name TextureTexture;
+	kueken::texture::name TextureDiffuse;
+	kueken::texture::name TextureTexture;
 
 	kueken::rendertarget::name RendertargetTexture;
 	kueken::rasterizer::name RasterizerTexture;
@@ -130,34 +127,33 @@ void CMain::Render()
 	{
 		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 4.0f, 0.1f, 100.0f);
 		glm::mat4 MVP = Projection * View * Model;
+		VariableMVP.set(MVP);
 
 		Renderer->bind(RendertargetTexture, kueken::rendertarget::EXEC);
 		Renderer->bind(RasterizerTexture);
 		Renderer->exec(ClearTexture);
 
-		VariableMVP.set(MVP);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
 		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableDiffuse.set(0);
 		Renderer->exec(Draw);
 
-		kueken::image::object* Object = Renderer->map(ImageTexture);
+		kueken::texture::object* Object = Renderer->map(TextureTexture);
 		Object->generateMipmaps();
-		Renderer->unmap(ImageTexture);
+		Renderer->unmap(TextureTexture);
 	}
 
 	{
 		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 		glm::mat4 MVP = Projection * View * Model;
+		VariableMVP.set(MVP);
 
 		Renderer->bind(RendertargetFramebuffer, kueken::rendertarget::EXEC);
 		Renderer->bind(RasterizerFramebuffer);
 		Renderer->exec(ClearFramebuffer);
 
-		VariableMVP.set(MVP);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageTexture);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureTexture);
 		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-		//VariableTexture.set(0);
 		Renderer->exec(Draw);
 	}
 
@@ -248,9 +244,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -259,33 +255,17 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 	}
 
 	{
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		Creator.setMipmap(0, glm::uvec3(RendertargetSize, 1), 0);
 
-		ImageTexture = Renderer->create(Creator);
+		TextureTexture = Renderer->create(Creator);
 	}
-
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(ImageDiffuse);
-	//	TextureDiffuse = Renderer->create(Creator);
-	//}
-
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(ImageTexture);
-	//	TextureTexture = Renderer->create(Creator);
-	//}
 
 	return glf::checkError("initTexture2D");
 }
@@ -355,7 +335,7 @@ bool CMain::initRendertarget()
 
 	{
 		kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
-		Creator.setImage(kueken::rendertarget::COLOR0, ImageTexture, 0);
+		Creator.setTexture(kueken::rendertarget::COLOR0, TextureTexture, 0);
 		RendertargetTexture = Renderer->create(Creator);
 	}
 

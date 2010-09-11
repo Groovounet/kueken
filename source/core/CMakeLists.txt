@@ -10,4 +10,4 @@ source_group("Inline Files" FILES ${INLINE_FILE})
 
 add_library(${KUEKEN_CORE_NAME} STATIC ${SOURCE_FILE} ${HEADER_FILE} ${INLINE_FILE})
 
-#add_parallel_build_GTC(4)
+add_parallel_build_GTC(12)

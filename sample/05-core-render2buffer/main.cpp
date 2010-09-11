@@ -47,9 +47,8 @@ namespace
 	kueken::draw::name DrawPass2;
 	kueken::assembler::name AssemblerPass2;
 
-	kueken::image::name ImageHeightmap;
 	kueken::sampler::name SamplerHeightmap;
-	//kueken::texture::name TextureHeightmap;
+	kueken::texture::name TextureHeightmap;
 
 	kueken::rendertarget::name Rendertarget;
 
@@ -134,10 +133,10 @@ void CMain::Render()
 		glm::mat4 ModelView = glm::mat4(1.0f);
 		glm::mat4 MVP = Projection * ModelView;
 		VariableMVPPass1.set(MVP);
-
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageHeightmap);
-		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerHeightmap);
 		VariableDiffusePass1.set(0);
+
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureHeightmap);
+		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerHeightmap);
 
 		Renderer->bind(AssemblerPass1);
 		Renderer->exec(DrawPass1);
@@ -262,9 +261,9 @@ bool CMain::initTexture2D()
 		gli::image ImageFile = gli::import_as(TEXTURE_HEIGHTMAP);
 
 		{
-			kueken::image::creator Creator;
-			Creator.setFormat(kueken::image::RGB8);
-			Creator.setTarget(kueken::image::IMAGE2D);
+			kueken::texture::creator Creator;
+			Creator.setFormat(kueken::texture::RGB8);
+			Creator.setTarget(kueken::texture::IMAGE2D);
 			for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 			{
 				Creator.setMipmap(
@@ -273,7 +272,7 @@ bool CMain::initTexture2D()
 					ImageFile[Level].data());
 			}
 
-			ImageHeightmap = Renderer->create(Creator);
+			TextureHeightmap = Renderer->create(Creator);
 			HeightmapSize = glm::ivec2(ImageFile[0].dimensions());
 		}
 
@@ -284,14 +283,6 @@ bool CMain::initTexture2D()
 			Creator.setAnisotropy(16.f);
 			SamplerHeightmap = Renderer->create(Creator);
 		}
-
-		//{
-		//	kueken::texture::creator<kueken::texture::image> Creator;
-		//	Creator.setVariable(VariableDiffusePass1);
-		//	Creator.setSampler(SamplerHeightmap);
-		//	Creator.setImage(ImageHeightmap);
-		//	TextureHeightmap = Renderer->create(Creator);
-		//}
 	}
 
 	return glf::checkError("initTexture2D");

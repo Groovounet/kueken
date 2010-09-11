@@ -27,7 +27,7 @@ namespace
 	kueken::clear::name ClearScene;
 	kueken::draw::name Draw;
 	kueken::program::name Program;
-	kueken::image::name Image;
+	kueken::texture::name Texture;
 	kueken::layout::name Layout;
 	kueken::sampler::name Sampler;
 	kueken::buffer::name ArrayBuffer;
@@ -146,7 +146,7 @@ void sample::render()
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	glf::checkError("Render 7");
 	
-	Renderer->bind(0, kueken::image::IMAGE2D, Image);
+	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 
 	glf::checkError("Render 8");
@@ -192,7 +192,7 @@ bool sample::initDraw()
 {
 	kueken::draw::creator Creator;
 	Creator.setFirst(0);
-	Creator.setCount(mesh.vertexCount());
+	Creator.setCount(Mesh.vertexCount());
 	Draw = Renderer->create(Creator);
 
 	return glf::checkError("initDraw");
@@ -235,21 +235,21 @@ bool sample::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
-		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
+		for(gli::image::level_type Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
 				Level, 
 				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
 		}
-		Image = Renderer->create(Creator);
+		Texture = Renderer->create(Creator);
 
-		kueken::image::object* Object = Renderer->map(Image);
+		kueken::texture::object* Object = Renderer->map(Texture);
 		Object->generateMipmaps();
-		Renderer->unmap(Image);
+		Renderer->unmap(Texture);
 	}
 
 	{
@@ -289,15 +289,15 @@ bool sample::initLayout()
 		0, 
 		kueken::layout::POSITION,
 		kueken::layout::F32VEC2,
-		mesh.stride(glv::SLOT0),
-		mesh.offset(glv::POSITION2), 
+		Mesh.stride(glv::SLOT0),
+		Mesh.offset(glv::POSITION2), 
 		1);
 	Creator.setVertexArray(
 		0, 
 		kueken::layout::TEXCOORD,
 		kueken::layout::F32VEC2,
-		mesh.stride(glv::SLOT0),
-		mesh.offset(glv::TEXCOORD), 
+		Mesh.stride(glv::SLOT0),
+		Mesh.offset(glv::TEXCOORD), 
 		1);
 	Layout = Renderer->create(Creator);
 
@@ -312,14 +312,14 @@ bool sample::initAssembler()
 		ArrayBuffer, 
 		VariablePosition, 
 		kueken::assembler::F32VEC2,
-		mesh.stride(glv::SLOT0),
-		mesh.offset(glv::POSITION2));
+		Mesh.stride(glv::SLOT0),
+		Mesh.offset(glv::POSITION2));
 	Creator.addAttribute(
 		ArrayBuffer, 
 		VariableTexcoord, 
 		kueken::assembler::F32VEC2,
-		mesh.stride(glv::SLOT0),
-		mesh.offset(glv::TEXCOORD));
+		Mesh.stride(glv::SLOT0),
+		Mesh.offset(glv::TEXCOORD));
 
 	Assembler = Renderer->create(Creator);
 
@@ -328,11 +328,11 @@ bool sample::initAssembler()
 
 bool sample::initArrayBuffer()
 {
-	mesh = glv::buildPlane(glv::POSITION2_BIT | glv::TEXCOORD_BIT, glm::vec2(1.0f));
+	Mesh = glv::buildPlane(glv::POSITION2_BIT | glv::TEXCOORD_BIT, glm::vec2(1.0f));
 
 	kueken::buffer::creator Creator;
-	Creator.setSize(mesh.vertexSize(glv::SLOT0));
-	Creator.setData(mesh.vertexData(glv::SLOT0));
+	Creator.setSize(Mesh.vertexSize(glv::SLOT0));
+	Creator.setData(Mesh.vertexData(glv::SLOT0));
 	Creator.setUsage(kueken::buffer::STATIC_DRAW);
 	ArrayBuffer = Renderer->create(Creator);
 

@@ -33,13 +33,11 @@ namespace
 	kueken::rendertarget::name Rendertarget;
 	kueken::query::name Query;
 
-	kueken::image::name ImageDiffuse;
 	kueken::sampler::name SamplerDiffuse;
-	//kueken::texture::name TextureDiffuse;
+	kueken::texture::name TextureDiffuse;
 
-	kueken::image::name ImageDetail;
 	kueken::sampler::name SamplerDetail;
-	//kueken::texture::name TextureDetail;
+	kueken::texture::name TextureDetail;
 
 	kueken::program::variable VariablePosition;
 	kueken::program::variable VariableTexcoord;
@@ -138,8 +136,8 @@ void CMain::Render()
 
 	VariableDiffuse.set(0);
 	VariableDetail.set(1);
-	Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
-	Renderer->bind(1, kueken::image::IMAGE2D, ImageDetail);
+	Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
+	Renderer->bind(1, kueken::texture::IMAGE2D, TextureDetail);
 	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
 	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerDetail);
 	//Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
@@ -217,9 +215,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -228,7 +226,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 	}
 
 	{
@@ -250,9 +248,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DETAIL);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -261,7 +259,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDetail = Renderer->create(Creator);
+		TextureDetail = Renderer->create(Creator);
 	}
 
 	{

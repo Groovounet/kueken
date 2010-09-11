@@ -20,7 +20,7 @@ namespace
 	std::string const BLEND("../data/blend-default.xml");
 	std::string const TEST("../data/test-default.xml");
 	std::string const SAMPLER("../data/sampler1.xml");
-	std::string const IMAGE("../data/image1.xml");
+	std::string const TEXTURE("../data/image1.xml");
 	std::string const PROGRAM("../data/program1.xml");
 
 	kueken::renderer* Renderer = 0;
@@ -31,7 +31,7 @@ namespace
 	kueken::clear::name Clear;
 	kueken::draw::name Draw;
 	kueken::program::name Program;
-	kueken::image::name Image;
+	kueken::texture::name Texture;
 	kueken::sampler::name Sampler;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
@@ -126,7 +126,7 @@ void CMain::Render()
 	Renderer->bind(Assembler);
 
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(1, kueken::image::IMAGE2D, Image);
+	Renderer->bind(1, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(1, kueken::sampler::SAMPLER, Sampler);
 
 	Renderer->exec(Draw);
@@ -187,25 +187,16 @@ bool CMain::initRasterizer()
 bool CMain::initTexture2D()
 {
 	{
-		Image = load::image(*Renderer, IMAGE);
+		Texture = load::texture(*Renderer, TEXTURE);
 
-		kueken::image::object* Object = Renderer->map(Image);
+		kueken::texture::object* Object = Renderer->map(Texture);
 		Object->generateMipmaps();
-		Renderer->unmap(Image);
+		Renderer->unmap(Texture);
 	}
 
 	{
 		Sampler = load::sampler(*Renderer, SAMPLER);
 	}
-	
-	{
-		//kueken::texture::creator<kueken::texture::image> Creator;
-		//Creator.setVariable(VariableDiffuse);
-		//Creator.setSampler(Sampler);
-		//Creator.setImage(Image);
-		//Texture = Renderer->create(Creator);
-	}
-
 
 	return glf::checkError("initTexture2D");
 }

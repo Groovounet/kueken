@@ -26,12 +26,10 @@ namespace
 	kueken::clear::name Clear;
 	kueken::draw::name Draw;
 	kueken::program::name Program;
-	kueken::image::name ImageDiffuse;
 	kueken::sampler::name SamplerDiffuse;
-	//kueken::texture::name TextureDiffuse;
-	kueken::image::name ImageSpecular;
+	kueken::texture::name TextureDiffuse;
 	kueken::sampler::name SamplerSpecular;
-	//kueken::texture::name TextureSpecular;
+	kueken::texture::name TextureSpecular;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
@@ -133,9 +131,9 @@ void CMain::Render()
 	Renderer->bind(Blend);
 	Renderer->bind(Assembler);
 
-	Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+	Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
 	Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
-	Renderer->bind(1, kueken::image::IMAGE2D, ImageSpecular);
+	Renderer->bind(1, kueken::texture::IMAGE2D, TextureSpecular);
 	Renderer->bind(1, kueken::sampler::SAMPLER, SamplerSpecular);
 	VariableDiffuse.set(0);
 	VariableSpecular.set(1);
@@ -212,9 +210,9 @@ bool CMain::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			glm::uvec3 Size(
@@ -228,7 +226,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 	}
 
 	{
@@ -238,21 +236,13 @@ bool CMain::initTexture2D()
 		Creator.setAnisotropy(16.f);
 		SamplerDiffuse = Renderer->create(Creator);
 	}
-	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(SamplerDiffuse);
-	//	Creator.setImage(ImageDiffuse);
-	//	TextureDiffuse = Renderer->create(Creator);
-	//}
 
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_SPECULAR);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			glm::uvec3 Size(
@@ -266,7 +256,7 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageSpecular = Renderer->create(Creator);
+		TextureSpecular = Renderer->create(Creator);
 	}
 
 	{
@@ -276,14 +266,6 @@ bool CMain::initTexture2D()
 		Creator.setAnisotropy(16.f);
 		SamplerSpecular = Renderer->create(Creator);
 	}
-	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableSpecular);
-	//	Creator.setSampler(SamplerSpecular);
-	//	Creator.setImage(ImageSpecular);
-	//	TextureSpecular = Renderer->create(Creator);
-	//}
 
 	return glf::checkError("initTexture2D");
 }

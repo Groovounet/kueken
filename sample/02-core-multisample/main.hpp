@@ -22,7 +22,6 @@ private:
 	bool initBlit();
 	bool initClear();
 	bool initDraw();
-	bool initImage2D();
 	bool initProgram();
 	bool initUniformBuffer();
 	bool initRendertarget();

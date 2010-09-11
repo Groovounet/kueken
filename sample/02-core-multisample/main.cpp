@@ -42,8 +42,8 @@ namespace
 	kueken::rendertarget::name RendertargetResolver;
 	kueken::rendertarget::name RendertargetMultisample;
 
-	kueken::image::name ImageRendertarget;
-	kueken::image::name ImageDiffuse;
+	kueken::texture::name TextureRendertarget;
+	kueken::texture::name TextureDiffuse;
 
 	kueken::program::variable VariablePosition;
 	kueken::program::variable VariableTexcoord;
@@ -84,8 +84,6 @@ bool CMain::Begin(glm::ivec2 const & WindowSize)
 		Result = initBlit();
 	if(Result)
 		Result = initClear();
-	if(Result)
-		Result = initImage2D();
 	if(Result)
 		Result = initRasterizer();
 	if(Result)
@@ -149,10 +147,10 @@ void CMain::Render()
 		Uniform->set(0, sizeof(MVP), &MVP[0][0]);
 		Renderer->unmap(UniformBuffer);
 		VariableMVP.set(UniformBuffer);
+		VariableDiffuse.set(0);
 
 		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
-		VariableDiffuse.set(0);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
 		Renderer->exec(DrawMesh);
 
 		Renderer->bind(RendertargetMultisample, kueken::rendertarget::READ);
@@ -170,14 +168,14 @@ void CMain::Render()
 		Uniform->set(0, sizeof(glm::mat4), &MVP[0][0]);
 		Renderer->unmap(UniformBuffer);
 		VariableMVP.set(UniformBuffer);
+		VariableDiffuse.set(0);
 
 		Renderer->bind(RasterizerSplash);
 		Renderer->bind(RendertargetFramebuffer, kueken::rendertarget::EXEC);
 		Renderer->exec(Clear);
 
 		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerSplash);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageRendertarget);
-		VariableDiffuse.set(0);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureRendertarget);
 
 		Renderer->exec(DrawSplash);
 	}
@@ -253,23 +251,23 @@ bool CMain::initDraw()
 	return glf::checkError("initDraw");
 }
 
-bool CMain::initImage2D()
+bool CMain::initTexture2D()
 {
 	{
-		kueken::image::creator Creator;
-		Creator.setTarget(kueken::image::IMAGE2D);
-		Creator.setFormat(kueken::image::RGBA8);
+		kueken::texture::creator Creator;
+		Creator.setTarget(kueken::texture::IMAGE2D);
+		Creator.setFormat(kueken::texture::RGBA8);
 		Creator.setMipmap(0, glm::uvec3(windowSize, glm::uint(1)), 0);
-		ImageRendertarget = Renderer->create(Creator);
+		TextureRendertarget = Renderer->create(Creator);
 	}
 
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
-		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
+		for(gli::image::level_type Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
 				Level, 
@@ -277,14 +275,14 @@ bool CMain::initImage2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
-		kueken::image::object * ImageDiffuseObject = Renderer->map(ImageDiffuse);
-		ImageDiffuseObject->generateMipmaps();
-		Renderer->unmap(ImageDiffuse);
+		TextureDiffuse = Renderer->create(Creator);
+		kueken::texture::object * TextureDiffuseObject = Renderer->map(TextureDiffuse);
+		TextureDiffuseObject->generateMipmaps();
+		Renderer->unmap(TextureDiffuse);
 	}
 
 
-	return glf::checkError("initImage2D");
+	return glf::checkError("initTexture2D");
 }
 
 bool CMain::initTest()
@@ -339,27 +337,6 @@ bool CMain::initSampler()
 	}
 
 	return glf::checkError("initSampler");
-}
-
-bool CMain::initTexture2D()
-{
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(SamplerDiffuse);
-	//	Creator.setImage(ImageDiffuse);
-	//	TextureDiffuse = Renderer->create(Creator);
-	//}
-
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(SamplerSplash);
-	//	Creator.setImage(ImageRendertarget);
-	//	TextureSplash = Renderer->create(Creator);
-	//}
-
-	return glf::checkError("initTexture2D");
 }
 
 bool CMain::initProgram()
@@ -455,7 +432,7 @@ bool CMain::initRendertarget()
 {
 	{
 		kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
-		Creator.setImage(kueken::rendertarget::COLOR0, ImageRendertarget, 0);
+		Creator.setTexture(kueken::rendertarget::COLOR0, TextureRendertarget, 0);
 		RendertargetResolver = Renderer->create(Creator);
 	}
 

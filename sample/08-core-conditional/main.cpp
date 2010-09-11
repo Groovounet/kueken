@@ -24,9 +24,8 @@ namespace
 	
 	kueken::rasterizer::name Rasterizer;
 	kueken::clear::name Clear;
-	kueken::image::name Image;
 	kueken::sampler::name Sampler;
-	//kueken::texture::name Texture;
+	kueken::texture::name Texture;
 	kueken::buffer::name ArrayBuffer;
 	kueken::test::name Test;
 	kueken::buffer::name UniformBuffer;
@@ -144,7 +143,7 @@ void CMain::Render()
 
 	Renderer->bind(Blend2);
 	Renderer->bind(0, kueken::program::UNIFIED, Program2);
-	Renderer->bind(0, kueken::image::IMAGE2D, Image);
+	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 	VariableDiffuse2.set(0);
 
@@ -235,9 +234,9 @@ bool CMain::initTexture2D()
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 		gli::image ImageCrop = gli::crop(ImageFile, glm::uvec2(0), glm::uvec2(ImageFile[0].dimensions()) / glm::uvec2(2));
 
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -246,14 +245,14 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		Image = Renderer->create(Creator);
-		kueken::image::object * Object = Renderer->map(Image);
+		Texture = Renderer->create(Creator);
+		kueken::texture::object * Object = Renderer->map(Texture);
 		Object->set(0, 
 			glm::uvec2(ImageFile[0].dimensions()) / glm::uvec2(4), 
 			glm::uvec2(ImageCrop[0].dimensions()), 
 			ImageCrop[0].data());
 		Object->generateMipmaps();
-		Renderer->unmap(Image);
+		Renderer->unmap(Texture);
 	}
 
 	{
@@ -264,14 +263,6 @@ bool CMain::initTexture2D()
 		Sampler = Renderer->create(Creator);
 	}
 	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse2);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(Image);
-	//	Texture = Renderer->create(Creator);
-	//}
-
 	return glf::checkError("initTexture2D");
 }
 

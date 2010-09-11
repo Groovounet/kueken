@@ -37,9 +37,9 @@ namespace
 
 	kueken::sampler::name Sampler;
 
-	kueken::image::name ImageDiffuse;
-	kueken::image::name ImageBlurredH;
-	kueken::image::name ImageBlurred;
+	kueken::texture::name TextureDiffuse;
+	kueken::texture::name TextureBlurredH;
+	kueken::texture::name TextureBlurred;
 
 	kueken::program::name ProgramTex;
 	kueken::program::variable VariableTexPosition;
@@ -195,7 +195,7 @@ void CMain::Render()
 		Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
 		VariableBlurWeight.set(Blur[0].Weight, 16);
 		VariableBlurOffset.set(Blur[0].Offset, 16);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageDiffuse);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureDiffuse);
 		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableTexDiffuse.set(0);
 
@@ -210,7 +210,7 @@ void CMain::Render()
 		Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
 		VariableBlurWeight.set(Blur[1].Weight, 16);
 		VariableBlurOffset.set(Blur[1].Offset, 16);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageBlurredH);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureBlurredH);
 		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableBlurDiffuse.set(0);
 		
@@ -235,7 +235,7 @@ void CMain::Render()
 		assert(glGetError() == GL_NO_ERROR);
 
 		Renderer->bind(0, kueken::program::UNIFIED, ProgramTex);
-		Renderer->bind(0, kueken::image::IMAGE2D, ImageBlurred);
+		Renderer->bind(0, kueken::texture::IMAGE2D, TextureBlurred);
 		Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 		VariableBlurDiffuse.set(0);
 
@@ -319,9 +319,9 @@ bool CMain::initTexture2D()
 	}
 
 	{
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setMipmap(
@@ -330,48 +330,24 @@ bool CMain::initTexture2D()
 				ImageFile[Level].data());
 		}
 
-		ImageDiffuse = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 	}
 
 	{
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		Creator.setMipmap(0, ImageFile[0].dimensions(), 0);
-		ImageBlurredH = Renderer->create(Creator);
+		TextureBlurredH = Renderer->create(Creator);
 	}
 
 	{
-		kueken::image::creator Creator;
-		Creator.setFormat(kueken::image::RGB8);
-		Creator.setTarget(kueken::image::IMAGE2D);
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
 		Creator.setMipmap(0, ImageFile[0].dimensions(), 0);
-		ImageBlurred = Renderer->create(Creator);
+		TextureBlurred = Renderer->create(Creator);
 	}
-
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableTexDiffuse);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(ImageDiffuse);
-	//	TextureTexDiffuse = Renderer->create(Creator);
-	//}
-
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableBlurDiffuse);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(ImageBlurredH);
-	//	TextureBlurredH = Renderer->create(Creator);
-	//}
-
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableBlurDiffuse);
-	//	Creator.setSampler(Sampler);
-	//	Creator.setImage(ImageBlurred);
-	//	TextureBlurred = Renderer->create(Creator);
-	//}
 
 	return glf::checkError("initTexture2D");
 }
@@ -492,13 +468,13 @@ bool CMain::initRendertarget()
 
 	{
 		kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
-		Creator.setImage(kueken::rendertarget::COLOR0, ImageBlurredH, 0);
+		Creator.setTexture(kueken::rendertarget::COLOR0, TextureBlurredH, 0);
 		RendertargetBlurH = Renderer->create(Creator);
 	}
 
 	{
 		kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
-		Creator.setImage(kueken::rendertarget::COLOR0, ImageBlurred, 0);
+		Creator.setTexture(kueken::rendertarget::COLOR0, TextureBlurred, 0);
 		RendertargetBlurV = Renderer->create(Creator);
 	}
 
