@@ -344,7 +344,7 @@ namespace texture{
 		Data.Compressed = image_compressed_cast(Format);
 	}
 
-	void creator::setMipmap
+	void creator::setImage
 	(
 		level const & Level, 
 		glm::uvec3 const & Size,

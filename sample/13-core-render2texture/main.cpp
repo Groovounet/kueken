@@ -247,9 +247,9 @@ bool CMain::initTexture2D()
 		kueken::texture::creator Creator;
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::IMAGE2D);
-		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
-			Creator.setMipmap(
+			Creator.setImage(
 				Level, 
 				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
@@ -262,7 +262,7 @@ bool CMain::initTexture2D()
 		kueken::texture::creator Creator;
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::IMAGE2D);
-		Creator.setMipmap(0, glm::uvec3(RendertargetSize, 1), 0);
+		Creator.setImage(0, glm::uvec3(RendertargetSize, 1), 0);
 
 		TextureTexture = Renderer->create(Creator);
 	}

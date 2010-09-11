@@ -257,7 +257,7 @@ bool CMain::initTexture2D()
 		kueken::texture::creator Creator;
 		Creator.setTarget(kueken::texture::IMAGE2D);
 		Creator.setFormat(kueken::texture::RGBA8);
-		Creator.setMipmap(0, glm::uvec3(windowSize, glm::uint(1)), 0);
+		Creator.setImage(0, glm::uvec3(windowSize, glm::uint(1)), 0);
 		TextureRendertarget = Renderer->create(Creator);
 	}
 
@@ -267,9 +267,9 @@ bool CMain::initTexture2D()
 		kueken::texture::creator Creator;
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::IMAGE2D);
-		for(gli::image::level_type Level = 0; Level < ImageFile.levels(); ++Level)
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
-			Creator.setMipmap(
+			Creator.setImage(
 				Level, 
 				ImageFile[Level].dimensions(),
 				ImageFile[Level].data());

@@ -184,7 +184,7 @@ namespace detail
 	public:
 		void setTarget(target const & Target);
 		void setFormat(format const & Format);
-		void setMipmap(
+		void setImage(
 			level const & Level, 
 			glm::uvec3 const & Size,
 			void const * const Pointer); // shared_array?

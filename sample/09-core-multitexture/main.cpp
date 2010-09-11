@@ -218,9 +218,9 @@ bool CMain::initTexture2D()
 		kueken::texture::creator Creator;
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::IMAGE2D);
-		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
-			Creator.setMipmap(
+			Creator.setImage(
 				Level, 
 				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
@@ -237,23 +237,15 @@ bool CMain::initTexture2D()
 		SamplerDiffuse = Renderer->create(Creator);
 	}
 	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDiffuse);
-	//	Creator.setSampler(SamplerDiffuse);
-	//	Creator.setImage(ImageDiffuse);
-	//	TextureDiffuse = Renderer->create(Creator);
-	//}
-
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DETAIL);
 
 		kueken::texture::creator Creator;
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::IMAGE2D);
-		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
-			Creator.setMipmap(
+			Creator.setImage(
 				Level, 
 				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
@@ -269,14 +261,6 @@ bool CMain::initTexture2D()
 		Creator.setAnisotropy(16.f);
 		SamplerDetail = Renderer->create(Creator);
 	}
-	
-	//{
-	//	kueken::texture::creator<kueken::texture::image> Creator;
-	//	Creator.setVariable(VariableDetail);
-	//	Creator.setSampler(SamplerDetail);
-	//	Creator.setImage(ImageDetail);
-	//	TextureDetail = Renderer->create(Creator);
-	//}
 
 	return glf::checkError("initTexture2D");
 }

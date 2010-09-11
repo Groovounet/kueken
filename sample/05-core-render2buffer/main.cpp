@@ -257,32 +257,30 @@ bool CMain::initReadPixels()
 
 bool CMain::initTexture2D()
 {
+	gli::image ImageFile = gli::import_as(TEXTURE_HEIGHTMAP);
+
 	{
-		gli::image ImageFile = gli::import_as(TEXTURE_HEIGHTMAP);
-
+		kueken::texture::creator Creator;
+		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setTarget(kueken::texture::IMAGE2D);
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
-			kueken::texture::creator Creator;
-			Creator.setFormat(kueken::texture::RGB8);
-			Creator.setTarget(kueken::texture::IMAGE2D);
-			for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
-			{
-				Creator.setMipmap(
-					Level, 
-					ImageFile[Level].dimensions(),
-					ImageFile[Level].data());
-			}
-
-			TextureHeightmap = Renderer->create(Creator);
-			HeightmapSize = glm::ivec2(ImageFile[0].dimensions());
+			Creator.setImage(
+				Level, 
+				ImageFile[Level].dimensions(),
+				ImageFile[Level].data());
 		}
 
-		{
-			kueken::sampler::creator Creator;
-			Creator.setFilter(kueken::sampler::BILINEAR);
-			Creator.setWrap(kueken::sampler::REPEAT, kueken::sampler::REPEAT, kueken::sampler::REPEAT);
-			Creator.setAnisotropy(16.f);
-			SamplerHeightmap = Renderer->create(Creator);
-		}
+		TextureHeightmap = Renderer->create(Creator);
+		HeightmapSize = glm::ivec2(ImageFile[0].dimensions());
+	}
+
+	{
+		kueken::sampler::creator Creator;
+		Creator.setFilter(kueken::sampler::BILINEAR);
+		Creator.setWrap(kueken::sampler::REPEAT, kueken::sampler::REPEAT, kueken::sampler::REPEAT);
+		Creator.setAnisotropy(16.f);
+		SamplerHeightmap = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initTexture2D");

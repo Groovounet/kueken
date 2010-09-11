@@ -209,9 +209,9 @@ bool CMain::initTexture2D()
 		//Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::IMAGE2D);
-		for(std::size_t Level = 0; Level < ImageFile.levels(); ++Level)
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
-			Creator.setMipmap(
+			Creator.setImage(
 				Level, 
 				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
