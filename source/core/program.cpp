@@ -263,20 +263,25 @@ namespace detail
 			}
 
 			SourcesBuilt[i].clear();
-
 			SourcesBuilt[i] += Version;
 
-			SourcesBuilt[i] += Extensions;
-			SourcesBuilt[i] += std::string("\n");
+			if(!Extensions.empty())
+			{
+				SourcesBuilt[i] += Extensions;
+				SourcesBuilt[i] += std::string("\n");
+			}
 
-			SourcesBuilt[i] += Extensions;
-			SourcesBuilt[i] += std::string("\n");
+			if(!Options.empty())
+			{
+				SourcesBuilt[i] += Options;
+				SourcesBuilt[i] += std::string("\n");
+			}
 
-			SourcesBuilt[i] += Options;
-			SourcesBuilt[i] += std::string("\n");
-
-			SourcesBuilt[i] += Definitions;
-			SourcesBuilt[i] += std::string("\n");
+			if(!Definitions.empty())
+			{
+				SourcesBuilt[i] += Definitions;
+				SourcesBuilt[i] += std::string("\n");
+			}
 
 			SourcesBuilt[i] += Sources[i];
 		}
