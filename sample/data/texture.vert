@@ -1,5 +1,3 @@
-#version 400 core
-
 #define ATTR_POSITION	0
 #define ATTR_COLOR		3
 #define ATTR_TEXCOORD	4

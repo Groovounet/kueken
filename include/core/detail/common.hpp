@@ -20,6 +20,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <fstream>
 
 // Boost
 #include <boost/shared_ptr.hpp>

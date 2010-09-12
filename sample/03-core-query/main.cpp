@@ -234,8 +234,14 @@ bool CMain::initTexture2D()
 bool CMain::initProgram()
 {
 	kueken::program::creator Creator;
-	Creator.attachShader(kueken::program::VERTEX, glf::loadFile(VERTEX_SHADER_SOURCE));
-	Creator.attachShader(kueken::program::FRAGMENT, glf::loadFile(FRAGMENT_SHADER_SOURCE));
+	Creator.addSource(
+		kueken::program::VERTEX, 
+		kueken::program::FILE,
+		VERTEX_SHADER_SOURCE);
+	Creator.addSource(
+		kueken::program::FRAGMENT, 
+		kueken::program::FILE,
+		FRAGMENT_SHADER_SOURCE);
 	Program = Renderer->create(Creator);
 
 	kueken::program::object* Object = Renderer->map(Program);

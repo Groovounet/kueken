@@ -72,7 +72,10 @@ namespace detail
 				}    
 				while (Attribute = Attribute->Next());
 
-				Creator.attachShader(Target, detail::loadFile(Path.c_str()));
+				Creator.addSource(
+					Target, 
+					kueken::program::FILE,
+					Path.c_str());
 			}
 			else
 			{

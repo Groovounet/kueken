@@ -34,7 +34,8 @@ namespace rendertarget{
 	{
 		CUSTOM,
 		MULTISAMPLE,
-		FRAMEBUFFER
+		FRAMEBUFFER,
+		LAYERED
 	};
 
 namespace detail{

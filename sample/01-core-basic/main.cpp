@@ -266,12 +266,16 @@ bool sample::initTexture2D()
 bool sample::initProgram()
 {
 	kueken::program::creator Creator;
-	Creator.attachShader(
+	Creator.setVersion(kueken::program::CORE_400);
+	Creator.addSource(
 		kueken::program::VERTEX, 
-		glf::loadFile(VERTEX_SHADER_SOURCE));
-	Creator.attachShader(
+		kueken::program::FILE,
+		VERTEX_SHADER_SOURCE);
+	Creator.addSource(
 		kueken::program::FRAGMENT, 
-		glf::loadFile(FRAGMENT_SHADER_SOURCE));
+		kueken::program::FILE,
+		FRAGMENT_SHADER_SOURCE);
+	Creator.build();
 	Program = Renderer->create(Creator);
 
 	kueken::program::object* Object = Renderer->map(Program);
@@ -360,7 +364,7 @@ int main(int argc, char* argv[])
 		{
 			Sample->render();
 		}
-		while(1);//Sample->event());
+		while(Sample->event());
 		Sample->end();
 
 		delete Sample;

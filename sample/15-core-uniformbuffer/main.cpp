@@ -286,12 +286,14 @@ bool CMain::initProgram()
 {
 	{
 		kueken::program::creator Creator;
-		Creator.attachShader(
+		Creator.addSource(
 			kueken::program::VERTEX, 
-			glf::loadFile(VERTEX_SHADER_SOURCE));
-		Creator.attachShader(
+			kueken::program::FILE,
+			VERTEX_SHADER_SOURCE);
+		Creator.addSource(
 			kueken::program::FRAGMENT, 
-			glf::loadFile(FRAGMENT_SHADER_SOURCE));
+			kueken::program::FILE,
+			FRAGMENT_SHADER_SOURCE);
 		Program = Renderer->create(Creator);
 	}
 

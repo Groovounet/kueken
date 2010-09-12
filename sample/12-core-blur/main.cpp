@@ -356,8 +356,14 @@ bool CMain::initProgram()
 {
 	{
 		kueken::program::creator Creator;
-		Creator.attachShader(kueken::program::VERTEX, glf::loadFile(VERTEX_SHADER_SOURCE_BLUR));
-		Creator.attachShader(kueken::program::FRAGMENT, glf::loadFile(FRAGMENT_SHADER_SOURCE_BLUR));
+		Creator.addSource(
+			kueken::program::VERTEX, 
+			kueken::program::FILE,
+			VERTEX_SHADER_SOURCE_BLUR);
+		Creator.addSource(
+			kueken::program::FRAGMENT, 
+			kueken::program::FILE,
+			FRAGMENT_SHADER_SOURCE_BLUR);
 		ProgramBlur = Renderer->create(Creator);
 	}
 
@@ -374,8 +380,14 @@ bool CMain::initProgram()
 
 	{
 		kueken::program::creator Creator;
-		Creator.attachShader(kueken::program::VERTEX, glf::loadFile(VERTEX_SHADER_SOURCE_TEX));
-		Creator.attachShader(kueken::program::FRAGMENT, glf::loadFile(FRAGMENT_SHADER_SOURCE_TEX));
+		Creator.addSource(
+			kueken::program::VERTEX, 
+			kueken::program::FILE,
+			VERTEX_SHADER_SOURCE_TEX);
+		Creator.addSource(
+			kueken::program::FRAGMENT, 
+			kueken::program::FILE,
+			FRAGMENT_SHADER_SOURCE_TEX);
 		ProgramTex = Renderer->create(Creator);
 	}
 

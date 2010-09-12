@@ -71,11 +71,125 @@ namespace detail
 		return Cast[Target];
 	}
 
+	std::string loadFile(std::string const & Filename)
+	{
+		std::ifstream Stream(Filename.c_str(), std::ios::in);
+
+		if(!Stream.is_open())
+			return "";
+
+		std::string Line = "";
+		std::string Text = "";
+
+		while(getline(Stream, Line))
+			Text += "\n" + Line;
+
+		Stream.close();
+
+		return Text;
+	}
+
 }//namespace detail
 
-	void creator::attachShader(target const & Target, std::string const & Source)
+	creator::creator() :
+		FeedbackBufferMode(0),
+		Quiet(false),
+		Built(false)
+	{}	
+
+	void creator::setVersion(version const & Version)
 	{
-		Sources[Target] += Source;
+		this->update();
+
+		switch(Version)
+		{
+		default:
+		case GLES_200: 
+			break;
+		case CORE_330: 
+			this->Version = std::string("#version 330 core");
+			break;
+		case CORE_400: 
+			this->Version = std::string("#version 400 core");
+			break;
+		case CORE_410: 
+			this->Version = std::string("#version 410 core");
+			break;
+		}
+	}
+
+	void creator::setExtensions(glm::uint const & ExtensionFlags)
+	{
+		this->update();
+
+		if(ExtensionFlags & DOUBLE)
+		{
+			Options += std::string("#extension GL_ARB_gpu_shader_fp64 : required\n");
+			Options += std::string("#extension GL_ARB_vertex_attrib_64bit : required\n");
+		}
+		if(ExtensionFlags & VIEWPORT)
+		{
+			Options += std::string("#extension GL_ARB_viewport_array : required\n");
+		}
+		if(ExtensionFlags & PRECISION)
+		{
+			Options += std::string("#extension GL_ARB_shader_precision : required\n");
+		}
+		if(ExtensionFlags & STENCIL_EXPORT)
+		{
+			Options += std::string("#extension GL_ARB_shader_stencil_export : required\n");
+		}
+	}
+
+	void creator::setOptions(glm::uint const & OptionFlags)
+	{
+		this->update();
+
+		this->Quiet = OptionFlags & QUIET;
+
+		if(OptionFlags & DEBUGING)
+			Options += std::string("#pragma debug(on)\n");
+		else 
+			Options += std::string("#pragma debug(off)\n");
+
+		if(OptionFlags & OPTIMIZE)
+			Options += std::string("#pragma optimize(on)\n");
+		else 
+			Options += std::string("#pragma optimize(off)\n");
+	}
+
+	void creator::addDefinition(std::string const & Name)
+	{
+		this->update();
+
+		this->Definitions += std::string("#define ") + Name + std::string("\n");
+	}
+
+	void creator::addDefinition(std::string const & Name, std::string const & Value)
+	{
+		this->update();
+
+		this->Definitions += std::string("#define ") + Name + std::string(" ") + Value + std::string("\n");
+	}
+
+	void creator::addSource
+	(
+		target const & Target, 
+		input const & Input,
+		std::string const & Source
+	)
+	{
+		this->update();
+
+		switch(Input)
+		{
+		case DATA:
+			this->Sources[Target] += Source;
+			break;
+		case FILE:
+			this->Sources[Target] += detail::loadFile(Source);
+			break;
+		}
 	}
 
 	void creator::setFeedbackVariable
@@ -84,8 +198,84 @@ namespace detail
 		buffer::mode const & Mode
 	)
 	{
+		this->update();
+
 		FeedbackVariables = Names;
-		BufferMode = program_buffer_mode_cast(Mode);
+		FeedbackBufferMode = program_buffer_mode_cast(Mode);
+	}
+
+	void creator::clear(flag const & Flag)
+	{
+		if(Flag & DEFINITIONS)
+		{
+			this->Definitions.clear();
+		}
+		if(Flag & SOURCES)
+		{
+			for(std::size_t i = 0; i < TARGET_MAX; ++i)
+				this->Sources[i].clear();	
+		}
+	}
+
+	void creator::update()
+	{
+		this->Built = false;
+	}
+
+	bool creator::build()
+	{
+		if(this->Built)
+			return true;
+
+		bool HaveSource = false;
+		for(std::size_t i = 0; i < TARGET_MAX; ++i)
+		{
+			if(Sources[i].empty())
+				continue;
+			HaveSource = true;
+			break;
+		}
+		if(!HaveSource)
+			return this->Built = false;
+
+		for(std::size_t i = 0; i < TARGET_MAX; ++i)
+		{
+			if(Sources[i].empty())
+				continue;
+
+			// If a file have a #version in it, it's not a file to edit.
+			if(Sources[i].find("#version") != std::string::npos)
+			{
+				SourcesBuilt[i] = Sources[i];
+				continue;
+			}
+
+			SourcesBuilt[i].clear();
+
+			SourcesBuilt[i] += Version;
+
+			SourcesBuilt[i] += Extensions;
+			SourcesBuilt[i] += std::string("\n");
+
+			SourcesBuilt[i] += Extensions;
+			SourcesBuilt[i] += std::string("\n");
+
+			SourcesBuilt[i] += Options;
+			SourcesBuilt[i] += std::string("\n");
+
+			SourcesBuilt[i] += Definitions;
+			SourcesBuilt[i] += std::string("\n");
+
+			SourcesBuilt[i] += Sources[i];
+		}
+
+		for(std::size_t i = 0; i < TARGET_MAX; ++i)
+		{
+			if(SourcesBuilt[i].find(std::string("main")) == std::string::npos)
+				return this->Built = false;
+		}
+
+		return this->Built = true;
 	}
 
 	variable::variable(GLuint Program, GLuint Location, type Type) :
@@ -157,7 +347,7 @@ namespace detail
 		GLuint VertexShaderName = 0;
 		if(Success)
 		{
-			std::string Source = Creator.Sources[VERTEX];
+			std::string Source = Creator.SourcesBuilt[VERTEX];
 			char const * SourcePtr = Source.c_str();
 			VertexShaderName = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(VertexShaderName, 1, &SourcePtr, NULL);
@@ -170,7 +360,7 @@ namespace detail
 		GLuint FragmentShaderName = 0;
 		if(Success)
 		{
-			std::string Source = Creator.Sources[FRAGMENT];
+			std::string Source = Creator.SourcesBuilt[FRAGMENT];
 			char const * SourcePtr = Source.c_str();
 			FragmentShaderName = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(FragmentShaderName, 1, &SourcePtr, NULL);
@@ -196,11 +386,11 @@ namespace detail
 				for(std::size_t i = 0; i < Creator.FeedbackVariables.size(); ++i)
 					VariablesData[i] = (char*)Creator.FeedbackVariables[i].c_str();
 
-				glTransformFeedbackVaryingsEXT(
+				glTransformFeedbackVaryings(
 					Name, 
 					GLsizei(Creator.FeedbackVariables.size()),
 					VariablesData, 
-					Creator.BufferMode);
+					Creator.FeedbackBufferMode);
 
 				delete[] VariablesData;
 			}

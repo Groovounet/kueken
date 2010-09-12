@@ -18,11 +18,49 @@ namespace program
 		TARGET_MAX
 	};
 
+	enum version
+	{
+		DEFAULT,
+		GLES_200,
+		CORE_330,
+		CORE_400,
+		CORE_410
+	};
+
+	enum extension
+	{
+		DOUBLE			= (1 << 0),
+		VIEWPORT		= (1 << 1),
+		PRECISION		= (1 << 2),
+		STENCIL_EXPORT	= (1 << 3)
+	};
+
+	enum option
+	{
+		QUIET 			= (1 << 0),
+		DEBUGING 		= (1 << 1),
+		OPTIMIZE		= (1 << 2)
+	};
+
+	enum input
+	{
+		DATA,
+		FILE
+	};
+
+	enum clear
+	{
+		DEFINITIONS	= (1 << 0),
+		SOURCES		= (1 << 1),
+		ALL			= DEFINITIONS | SOURCES
+	};
+
 	typedef std::size_t slot;
 
 namespace detail
 {
 	GLenum program_target_cast(kueken::program::target Target);
+
 }//namespace detail
 
 	class creator// : public kueken::detail::creator
@@ -30,16 +68,42 @@ namespace detail
 		friend class object;
 
 	public:
-		void attachShader(target const & Target, std::string const & Source);
-		void setStage(target const & Target);
-		void setFeedbackVariable(std::vector<std::string> const & Names, buffer::mode const & Mode);
-
-		virtual bool validate(){return true;}
+		creator();
+		void setVersion(
+			version const & Version);
+		void setExtensions(
+			glm::uint const & ExtensionFlags);
+		void setOptions(
+			glm::uint const & ExtensionFlags);
+		void addDefinition(
+			std::string const & Name);
+		void addDefinition(
+			std::string const & Name, 
+			std::string const & Value);
+		void addSource(
+			target const & Target, 
+			input const & Input, 
+			std::string const & Source);
+		void setFeedbackVariable(
+			std::vector<std::string> const & Names, 
+			buffer::mode const & Mode);
+		void clear(flag const & Flag);
+		bool build();
 
 	private:
+		void update();
+
+		std::string Version;
+		std::string Extensions;
+		std::string Options;
+		std::string Definitions;
 		std::string Sources[TARGET_MAX];
+		std::string SourcesBuilt[TARGET_MAX];
+
 		std::vector<std::string> FeedbackVariables;
-		GLenum BufferMode;
+		GLenum FeedbackBufferMode;
+		bool Quiet;
+		bool Built;
 	};
 
 	enum type

@@ -290,12 +290,14 @@ bool CMain::initProgram()
 {
 	{
 		kueken::program::creator Creator;
-		Creator.attachShader(
+		Creator.addSource(
 			kueken::program::VERTEX, 
-			glf::loadFile(VERTEX_SHADER_SOURCE1));
-		Creator.attachShader(
+			kueken::program::FILE,
+			VERTEX_SHADER_SOURCE1);
+		Creator.addSource(
 			kueken::program::FRAGMENT, 
-			glf::loadFile(FRAGMENT_SHADER_SOURCE1));
+			kueken::program::FILE,
+			FRAGMENT_SHADER_SOURCE1);
 		ProgramPass1 = Renderer->create(Creator);
 
 		kueken::program::object* Object = Renderer->map(ProgramPass1);
@@ -307,12 +309,14 @@ bool CMain::initProgram()
 
 	{
 		kueken::program::creator Creator;
-		Creator.attachShader(
+		Creator.addSource(
 			kueken::program::VERTEX, 
-			glf::loadFile(VERTEX_SHADER_SOURCE2));
-		Creator.attachShader(
+			kueken::program::FILE,
+			VERTEX_SHADER_SOURCE2);
+		Creator.addSource(
 			kueken::program::FRAGMENT, 
-			glf::loadFile(FRAGMENT_SHADER_SOURCE2));
+			kueken::program::FILE,
+			FRAGMENT_SHADER_SOURCE2);
 		ProgramPass2 = Renderer->create(Creator);
 
 		kueken::program::object* Object = Renderer->map(ProgramPass2);
