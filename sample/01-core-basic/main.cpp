@@ -38,6 +38,9 @@ namespace
 
 	kueken::program::variable VariablePosition;
 	kueken::program::variable VariableTexcoord;
+
+	kueken::program::semantic const SEMANTIC_DIFFUSE = 0;
+	kueken::program::semantic const SEMANTIC_MVP = 1;
 }
 
 sample::sample
@@ -118,8 +121,8 @@ void sample::render()
 	glm::mat4 MVP = Projection * View * Model;
  
 	kueken::program::object * Object = Renderer->map(Program);
-	Object->setSampler("Diffuse", 0);
-	Object->setUniform("MVP", MVP);
+	Object->setSampler(SEMANTIC_DIFFUSE, 0);
+	Object->setUniform(SEMANTIC_MVP, MVP);
 	Renderer->unmap(Program);
 
 	glf::checkError("Render 2");
@@ -275,6 +278,13 @@ bool sample::initProgram()
 		kueken::program::FRAGMENT, 
 		kueken::program::FILE,
 		FRAGMENT_SHADER_SOURCE);
+	Creator.addVariable(
+		SEMANTIC_DIFFUSE, 
+		"Diffuse");
+	Creator.addVariable(
+		SEMANTIC_MVP, 
+		"MVP");
+
 	Creator.build();
 	Program = Renderer->create(Creator);
 

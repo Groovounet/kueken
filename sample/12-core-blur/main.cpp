@@ -91,10 +91,10 @@ void getGaussianOffsets(const float texelsz[2], glm::vec2 offset[16], float weig
 		{
 			offset[i+0][0] = float(i) * texelsz[0];
 			offset[i+0][1] = 0.0f;
-			weight[i+0] = 2.0f * gaussianDistribution(i, 0.0f, BLUR_SIZE);
+			weight[i+0] = 2.0f * gaussianDistribution(float(i + 0.0f), 0.0f, BLUR_SIZE);
 			offset[i+1][0] = float(-i) * texelsz[0];
 			offset[i+1][1] = 0.0f;
-			weight[i+1] = 2.0f * gaussianDistribution(i + 1.0f, 0.0f, BLUR_SIZE);
+			weight[i+1] = 2.0f * gaussianDistribution(float(i + 1.0f), 0.0f, BLUR_SIZE);
 		}
 	} else 
 	{
@@ -102,10 +102,10 @@ void getGaussianOffsets(const float texelsz[2], glm::vec2 offset[16], float weig
 		{
 			offset[i+0][0] = 0.0f;
 			offset[i+0][1] = float(i) * texelsz[1];
-			weight[i+0] = 2.0f * gaussianDistribution(0.0f, i, BLUR_SIZE);
+			weight[i+0] = 2.0f * gaussianDistribution(0.0f, float(i + 0.0f), BLUR_SIZE);
 			offset[i+1][0] = 0.0f;
 			offset[i+1][1] = float(-i) * texelsz[1];
-			weight[i+1] = 2.0f * gaussianDistribution(0.0f, i + 1.0f, BLUR_SIZE);
+			weight[i+1] = 2.0f * gaussianDistribution(0.0f, float(i + 1.0f), BLUR_SIZE);
 		}
 	}
 }

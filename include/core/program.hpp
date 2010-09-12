@@ -56,10 +56,27 @@ namespace program
 	};
 
 	typedef std::size_t slot;
+	typedef std::size_t semantic;
+	typedef std::size_t count;
+	typedef int sampler;
 
 namespace detail
 {
 	GLenum program_target_cast(kueken::program::target Target);
+
+	struct indirection
+	{
+		inline indirection
+		(
+			semantic const & Semantic,
+			std::string const & Name
+		) :
+			Semantic(Semantic),
+			Name(Name)
+		{}
+		semantic Semantic;
+		std::string Name;
+	};
 
 }//namespace detail
 
@@ -84,6 +101,9 @@ namespace detail
 			target const & Target, 
 			input const & Input, 
 			std::string const & Source);
+		void addVariable(
+			semantic const & Semantic, 
+			std::string const & Name);
 		void setFeedbackVariable(
 			std::vector<std::string> const & Names, 
 			buffer::mode const & Mode);
@@ -101,6 +121,8 @@ namespace detail
 		std::string SourcesBuilt[TARGET_MAX];
 
 		std::vector<std::string> FeedbackVariables;
+		std::vector<detail::indirection> UniformVariables;
+		semantic SemanticsMax;
 		GLenum FeedbackBufferMode;
 		bool Quiet;
 		bool Built;
@@ -148,9 +170,22 @@ namespace detail
 		void setUniform(std::string const & Name, glm::mat4 const & Value);
 
 		variable get(std::string const & Name, type Type);
+		
+		template <typename genType>
+		void setUniform(
+			semantic const & Semantic, 
+			genType const & Value);
+		void setSampler(
+			semantic const & Semantic, 
+			sampler const & Value);
+		void setSampler(
+			semantic const & Semantic, 
+			count const & Count, 
+			sampler const * Value);
 
 	private:
 		//detail::data Data;
+		std::vector<GLuint> Indirection;
 		GLuint Name;
 		std::string Log;
 	};

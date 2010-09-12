@@ -92,6 +92,7 @@ namespace detail
 }//namespace detail
 
 	creator::creator() :
+		SemanticsMax(0),
 		FeedbackBufferMode(0),
 		Quiet(false),
 		Built(false)
@@ -190,6 +191,17 @@ namespace detail
 			this->Sources[Target] += detail::loadFile(Source);
 			break;
 		}
+	}
+
+	void creator::addVariable
+	(
+		semantic const & Semantic, 
+		std::string const & Name
+	)
+	{
+		this->UniformVariables.push_back(
+			detail::indirection(Semantic, Name));
+		this->SemanticsMax = glm::max(this->SemanticsMax, Semantic);
 	}
 
 	void creator::setFeedbackVariable
@@ -372,10 +384,10 @@ namespace detail
 		// Link a program
 		if(Success)
 		{
-			Name = glCreateProgram();
-			glAttachShader(Name, VertexShaderName);
+			this->Name = glCreateProgram();
+			glAttachShader(this->Name, VertexShaderName);
 			glDeleteShader(VertexShaderName);
-			glAttachShader(Name, FragmentShaderName);
+			glAttachShader(this->Name, FragmentShaderName);
 			glDeleteShader(FragmentShaderName);
 
 			if(!Creator.FeedbackVariables.empty())
@@ -387,7 +399,7 @@ namespace detail
 					VariablesData[i] = (char*)Creator.FeedbackVariables[i].c_str();
 
 				glTransformFeedbackVaryings(
-					Name, 
+					this->Name, 
 					GLsizei(Creator.FeedbackVariables.size()),
 					VariablesData, 
 					Creator.FeedbackBufferMode);
@@ -395,9 +407,22 @@ namespace detail
 				delete[] VariablesData;
 			}
 
-			glLinkProgram(Name);
+			glLinkProgram(this->Name);
 
-			Success = checkProgram(Name);
+			Success = checkProgram(this->Name);
+		}
+
+		// Load variables
+		if(Success)
+		{
+			this->Indirection.resize(Creator.SemanticsMax + 1);
+			for(std::size_t i = 0; i < Creator.UniformVariables.size(); ++i)
+			{
+				GLuint Location = glGetUniformLocation(this->Name, Creator.UniformVariables[i].Name.c_str());
+				this->Indirection[Creator.UniformVariables[i].Semantic] = Location;
+			}
+
+			Success = checkProgram(this->Name);
 		}
 	}
 
@@ -475,6 +500,101 @@ namespace detail
 
 		variable Variable(Name, Location, Type);//, glGetUniformBufferSizeEXT());
 		return Variable;
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::vec2 const & Value
+	)
+	{
+		glProgramUniform2fvEXT(
+			this->Name, this->Indirection[Semantic], 
+			1, glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::vec3 const & Value
+	)
+	{
+		glProgramUniform3fvEXT(
+			this->Name, this->Indirection[Semantic], 
+			1, glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::vec4 const & Value
+	)
+	{
+		glProgramUniform4fvEXT(
+			this->Name, this->Indirection[Semantic], 
+			1, glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::mat2 const & Value
+	)
+	{
+		glProgramUniformMatrix2fvEXT(
+			this->Name, this->Indirection[Semantic], 
+			1, GL_FALSE, glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::mat3 const & Value
+	)
+	{
+		glProgramUniformMatrix3fv(
+			this->Name, this->Indirection[Semantic], 
+			1, GL_FALSE, glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::mat4 const & Value
+	)
+	{
+		glProgramUniformMatrix4fvEXT(
+			this->Name, this->Indirection[Semantic], 
+			1, GL_FALSE, glm::value_ptr(Value));
+	}
+
+	void object::setSampler
+	(
+		semantic const & Semantic, 
+		sampler const & Value
+	)
+	{
+		glProgramUniform1iEXT(
+			this->Name, this->Indirection[Semantic], 
+			Value);
+	}
+
+	void object::setSampler
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		sampler const * Value
+	)
+	{
+		glProgramUniform1ivEXT(
+			this->Name, this->Indirection[Semantic], 
+			GLsizei(Count), Value);
 	}
 
 }//namespace program
