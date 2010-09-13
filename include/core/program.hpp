@@ -136,26 +136,6 @@ namespace detail
 		ATTRIB
 	};
 
-	class variable
-	{
-	public: 
-		variable(GLuint Program, GLuint Location, type Type);//, std::size_t Size);
-		variable();
-		//void set(std::size_t Offset, std::size_t Size, void const * Pointer);
-		void set(buffer::name const & Value);
-		void set(glm::vec4 const & Value);
-		void set(glm::mat4 const & Value);
-		void set(float * Value, std::size_t Size);
-		void set(glm::vec2 const * const Value, std::size_t Size);
-		void set(int Value);
-
-	//private:
-		GLuint Program;
-		GLuint Location;
-		type Type;
-		//std::vector<glm::byte> Data;
-	};
-
 	class object
 	{
 	public:
@@ -164,13 +144,6 @@ namespace detail
 
 		void bind();
 
-		void setSampler(std::string const & Name, int const & Value);
-		void setUniform(std::string const & Name, int const & Value);
-		void setUniform(std::string const & Name, glm::vec4 const & Value);
-		void setUniform(std::string const & Name, glm::mat4 const & Value);
-
-		variable get(std::string const & Name, type Type);
-		
 		template <typename genType>
 		void setUniform(
 			semantic const & Semantic, 

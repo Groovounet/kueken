@@ -295,63 +295,6 @@ namespace detail
 		return this->Built = true;
 	}
 
-	variable::variable(GLuint Program, GLuint Location, type Type) :
-//		Data(0),
-		Program(Program),
-		Location(Location),
-		Type(Type)
-	{}
-
-	variable::variable() :
-//		Data(0),
-		Program(0),
-		Location(0),
-		Type(NONE)
-	{}
-
-	void variable::set(float * Value, std::size_t Size)
-	{
-		glProgramUniform1fvEXT(
-			Program, Location, 
-			Size, Value);
-	}
-
-	void variable::set(glm::vec2 const * const Value, std::size_t Size)
-	{
-		glProgramUniform2fvEXT(
-			Program, Location, 
-			Size, glm::value_ptr(*Value));
-	}
-
-	void variable::set(buffer::name const & Buffer)
-	{
-		glUniformBufferEXT(
-			Program, Location, 
-			kueken::manager::instance().Buffer.getObject(Buffer).GetName());
-	}
-
-	void variable::set(glm::vec4 const & Value)
-	{
-		glProgramUniform4fEXT(
-			Program, Location, 
-			Value.r, Value.g, Value.b, Value.a);
-	}
-
-	void variable::set(glm::mat4 const & Value)
-	{
-		glm::mat4 Copy = Value;
-		glProgramUniformMatrix4fvEXT(
-			Program, Location, 
-			1, GL_FALSE, &Copy[0][0]);
-	}
-
-	void variable::set(int Value)
-	{
-		glProgramUniform1iEXT(
-			Program, Location, 
-			Value);
-	}
-
 	object::object
 	(
 		creator const & Creator
@@ -362,37 +305,31 @@ namespace detail
 		
 		// Compile a shader
 		GLuint VertexShaderName = 0;
-		if(Success)
-		{
-			std::string Source = Creator.SourcesBuilt[VERTEX];
-			char const * SourcePtr = Source.c_str();
-			VertexShaderName = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(VertexShaderName, 1, &SourcePtr, NULL);
-			glCompileShader(VertexShaderName);
-
-			Success = checkShader(VertexShaderName, SourcePtr);
-		}
-
-		// Compile a shader
 		GLuint FragmentShaderName = 0;
 		if(Success)
 		{
-			std::string Source = Creator.SourcesBuilt[FRAGMENT];
-			char const * SourcePtr = Source.c_str();
+			std::string VertexSource = Creator.SourcesBuilt[VERTEX];
+			std::string FragmentSource = Creator.SourcesBuilt[FRAGMENT];
+
+			char const * VertexSourcePtr = VertexSource.c_str();
+			char const * FragmentSourcePtr = FragmentSource.c_str();
+
+			VertexShaderName = glCreateShader(GL_VERTEX_SHADER);
 			FragmentShaderName = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(FragmentShaderName, 1, &SourcePtr, NULL);
+
+			glShaderSource(VertexShaderName, 1, &VertexSourcePtr, NULL);
+			glShaderSource(FragmentShaderName, 1, &FragmentSourcePtr, NULL);
+
+			glCompileShader(VertexShaderName);
 			glCompileShader(FragmentShaderName);
 
-			Success = checkShader(FragmentShaderName, SourcePtr);
-		}
+			Success = Success && checkShader(VertexShaderName, VertexSourcePtr);
+			Success = Success && checkShader(FragmentShaderName, FragmentSourcePtr);
 
-		// Link a program
-		if(Success)
-		{
 			this->Name = glCreateProgram();
 			glAttachShader(this->Name, VertexShaderName);
-			glDeleteShader(VertexShaderName);
 			glAttachShader(this->Name, FragmentShaderName);
+			glDeleteShader(VertexShaderName);
 			glDeleteShader(FragmentShaderName);
 
 			if(!Creator.FeedbackVariables.empty())
@@ -426,8 +363,6 @@ namespace detail
 				GLuint Location = glGetUniformLocation(this->Name, Creator.UniformVariables[i].Name.c_str());
 				this->Indirection[Creator.UniformVariables[i].Semantic] = Location;
 			}
-
-			Success = checkProgram(this->Name);
 		}
 	}
 
@@ -440,71 +375,6 @@ namespace detail
 	void object::bind()
 	{
 		glUseProgram(Name);
-	}
-
-	void object::setSampler
-	(
-		std::string const & VarName, 
-		int const & Value
-	)
-	{
-		GLuint Location = glGetUniformLocation(this->Name, VarName.c_str());
-		glProgramUniform1iEXT(
-			this->Name, Location, 
-			Value);
-	}
-
-	void object::setUniform
-	(
-		std::string const & VarName, 
-		int const & Value
-	)
-	{
-		GLuint Location = glGetUniformLocation(this->Name, VarName.c_str());
-		glProgramUniform1iEXT(
-			this->Name, Location, 
-			Value);
-	}
-
-	void object::setUniform
-	(
-		std::string const & VarName, 
-		glm::vec4 const & Value
-	)
-	{
-		GLuint Location = glGetUniformLocation(this->Name, VarName.c_str());
-		glProgramUniform4fvEXT(
-			this->Name, Location, 
-			1, glm::value_ptr(Value));
-	}
-
-	void object::setUniform
-	(
-		std::string const & VarName, 
-		glm::mat4 const & Value
-	)
-	{
-		GLuint Location = glGetUniformLocation(this->Name, VarName.c_str());
-		glProgramUniformMatrix4fvEXT(
-			this->Name, Location, 
-			1, GL_FALSE, glm::value_ptr(Value));
-	}
-
-	variable object::get
-	(
-		std::string const & String, 
-		type Type
-	)
-	{
-		GLuint Location = 0;
-		if(Type == UNIFORM || Type == SAMPLER)
-			Location = glGetUniformLocation(Name, String.c_str());
-		else
-			Location = glGetAttribLocation(Name, String.c_str());
-		assert(Location != GLuint(-1));
-
-		variable Variable(Name, Location, Type);//, glGetUniformBufferSizeEXT());
-		return Variable;
 	}
 
 	template <>
