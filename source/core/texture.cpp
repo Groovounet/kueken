@@ -369,6 +369,18 @@ namespace texture{
 	{
 		glGenTextures(1, &Name);
 
+		glTextureParameteriEXT(
+			Name, 
+			Data.Target, 
+			GL_TEXTURE_MIN_FILTER, 
+			GL_NEAREST);
+
+		glTextureParameteriEXT(
+			Name, 
+			Data.Target, 
+			GL_TEXTURE_MAG_FILTER, 
+			GL_NEAREST);
+
         glTextureParameterivEXT(
 			Name, 
 			Data.Target, 
