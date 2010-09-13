@@ -107,7 +107,7 @@ namespace detail
 	void creator::addAttribute
 	(
 		buffer::name Buffer,
-		program::variable Variable,
+		GLuint Location,
 		array Array, 
 		//bool Normalize,
 		std::size_t Stride,
@@ -116,7 +116,7 @@ namespace detail
 	{
 		detail::attribute Attribute;
 		Attribute.Buffer = Buffer;
-		Attribute.Location = Variable.Location;
+		Attribute.Location = Location;
 		Attribute.Size = assembler_componant_cast(Array);
 		Attribute.Type = assembler_type_cast(Array);
 		//Attribute.Normalize = Normalize ? GL_TRUE : GL_FALSE;

@@ -18,6 +18,24 @@ namespace
 	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
 	const char* TEXTURE_DIFFUSE = "../data/kueken256.tga";
 
+	GLsizei const VertexCount = 4;
+	GLsizeiptr const VertexSize = VertexCount * sizeof(vertex_v2fv2f);
+	vertex_v2fv2f const VertexData[VertexCount] =
+	{
+		vertex_v2fv2f(glm::vec2(-1.0f,-1.0f), glm::vec2(0.0f, 1.0f)),
+		vertex_v2fv2f(glm::vec2( 1.0f,-1.0f), glm::vec2(1.0f, 1.0f)),
+		vertex_v2fv2f(glm::vec2( 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)),
+		vertex_v2fv2f(glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f))
+	};
+
+	GLsizei const ElementCount = 6;
+	GLsizeiptr const ElementSize = ElementCount * sizeof(GLuint);
+	GLuint const ElementData[ElementCount] =
+	{
+		0, 1, 2, 
+		2, 3, 0
+	};
+
 	kueken::renderer * Renderer = 0;
 	
 	kueken::blend::name Blend;
@@ -31,16 +49,39 @@ namespace
 	kueken::layout::name Layout;
 	kueken::sampler::name Sampler;
 	kueken::buffer::name ArrayBuffer;
+	kueken::buffer::name ElementBuffer;
 	kueken::test::name Test;
 	kueken::assembler::name Assembler;
 	kueken::rendertarget::name Rendertarget;
 	kueken::query::name Query;
 
-	kueken::program::variable VariablePosition;
-	kueken::program::variable VariableTexcoord;
-
 	kueken::program::semantic const SEMANTIC_DIFFUSE = 0;
 	kueken::program::semantic const SEMANTIC_MVP = 1;
+
+	kueken::program::semantic const SEMANTIC_POSITION = 0;
+	kueken::program::semantic const SEMANTIC_TEXCOORD = 4;
+
+	namespace buffer
+	{
+		enum type
+		{
+			VERTEX,
+			ELEMENT,
+			MAX
+		};
+	}//namespace buffer
+
+	GLuint VertexArrayName = 0;
+}
+
+bool initVertexArray()
+{
+	glGenVertexArrays(1, &VertexArrayName);
+    glBindVertexArray(VertexArrayName);
+
+	glBindVertexArray(0);
+
+	return glf::checkError("initVertexArray");
 }
 
 sample::sample
@@ -68,6 +109,9 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 	//Effect = new kueken::effect("test.kfx");
 
 	bool Result = true;
+
+	if(Result)
+		initVertexArray();
 	if(Result)
 		Result = initQuery();
 	if(Result)
@@ -110,13 +154,15 @@ bool sample::end()
 
 void sample::render()
 {
-	glf::checkError("Render 0");
+	static float Rotate = 0.0f;
+	//Rotate += 0.01f;
 
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -8.0f);//-tranlationCurrent.y);
+	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -4.0f);//-tranlationCurrent.y);
 	glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, rotationCurrent.y,-1.f, 0.f, 0.f);
 	glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotationCurrent.x, 0.f, 1.f, 0.f);
-	glm::mat4 View = ViewRotateY;
+	glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, 0.f, 0.f, 1.f);
+	glm::mat4 View = ViewRotateZ;
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 MVP = Projection * View * Model;
  
@@ -125,39 +171,34 @@ void sample::render()
 	Object->setUniform(SEMANTIC_MVP, MVP);
 	Renderer->unmap(Program);
 
-	glf::checkError("Render 2");
-
 	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
-	glf::checkError("Render 3");
 
 	Renderer->bind(RasterizerBackground);
 	Renderer->exec(ClearBackground);
-	glf::checkError("Render 4");
 
 	Renderer->bind(RasterizerScene);
 	Renderer->exec(ClearScene);
-	glf::checkError("Render 5");
 
 	Renderer->bind(Test);
 	Renderer->bind(Blend);
 	
-	//Renderer->bind(0, kueken::buffer::ARRAY, ArrayBuffer);
-	//Renderer->bind(0, kueken::layout::LAYOUT, Layout);
-	Renderer->bind(Assembler);
-	glf::checkError("Render 6");
-
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	glf::checkError("Render 7");
 	
 	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 
-	glf::checkError("Render 8");
+	glBindVertexArray(VertexArrayName);
 
-	//glDrawArraysInstanced(GL_TRIANGLES, 0, mesh.vertexCount(), 1);
-	Renderer->exec(Draw);
+	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
+	Renderer->bind(0, kueken::buffer::ARRAY, ArrayBuffer);
+	glVertexAttribPointer(SEMANTIC_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_v2fv2f), GLF_BUFFER_OFFSET(0));
+	glVertexAttribPointer(SEMANTIC_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_v2fv2f), GLF_BUFFER_OFFSET(sizeof(glm::vec2)));
 
-	glf::checkError("Render 9");
+	glEnableVertexAttribArray(SEMANTIC_POSITION);
+	glEnableVertexAttribArray(SEMANTIC_TEXCOORD);
+
+	glDrawElements(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0);
+
 	glf::swapbuffers();
 	glf::checkError("Render");
 }
@@ -226,7 +267,7 @@ bool sample::initRasterizer()
 		Creator.setViewport(
 			glm::ivec4(0, 0, windowSize));
 		Creator.setScissor(
-			true, glm::ivec4(windowSize >> 2, windowSize >> 1));
+			true, glm::ivec4(glm::ivec2(8), windowSize - glm::ivec2(16)));
 		RasterizerScene = Renderer->create(Creator);
 	}
 
@@ -288,11 +329,6 @@ bool sample::initProgram()
 	Creator.build();
 	Program = Renderer->create(Creator);
 
-	kueken::program::object* Object = Renderer->map(Program);
-	VariablePosition = Object->get("Position", kueken::program::ATTRIB);
-	VariableTexcoord = Object->get("Texcoord", kueken::program::ATTRIB);
-	Renderer->unmap(Program);
-
 	return glf::checkError("initProgram");
 }
 
@@ -324,13 +360,13 @@ bool sample::initAssembler()
 	Creator.setPrimitive(kueken::assembler::TRIANGLES);
 	Creator.addAttribute(
 		ArrayBuffer, 
-		VariablePosition, 
+		SEMANTIC_POSITION, 
 		kueken::assembler::F32VEC2,
 		Mesh.stride(glv::SLOT0),
 		Mesh.offset(glv::POSITION2));
 	Creator.addAttribute(
 		ArrayBuffer, 
-		VariableTexcoord, 
+		SEMANTIC_TEXCOORD, 
 		kueken::assembler::F32VEC2,
 		Mesh.stride(glv::SLOT0),
 		Mesh.offset(glv::TEXCOORD));
@@ -340,15 +376,71 @@ bool sample::initAssembler()
 	return glf::checkError("initAssembler");
 }
 
+/*
+bool sample::initAssembler()
+{
+	kueken::assembler::creator Creator;
+	Creator.setPrimitive(kueken::assembler::TRIANGLES);
+	Creator.addAttribute(
+		ArrayBuffer, 
+		SEMANTIC_POSITION, 
+		kueken::assembler::F32VEC2,
+		Mesh.stride(glv::SLOT0),
+		Mesh.offset(glv::POSITION2));
+	Creator.addAttribute(
+		ArrayBuffer, 
+		SEMANTIC_TEXCOORD, 
+		kueken::assembler::F32VEC2,
+		Mesh.stride(glv::SLOT0),
+		Mesh.offset(glv::TEXCOORD));
+
+	Assembler = Renderer->create(Creator);
+
+	return glf::checkError("initAssembler");
+}
+*/
+/*
 bool sample::initArrayBuffer()
 {
-	Mesh = glv::buildPlane(glv::POSITION2_BIT | glv::TEXCOORD_BIT, glm::vec2(1.0f));
+	Mesh = glv::buildPlane(glv::POSITION2_BIT | glv::TEXCOORD_BIT | glv::ELEMENT_BIT, glm::vec2(1.0f));
 
-	kueken::buffer::creator Creator;
-	Creator.setSize(Mesh.vertexSize(glv::SLOT0));
-	Creator.setData(Mesh.vertexData(glv::SLOT0));
-	Creator.setUsage(kueken::buffer::STATIC_DRAW);
-	ArrayBuffer = Renderer->create(Creator);
+	{
+		kueken::buffer::creator Creator;
+		Creator.setSize(Mesh.vertexSize(glv::SLOT0));
+		Creator.setData(Mesh.vertexData(glv::SLOT0));
+		Creator.setUsage(kueken::buffer::STATIC_DRAW);
+		ArrayBuffer = Renderer->create(Creator);
+	}
+
+	{
+		kueken::buffer::creator Creator;
+		Creator.setSize(Mesh.elementSize());
+		Creator.setData(Mesh.elementData());
+		Creator.setUsage(kueken::buffer::STATIC_DRAW);
+		ElementBuffer = Renderer->create(Creator);
+	}
+
+	return glf::checkError("initArrayBuffer");
+}
+*/
+
+bool sample::initArrayBuffer()
+{
+	{
+		kueken::buffer::creator Creator;
+		Creator.setSize(VertexSize);
+		Creator.setData(VertexData);
+		Creator.setUsage(kueken::buffer::STATIC_DRAW);
+		ArrayBuffer = Renderer->create(Creator);
+	}
+
+	{
+		kueken::buffer::creator Creator;
+		Creator.setSize(ElementSize);
+		Creator.setData(ElementData);
+		Creator.setUsage(kueken::buffer::STATIC_DRAW);
+		ElementBuffer = Renderer->create(Creator);
+	}
 
 	return glf::checkError("initArrayBuffer");
 }

@@ -79,7 +79,7 @@ namespace detail{
 		void setPrimitive(primitive Primitive);
 		void addAttribute(
 			buffer::name Buffer,
-			program::variable Variable,
+			GLuint Location,
 			array Format, 
 			//bool Normalize,
 			std::size_t Stride,

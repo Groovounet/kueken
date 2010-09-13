@@ -38,11 +38,6 @@ namespace
 	kueken::assembler::name Assembler;
 	kueken::rendertarget::name Rendertarget;
 	kueken::query::name Query;
-
-	kueken::program::variable VariablePosition;
-	kueken::program::variable VariableTexcoord;
-	kueken::program::variable VariableDiffuse;
-	kueken::program::variable VariableMVP;
 }
 
 CMain::CMain
