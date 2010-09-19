@@ -116,7 +116,7 @@ namespace rendertarget
 
 		kueken::manager & Manager = kueken::manager::instance();
 
-		glGenFramebuffersEXT(1, &Name);
+		glGenFramebuffers(1, &Name);
 
 		for(int i = 0; i < SLOT_MAX; ++i)
 		{
@@ -159,7 +159,7 @@ namespace rendertarget
 			}
 		}
 
-		bool Error = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT;
+		bool Error = glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
 		
 		assert(!Error);
 		if(Error)
@@ -168,12 +168,12 @@ namespace rendertarget
 
 	object::~object()
 	{
-		glDeleteFramebuffersEXT(1, &Name);
+		glDeleteFramebuffers(1, &Name);
 	}
 
 	void object::bind(target const & Target)
 	{
-		glBindFramebufferEXT(rendertarget_format_cast(Target), Name);
+		glBindFramebuffer(rendertarget_format_cast(Target), Name);
 	}
 
 }//namespace rendertarget
