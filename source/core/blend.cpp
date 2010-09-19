@@ -156,16 +156,16 @@ void object::run()
 
 	for(GLuint i = 0; i < SLOT_MAX; ++i)
 	{
-		glColorMaskIndexedEXT(i, 
+		glColorMaski(i, 
 			Data.RedMask[i], 
 			Data.GreenMask[i], 
 			Data.BlueMask[i], 
 			Data.AlphaMask[i]);
 
 		if(Data.Blend[i])
-			glEnableIndexedEXT(GL_BLEND, i);
+			glEnablei(GL_BLEND, i);
 		else
-			glDisableIndexedEXT(GL_BLEND, i);
+			glDisablei(GL_BLEND, i);
 	}
 
 	//GL_SAMPLE_ALPHA_TO_ONE
