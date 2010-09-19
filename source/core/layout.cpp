@@ -81,7 +81,7 @@ namespace layout
 		VertexArray.Stride = Stride;
 		VertexArray.Offset = KUEKEN_BUFFER_OFFSET(Offset);
 		VertexArray.Divisor = GLuint(Divisor);
-		VertexArrays.insert(std::make_pair(Slot, VertexArray));
+		VertexArrays.insert(std::make_pair(Semantic, VertexArray));
 	}
 
 	object::object
@@ -94,7 +94,7 @@ namespace layout
 		std::size_t i = 0;
 		for
 		(
-			std::map<slot, detail::vertexArray>::const_iterator it = Creator.VertexArrays.begin();
+			std::map<semantic, detail::vertexArray>::const_iterator it = Creator.VertexArrays.begin();
 			it != Creator.VertexArrays.end();
 			++it, ++i
 		)
@@ -108,15 +108,15 @@ namespace layout
 
 	void object::bind()
 	{
-		for(std::size_t i = 0; i < this->VertexArrays.size(); ++i)
+		for(std::vector<detail::vertexArray>::size_type i = 0; i < this->VertexArrays.size(); ++i)
 		{
-			buffer::name Buffer = this->Renderer->getBinding(
-				this->VertexArrays[i].Semantic);
+			//buffer::name Buffer = this->Renderer->getBinding(
+			//	this->VertexArrays[i].Slot);
 
-			this->Renderer->bind(
-				0,
-				kueken::buffer::ARRAY,
-				Buffer);
+			//this->Renderer->bind(
+			//	0,
+			//	kueken::buffer::ARRAY,
+			//	Buffer);
 
 			glVertexAttribPointer(
 				this->VertexArrays[i].Semantic, 

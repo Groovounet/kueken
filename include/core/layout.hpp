@@ -11,7 +11,7 @@ namespace layout
 {
 	enum target
 	{
-		LAYOUT
+		VERTEX
 	};
 
 	enum semantic
@@ -93,7 +93,7 @@ namespace detail{
 
 	private:
 		renderer * Renderer;
-		std::map<slot, detail::vertexArray> VertexArrays;
+		std::map<semantic, detail::vertexArray> VertexArrays;
 	};
 
 	class object
