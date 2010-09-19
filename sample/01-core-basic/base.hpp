@@ -11,6 +11,7 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+#	define glfGetProcAddress wglGetProcAddress
 
 // STL
 #include <vector>

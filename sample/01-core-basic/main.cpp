@@ -128,8 +128,8 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 		Result = initProgram();
 	if(Result)
 		Result = initLayout();
-	if(Result)
-		Result = initAssembler();
+	//if(Result)
+	//	Result = initAssembler();
 	if(Result)
 		Result = initTexture2D();
 	if(Result)
@@ -187,17 +187,21 @@ void sample::render()
 	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 
-	glBindVertexArray(VertexArrayName);
+	//kueken::draw::creator Creator;
+	//Creator.setPrimitives(kueken::draw::TRIANGLES);
+	//Creator.setPrimitives(kueken::draw::TRIANGLES);
+	//Creator.setLayout(0, kueken::draw::VERTEX, Layout);
+	//Creator.setBuffer(0, kueken::buffer::ARRAY, ArrayBuffer);
+	//Creator.setBuffer(1, kueken::buffer::ARRAY, ArrayBuffer);
+	//Creator.setBuffer(0, kueken::buffer::ELEMENT, ElementBuffer);
+	//Object->setBuffer(0, kueken::buffer::INDIRECT, IndirectBuffer);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(0, kueken::buffer::ARRAY, ArrayBuffer);
-	glVertexAttribPointer(SEMANTIC_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_v2fv2f), GLF_BUFFER_OFFSET(0));
-	glVertexAttribPointer(SEMANTIC_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_v2fv2f), GLF_BUFFER_OFFSET(sizeof(glm::vec2)));
+	Renderer->bind(0, kueken::layout::VERTEX, Layout);
 
-	glEnableVertexAttribArray(SEMANTIC_POSITION);
-	glEnableVertexAttribArray(SEMANTIC_TEXCOORD);
-
-	glDrawElements(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0);
+	glDrawElementsInstancedBaseVertex(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0, 1, 0);
+	//Renderer->exec(Draw);
 
 	glf::swapbuffers();
 	glf::checkError("Render");
@@ -339,16 +343,16 @@ bool sample::initLayout()
 		0, 
 		kueken::layout::POSITION,
 		kueken::layout::F32VEC2,
-		Mesh.stride(glv::SLOT0),
-		Mesh.offset(glv::POSITION2), 
-		1);
+		sizeof(vertex_v2fv2f),
+		0, 
+		0);
 	Creator.setVertexArray(
 		0, 
 		kueken::layout::TEXCOORD,
 		kueken::layout::F32VEC2,
-		Mesh.stride(glv::SLOT0),
-		Mesh.offset(glv::TEXCOORD), 
-		1);
+		sizeof(vertex_v2fv2f),
+		sizeof(glm::vec2), 
+		0);
 	Layout = Renderer->create(Creator);
 
 	return glf::checkError("initLayout");
