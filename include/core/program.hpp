@@ -148,9 +148,13 @@ namespace detail
 		void setUniform(
 			semantic const & Semantic, 
 			genType const & Value);
+		
+		// Sampler
 		void setSampler(
 			semantic const & Semantic, 
 			sampler const & Value);
+
+		// Sampler array
 		void setSampler(
 			semantic const & Semantic, 
 			count const & Count, 
