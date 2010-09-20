@@ -58,10 +58,9 @@ namespace
 namespace kueken{
 namespace layout
 {
-	void creator::setRenderer(renderer * Renderer)
-	{
-		this->Renderer = Renderer;
-	}
+	creator::creator(renderer & Renderer) :
+		Renderer(Renderer)	
+	{}
 
 	void creator::setVertexArray
 	(
@@ -81,7 +80,10 @@ namespace layout
 		VertexArray.Stride = Stride;
 		VertexArray.Offset = KUEKEN_BUFFER_OFFSET(Offset);
 		VertexArray.Divisor = GLuint(Divisor);
-		VertexArrays.insert(std::make_pair(Semantic, VertexArray));
+		
+		if(this->SlotData.size() <= Slot)
+			this->SlotData.resize(Slot + slot(1));
+		this->SlotData[Slot].push_back(VertexArray);
 	}
 
 	object::object
@@ -90,17 +92,7 @@ namespace layout
 	) :
 		Renderer(Creator.Renderer)
 	{
-		this->VertexArrays.resize(Creator.VertexArrays.size());
-		std::size_t i = 0;
-		for
-		(
-			std::map<semantic, detail::vertexArray>::const_iterator it = Creator.VertexArrays.begin();
-			it != Creator.VertexArrays.end();
-			++it, ++i
-		)
-		{
-			this->VertexArrays[i] = it->second;
-		}
+		this->SlotData = Creator.SlotData;
 	}
 
 	object::~object()
@@ -108,28 +100,40 @@ namespace layout
 
 	void object::bind()
 	{
-		for(std::vector<detail::vertexArray>::size_type i = 0; i < this->VertexArrays.size(); ++i)
+		for(detail::slotData::size_type SlotIndex = 0; SlotIndex < this->SlotData.size(); ++SlotIndex)
 		{
-			//buffer::name Buffer = this->Renderer->getBinding(
-			//	this->VertexArrays[i].Slot);
+			detail::semanticData const & SemanticsData = this->SlotData[SlotIndex];
+			if(SemanticsData.empty())
+				continue;
 
-			//this->Renderer->bind(
-			//	0,
-			//	kueken::buffer::ARRAY,
-			//	Buffer);
+			buffer::name const & Buffer = this->Renderer.getBinding(buffer::slot(SlotIndex));
+			this->Renderer.bind(
+				0,
+				kueken::buffer::ARRAY,
+				Buffer);
 
-			glVertexAttribPointer(
-				this->VertexArrays[i].Semantic, 
-				this->VertexArrays[i].Size,
-				this->VertexArrays[i].Type,
-				GL_FALSE, 
-				this->VertexArrays[i].Stride,
-				this->VertexArrays[i].Offset);
-			glVertexAttribDivisor(
-				this->VertexArrays[i].Semantic, 
-				this->VertexArrays[i].Divisor);
-			glEnableVertexAttribArray(
-				this->VertexArrays[i].Semantic);
+			for
+			(
+				detail::semanticData::size_type SemanticIndex = 0; 
+				SemanticIndex < SemanticsData.size(); 
+				++SemanticIndex
+			)
+			{
+				detail::vertexArray const & VertexArray = SemanticsData[SemanticIndex];
+
+				glVertexAttribPointer(
+					VertexArray.Semantic, 
+					VertexArray.Size,
+					VertexArray.Type,
+					GL_FALSE, 
+					VertexArray.Stride,
+					VertexArray.Offset);
+				glVertexAttribDivisor(
+					VertexArray.Semantic, 
+					VertexArray.Divisor);
+				glEnableVertexAttribArray(
+					VertexArray.Semantic);
+			}
 		}
 	}
 

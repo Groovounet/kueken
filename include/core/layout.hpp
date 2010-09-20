@@ -73,6 +73,9 @@ namespace detail{
 		GLuint Divisor;
 	};
 
+	typedef std::vector<vertexArray> semanticData;
+	typedef std::vector<semanticData> slotData;
+
 }//namespace detail
 
 	class creator// : public kueken::detail::creator
@@ -80,7 +83,7 @@ namespace detail{
 		friend class object;
 
 	public:
-		void setRenderer(renderer * Renderer);
+		creator(renderer & Renderer);
 		void setVertexArray(
 			slot const & Slot,
 			semantic const & Semantic,
@@ -92,8 +95,8 @@ namespace detail{
 		virtual bool validate(){assert(0); return false;}
 
 	private:
-		renderer * Renderer;
-		std::map<semantic, detail::vertexArray> VertexArrays;
+		renderer & Renderer;
+		detail::slotData SlotData;
 	};
 
 	class object
@@ -105,8 +108,8 @@ namespace detail{
 		void bind();
 
 	private:
-		renderer * Renderer;
-		std::vector<detail::vertexArray> VertexArrays;
+		renderer & Renderer;
+		detail::slotData SlotData;
 	};
 
 	typedef kueken::detail::name<object> name;

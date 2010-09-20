@@ -197,7 +197,7 @@ void sample::render()
 	//Object->setBuffer(0, kueken::buffer::INDIRECT, IndirectBuffer);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
-	Renderer->bind(0, kueken::buffer::ARRAY, ArrayBuffer);
+	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
 	Renderer->bind(0, kueken::layout::VERTEX, Layout);
 
 	glDrawElementsInstancedBaseVertex(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0, 1, 0);
@@ -338,7 +338,7 @@ bool sample::initProgram()
 
 bool sample::initLayout()
 {
-	kueken::layout::creator Creator;
+	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
 		kueken::layout::POSITION,
