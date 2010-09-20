@@ -79,11 +79,11 @@ link_directories("${TINYXML_DIRECTORY}/library/${BINARY_DIRECTORY}")
 ###########
 # Add SDL 
 
-set(SDL_VERSION "sdl-1.3.0-4526") 
+set(SDL_VERSION "sdl-1.3.0-4634") 
 set(SDL_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION})
 
 if(MSVC)
-	link_directories("${SDL_DIRECTORY}/binary/${BINARY_DIRECTORY}")
+	link_directories("${SDL_DIRECTORY}/lib/${BINARY_DIRECTORY}")
 	execute_process(COMMAND cmake -E copy ${SDL_DIRECTORY}/binary/${BINARY_DIRECTORY}/SDL.dll ${CMAKE_CURRENT_BINARY_DIR}/build/release/SDL.dll)
 	execute_process(COMMAND cmake -E copy ${SDL_DIRECTORY}/binary/${BINARY_DIRECTORY}/SDL.dll ${CMAKE_CURRENT_BINARY_DIR}/build/debug/SDL.dll)
 	execute_process(COMMAND cmake -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/build/release)
@@ -109,7 +109,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION}/include
 ############
 # Add GLEW 
 
-set(GLEW_VERSION "glew-1.5.5-gl4.1") 
+set(GLEW_VERSION "glew-1.5.6") 
 set(GLEW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLEW_VERSION})
 
 if(MSVC)
