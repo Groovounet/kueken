@@ -10,7 +10,6 @@ namespace kueken
 	manager* manager::Manager = 0;
 
 	manager::manager() :
- 		Assembler(1),
 		Blend(1),
 		Blit(0),
 		Buffer(8),

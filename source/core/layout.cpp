@@ -10,7 +10,7 @@ namespace
 		kueken::layout::array Array
 	)
 	{
-		static std::size_t const CastAssemblerComponant[kueken::assembler::ARRAY_MAX] =
+		static std::size_t const Cast[kueken::layout::ARRAY_MAX] =
 		{
 			1, //F16VEC1,
 			2, //F16VEC2,
@@ -26,7 +26,7 @@ namespace
 			4  //U8VEC4
 		};
 
-		return CastAssemblerComponant[Array];
+		return Cast[Array];
 	}
 
 	GLenum layout_type_cast
@@ -34,7 +34,7 @@ namespace
 		kueken::layout::array Array
 	)
 	{
-		static GLenum const Cast[kueken::assembler::ARRAY_MAX] =
+		static GLenum const Cast[kueken::layout::ARRAY_MAX] =
 		{
 			GL_HALF_FLOAT,		//F16VEC1,
 			GL_HALF_FLOAT,		//F16VEC2,

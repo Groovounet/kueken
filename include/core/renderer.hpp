@@ -11,10 +11,6 @@ namespace kueken
 		renderer();
 		~renderer();
 
-		assembler::name create(assembler::creator const & Creator);
-		void free(assembler::name& Name);
-		void bind(assembler::name const & Name);
-
 		blend::name create(blend::creator const & Creator);
 		void free(blend::name& Name);
 		void bind(blend::name const & Name);

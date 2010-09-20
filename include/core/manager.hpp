@@ -1,7 +1,6 @@
 #ifndef KUEKEN_MANAGER_INCLUDED
 #define KUEKEN_MANAGER_INCLUDED
 
-#include "assembler.hpp"
 #include "buffer.hpp"
 #include "blend.hpp"
 #include "blit.hpp"
@@ -31,7 +30,6 @@ public:
 	static manager& instance();
 	static void destroy();
 
-	assembler::manager Assembler; 
 	blend::manager Blend; 
 	blit::manager Blit; 
 	buffer::manager Buffer; 

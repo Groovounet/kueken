@@ -27,41 +27,6 @@ namespace kueken
 	}
 
 	///////////////////////////
-	// assembler
-
-	assembler::name renderer::create(assembler::creator const & Creator)
-	{
-		assembler::creator Copy = Creator;
-		Copy.setRenderer(this);
-
-		assembler::object * Object = new assembler::object(Copy);
-		return manager::instance().Assembler.reserve(Object);
-	}
-
-	void renderer::free(assembler::name& Name)
-	{
-		manager::instance().Assembler.release(Name);
-	}
-
-	void renderer::bind
-	(
-		assembler::name const & Name
-	)
-	{
-		manager& Manager = manager::instance();
-
-#if KUEKEN_REDUCE_CHANGES
-		if(Manager.Assembler.isCurrent(0, Name))
-			return;
-#endif//KUEKEN_REDUCE_CHANGES
-
-		kueken::assembler::object & Object = Manager.Assembler.setCurrentObject(0, Name);
-		Object.bind();
-		Primitive = Object.getPrimitive();
-		ElementFormat = Object.getElementFormat();
-	}
-
-	///////////////////////////
 	// blend
 
 	blend::name renderer::create(blend::creator const & Creator)

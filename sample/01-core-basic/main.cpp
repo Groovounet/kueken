@@ -16,7 +16,7 @@ namespace
 	const char* SAMPLE_NAME = "Kueken sample 01";	
 	const char* VERTEX_SHADER_SOURCE = "../data/texture.vert";
 	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
-	const char* TEXTURE_DIFFUSE = "../data/kueken256.tga";
+	const char* TEXTURE_DIFFUSE = "../data/küken256dxt5.dds";
 
 	GLsizei const VertexCount = 4;
 	GLsizeiptr const VertexSize = VertexCount * sizeof(vertex_v2fv2f);
@@ -51,7 +51,6 @@ namespace
 	kueken::buffer::name ArrayBuffer;
 	kueken::buffer::name ElementBuffer;
 	kueken::test::name Test;
-	kueken::assembler::name Assembler;
 	kueken::rendertarget::name Rendertarget;
 	kueken::query::name Query;
 
@@ -70,18 +69,6 @@ namespace
 			MAX
 		};
 	}//namespace buffer
-
-	GLuint VertexArrayName = 0;
-}
-
-bool initVertexArray()
-{
-	glGenVertexArrays(1, &VertexArrayName);
-    glBindVertexArray(VertexArrayName);
-
-	glBindVertexArray(0);
-
-	return glf::checkError("initVertexArray");
 }
 
 sample::sample
@@ -111,8 +98,6 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 	bool Result = true;
 
 	if(Result)
-		initVertexArray();
-	if(Result)
 		Result = initQuery();
 	if(Result)
 		Result = initBlend();
@@ -128,8 +113,6 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 		Result = initProgram();
 	if(Result)
 		Result = initLayout();
-	//if(Result)
-	//	Result = initAssembler();
 	if(Result)
 		Result = initTexture2D();
 	if(Result)
@@ -284,7 +267,7 @@ bool sample::initTexture2D()
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
 		kueken::texture::creator Creator;
-		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
@@ -357,76 +340,6 @@ bool sample::initLayout()
 
 	return glf::checkError("initLayout");
 }
-
-bool sample::initAssembler()
-{
-	kueken::assembler::creator Creator;
-	Creator.setPrimitive(kueken::assembler::TRIANGLES);
-	Creator.addAttribute(
-		ArrayBuffer, 
-		SEMANTIC_POSITION, 
-		kueken::assembler::F32VEC2,
-		Mesh.stride(glv::SLOT0),
-		Mesh.offset(glv::POSITION2));
-	Creator.addAttribute(
-		ArrayBuffer, 
-		SEMANTIC_TEXCOORD, 
-		kueken::assembler::F32VEC2,
-		Mesh.stride(glv::SLOT0),
-		Mesh.offset(glv::TEXCOORD));
-
-	Assembler = Renderer->create(Creator);
-
-	return glf::checkError("initAssembler");
-}
-
-/*
-bool sample::initAssembler()
-{
-	kueken::assembler::creator Creator;
-	Creator.setPrimitive(kueken::assembler::TRIANGLES);
-	Creator.addAttribute(
-		ArrayBuffer, 
-		SEMANTIC_POSITION, 
-		kueken::assembler::F32VEC2,
-		Mesh.stride(glv::SLOT0),
-		Mesh.offset(glv::POSITION2));
-	Creator.addAttribute(
-		ArrayBuffer, 
-		SEMANTIC_TEXCOORD, 
-		kueken::assembler::F32VEC2,
-		Mesh.stride(glv::SLOT0),
-		Mesh.offset(glv::TEXCOORD));
-
-	Assembler = Renderer->create(Creator);
-
-	return glf::checkError("initAssembler");
-}
-*/
-/*
-bool sample::initArrayBuffer()
-{
-	Mesh = glv::buildPlane(glv::POSITION2_BIT | glv::TEXCOORD_BIT | glv::ELEMENT_BIT, glm::vec2(1.0f));
-
-	{
-		kueken::buffer::creator Creator;
-		Creator.setSize(Mesh.vertexSize(glv::SLOT0));
-		Creator.setData(Mesh.vertexData(glv::SLOT0));
-		Creator.setUsage(kueken::buffer::STATIC_DRAW);
-		ArrayBuffer = Renderer->create(Creator);
-	}
-
-	{
-		kueken::buffer::creator Creator;
-		Creator.setSize(Mesh.elementSize());
-		Creator.setData(Mesh.elementData());
-		Creator.setUsage(kueken::buffer::STATIC_DRAW);
-		ElementBuffer = Renderer->create(Creator);
-	}
-
-	return glf::checkError("initArrayBuffer");
-}
-*/
 
 bool sample::initArrayBuffer()
 {

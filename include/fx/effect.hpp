@@ -22,7 +22,6 @@ namespace effect
 
 		void load(void* Pointer);
 
-		kueken::assembler::name loadAssembler(void * Node);
 		kueken::blend::name loadBlend(void * Node);
 		kueken::blit::name loadBlit(void * Node);
 		kueken::buffer::name loadBuffer(void * Node);
@@ -39,7 +38,6 @@ namespace effect
 		kueken::sampler::name loadSampler(void * Node);
 		kueken::test::name loadTest(void * Node);
 
-		kueken::assembler::name loadAssembler(std::string const & Filename);
 		kueken::blend::name loadBlend(std::string const & Filename);
 		kueken::blit::name loadBlit(std::string const & Filename);
 		kueken::buffer::name loadBuffer(std::string const & Filename);
@@ -56,7 +54,6 @@ namespace effect
 		kueken::sampler::name loadSampler(std::string const & Filename);
 		kueken::test::name loadTest(std::string const & Filename);
 
-		kueken::assembler::name findAssembler(glm::uint Id) const;
 		kueken::blend::name findBlend(glm::uint Id) const;
 		kueken::blit::name findBlit(glm::uint Id) const;
 		kueken::buffer::name findBuffer(glm::uint Id) const;
@@ -76,7 +73,6 @@ namespace effect
 	private:
 		void loadAssets(void* Pointer);
 
-		std::map<glm::uint, kueken::assembler::name> Assemblers;
 		std::map<glm::uint, kueken::blend::name> Blends;
 		std::map<glm::uint, kueken::blit::name> Blits;
 		std::map<glm::uint, kueken::buffer::name> Buffers;
