@@ -48,7 +48,7 @@ namespace detail
 		void * Pointer
 	)
 	{
-		kueken::program::creator Creator;
+		kueken::program::creator Creator(Renderer);
 
 		TiXmlElement* Program = reinterpret_cast<TiXmlElement*>(Pointer);
 

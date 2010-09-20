@@ -64,7 +64,7 @@ namespace detail
 		void * Pointer
 	)
 	{
-		kueken::sampler::creator Creator;
+		kueken::sampler::creator Creator(Renderer);
 
 		TiXmlElement* Sampler = reinterpret_cast<TiXmlElement*>(Pointer);
 

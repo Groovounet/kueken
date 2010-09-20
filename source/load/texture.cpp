@@ -44,7 +44,7 @@ namespace detail
 		void * Pointer
 	)
 	{
-		kueken::texture::creator Creator;
+		kueken::texture::creator Creator(Renderer);
 		gli::image ImageFile;
 		glm::uint Id = 0;
 
