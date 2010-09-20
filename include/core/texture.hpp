@@ -182,6 +182,7 @@ namespace detail
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setTarget(target const & Target);
 		void setFormat(format const & Format);
 		void setImage(
@@ -192,6 +193,7 @@ namespace detail
 		virtual bool validate();
 
 	private:
+		renderer & Renderer;
 		detail::data Data;
 	};
 

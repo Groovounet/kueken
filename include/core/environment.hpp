@@ -4,7 +4,10 @@
 #include "detail/detail.hpp"
 #include "program.hpp"
 
-namespace kueken{
+namespace kueken
+{
+	class renderer;
+
 namespace environment
 {
 	enum semantic

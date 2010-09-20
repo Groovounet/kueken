@@ -4,7 +4,10 @@
 #include "buffer.hpp"
 #include "rasterizer.hpp"
 
-namespace kueken{
+namespace kueken
+{
+	class renderer;
+
 namespace clear{
 namespace detail{
 

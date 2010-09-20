@@ -29,6 +29,11 @@ namespace kueken
 	///////////////////////////
 	// blend
 
+	program::version renderer::getVersion() const
+	{
+		return program::CORE_410; // Hard coded so far...
+	}
+
 	blend::name renderer::create(blend::creator const & Creator)
 	{
 		blend::object * Object = new blend::object(Creator);

@@ -1,5 +1,5 @@
 #include <core/program.hpp>
-#include <core/manager.hpp>
+#include <core/renderer.hpp>
 
 namespace
 {
@@ -91,7 +91,8 @@ namespace detail
 
 }//namespace detail
 
-	creator::creator() :
+	creator::creator(renderer & Renderer) :
+		Renderer(Renderer),
 		SemanticsMax(0),
 		FeedbackBufferMode(0),
 		Quiet(false),
@@ -100,6 +101,8 @@ namespace detail
 
 	void creator::setVersion(version const & Version)
 	{
+		assert(this->Renderer.getVersion() >= Version);
+
 		this->update();
 
 		switch(Version)

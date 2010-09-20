@@ -11,6 +11,8 @@ namespace kueken
 		renderer();
 		~renderer();
 
+		program::version getVersion() const;
+
 		blend::name create(blend::creator const & Creator);
 		void free(blend::name& Name);
 		void bind(blend::name const & Name);

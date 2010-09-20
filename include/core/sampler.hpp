@@ -3,7 +3,10 @@
 
 #include "detail/detail.hpp"
 
-namespace kueken{
+namespace kueken
+{
+	class renderer;
+
 namespace sampler{
 namespace detail{
 
@@ -116,6 +119,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setFilter(filter Filter);
 		void setWrap(wrap WrapS, wrap WrapT, wrap WrapQ);
 		void setAnisotropy(float Anisotropy);
@@ -129,6 +133,7 @@ namespace detail{
 		virtual bool validate();
 
 	private:
+		renderer & Renderer;
 		detail::data Data;
 	};
 

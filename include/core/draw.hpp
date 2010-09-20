@@ -4,7 +4,10 @@
 #include "detail/detail.hpp"
 #include "buffer.hpp"
 
-namespace kueken{
+namespace kueken
+{
+	class renderer;
+
 namespace draw{
 
 	enum mode

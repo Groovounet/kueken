@@ -1,5 +1,5 @@
 #include <core/texture.hpp>
-#include <core/manager.hpp>
+#include <core/renderer.hpp>
 
 namespace
 {
@@ -330,6 +330,10 @@ namespace
 
 namespace kueken{
 namespace texture{
+
+	creator::creator(renderer & Renderer) :
+		Renderer(Renderer)
+	{}
 
 	void creator::setTarget(target const & Target)
 	{

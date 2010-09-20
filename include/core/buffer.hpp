@@ -3,6 +3,11 @@
 
 #include "detail/detail.hpp"
 
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
+
 namespace kueken{
 namespace buffer{
 namespace detail{

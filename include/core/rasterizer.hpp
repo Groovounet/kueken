@@ -3,7 +3,10 @@
 
 #include "detail/detail.hpp"
 
-namespace kueken{
+namespace kueken
+{
+	class renderer;
+
 namespace rasterizer{
 
 	enum type

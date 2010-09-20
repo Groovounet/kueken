@@ -4,7 +4,10 @@
 #include "detail/detail.hpp"
 #include "buffer.hpp"
 
-namespace kueken{
+namespace kueken
+{
+	class renderer;
+
 namespace program
 {
 	enum target
@@ -85,7 +88,7 @@ namespace detail
 		friend class object;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setVersion(
 			version const & Version);
 		void setExtensions(
@@ -122,6 +125,7 @@ namespace detail
 
 		std::vector<std::string> FeedbackVariables;
 		std::vector<detail::indirection> UniformVariables;
+		renderer & Renderer;
 		semantic SemanticsMax;
 		GLenum FeedbackBufferMode;
 		bool Quiet;

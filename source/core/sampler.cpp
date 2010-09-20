@@ -1,4 +1,5 @@
 #include <core/sampler.hpp>
+#include <core/renderer.hpp>
 
 namespace
 {
@@ -100,6 +101,10 @@ namespace sampler
 {
 	//////////////////////////////////
 	// Creator
+
+	creator::creator(renderer & Renderer) :
+		Renderer(Renderer)
+	{}
 
 	void creator::setFilter(filter Filter)
 	{

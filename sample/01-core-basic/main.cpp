@@ -93,8 +93,6 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 
 	Renderer = new kueken::renderer;
 
-	//Effect = new kueken::effect("test.kfx");
-
 	bool Result = true;
 
 	if(Result)
@@ -129,16 +127,13 @@ bool sample::end()
 	delete Renderer;
 	Renderer = 0;
 
-	//delete Effect;
-	//Effect = 0;
-
 	return glf::checkError("End");
 }
 
 void sample::render()
 {
 	static float Rotate = 0.0f;
-	//Rotate += 0.01f;
+	Rotate += 0.01f;
 
     glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -4.0f);//-tranlationCurrent.y);
@@ -169,15 +164,6 @@ void sample::render()
 	
 	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-
-	//kueken::draw::creator Creator;
-	//Creator.setPrimitives(kueken::draw::TRIANGLES);
-	//Creator.setPrimitives(kueken::draw::TRIANGLES);
-	//Creator.setLayout(0, kueken::draw::VERTEX, Layout);
-	//Creator.setBuffer(0, kueken::buffer::ARRAY, ArrayBuffer);
-	//Creator.setBuffer(1, kueken::buffer::ARRAY, ArrayBuffer);
-	//Creator.setBuffer(0, kueken::buffer::ELEMENT, ElementBuffer);
-	//Object->setBuffer(0, kueken::buffer::INDIRECT, IndirectBuffer);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
@@ -222,6 +208,14 @@ bool sample::initQuery()
 bool sample::initDraw()
 {
 	kueken::draw::creator Creator;
+	//Creator.setInstances(0);
+	//Creator.setBaseVertex(0);
+	//Creator.setPrimitives(kueken::draw::TRIANGLES);
+	//Creator.setLayout(0, kueken::draw::VERTEX, Layout);
+	//Creator.setBuffer(0, kueken::buffer::ARRAY, ArrayBuffer);
+	//Creator.setBuffer(1, kueken::buffer::ARRAY, ArrayBuffer);
+	//Creator.setBuffer(0, kueken::buffer::ELEMENT, ElementBuffer);
+	//Object->setBuffer(0, kueken::buffer::INDIRECT, IndirectBuffer);
 	Creator.setFirst(0);
 	Creator.setCount(Mesh.vertexCount());
 	Draw = Renderer->create(Creator);
@@ -266,7 +260,7 @@ bool sample::initTexture2D()
 	{
 		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
 
-		kueken::texture::creator Creator;
+		kueken::texture::creator Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::IMAGE2D);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
@@ -284,7 +278,7 @@ bool sample::initTexture2D()
 	}
 
 	{
-		kueken::sampler::creator Creator;
+		kueken::sampler::creator Creator(*Renderer);
 		Creator.setFilter(kueken::sampler::TRILINEAR);
 		Creator.setWrap(kueken::sampler::REPEAT, kueken::sampler::REPEAT, kueken::sampler::REPEAT);
 		Creator.setAnisotropy(16.f);
@@ -296,8 +290,8 @@ bool sample::initTexture2D()
 
 bool sample::initProgram()
 {
-	kueken::program::creator Creator;
-	Creator.setVersion(kueken::program::CORE_400);
+	kueken::program::creator Creator(*Renderer);
+	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(
 		kueken::program::VERTEX, 
 		kueken::program::FILE,
