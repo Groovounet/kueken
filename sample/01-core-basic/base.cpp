@@ -224,7 +224,7 @@ namespace
 		glTextureParameteriEXT = (PFNGLTEXTUREPARAMETERIEXTPROC)glfGetProcAddress("glTextureParameteriEXT");
 		glTextureParameterivEXT = (PFNGLTEXTUREPARAMETERIVEXTPROC)glfGetProcAddress("glTextureParameterivEXT");
 		glCompressedTextureImage2DEXT = (PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC)glfGetProcAddress("glCompressedTextureImage2DEXT");
-glGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC)glfGetProcAddress("glGenerateTextureMipmapEXT");
+		glGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC)glfGetProcAddress("glGenerateTextureMipmapEXT");
 		glVertexArrayVertexAttribOffsetEXT = (PFNGLVERTEXARRAYVERTEXATTRIBOFFSETEXTPROC)glfGetProcAddress("glVertexArrayVertexAttribOffsetEXT");
 		glEnableVertexArrayAttribEXT = (PFNGLENABLEVERTEXARRAYATTRIBEXTPROC)glfGetProcAddress("glEnableVertexArrayAttribEXT");
 		glBindMultiTextureEXT = (PFNGLBINDMULTITEXTUREEXTPROC)glfGetProcAddress("glBindMultiTextureEXT");
@@ -254,17 +254,22 @@ glGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC)glfGetProcAddres
 		glBindImageTextureEXT = (PFNGLBINDIMAGETEXTUREEXTPROC)glfGetProcAddress("glBindImageTextureEXT");
 	}
 
-	SDL_Surface* Surface = 0;
+	SDL_WindowID MainWindow;
+	SDL_GLContext MainContext;
 
-	SDL_Surface* CreateWindowSDL(const char* Name, int Width, int Height, bool Fullscreen)
+	void CreateWindowSDL
+	(
+		const char* Name, 
+		int Width, 
+		int Height, 
+		bool Fullscreen
+	)
 	{
-		if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0)
-			return NULL;
+		if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+			return;
 
-		unsigned int VideoFlags = SDL_OPENGL | SDL_DOUBLEBUF;
-		if(Fullscreen)
-			VideoFlags |= SDL_FULLSCREEN;
-
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
@@ -272,25 +277,26 @@ glGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC)glfGetProcAddres
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 0);
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 0);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
-		if((Surface = SDL_SetVideoMode(Width, Height, 32, VideoFlags)) == 0)
-			return NULL;
+		SDL_WindowID MainWindow = SDL_CreateWindow(
+			Name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			Width, Height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		SDL_GLContext MainContext = SDL_GL_CreateContext(MainWindow);
 
 		SDL_WM_SetCaption(Name, Name);
 
 		glewInit();
 		glf::checkError("");
 		init();
-
-		return Surface;
 	}
 
 	void DeleteWindowSDL()
 	{
-		if(Surface)
-			SDL_FreeSurface(Surface);
+		if(MainWindow)
+		{
+			SDL_GL_DeleteContext(MainContext);
+			SDL_DestroyWindow(MainWindow);
+		}
 		SDL_Quit();
 	}
 
@@ -300,7 +306,7 @@ namespace glf
 {
 	void swapbuffers()
 	{
-		SDL_GL_SwapBuffers();
+		SDL_GL_SwapWindow(MainWindow);
 		glGetError();
 	}
 

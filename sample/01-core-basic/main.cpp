@@ -169,8 +169,8 @@ void sample::render()
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
 	Renderer->bind(0, kueken::layout::VERTEX, Layout);
 
-	glDrawElementsInstancedBaseVertex(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0, 1, 0);
-	//Renderer->exec(Draw);
+	//glDrawElementsInstancedBaseVertex(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0, 1, 0);
+	Renderer->exec(Draw);
 
 	glf::swapbuffers();
 	glf::checkError("Render");
@@ -216,8 +216,10 @@ bool sample::initDraw()
 	//Creator.setBuffer(1, kueken::buffer::ARRAY, ArrayBuffer);
 	//Creator.setBuffer(0, kueken::buffer::ELEMENT, ElementBuffer);
 	//Object->setBuffer(0, kueken::buffer::INDIRECT, IndirectBuffer);
+	Creator.setPrimitive(kueken::draw::TRIANGLES);
+	Creator.setType(kueken::draw::UINT32);
 	Creator.setFirst(0);
-	Creator.setCount(Mesh.vertexCount());
+	Creator.setCount(ElementCount);
 	Draw = Renderer->create(Creator);
 
 	return glf::checkError("initDraw");

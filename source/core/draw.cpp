@@ -55,26 +55,60 @@ namespace detail{
 	//{}
 
 	data::data() :
-		First(0),
+		Mode(GL_NONE),
 		Count(0),
-		Instances(1)
+		Type(GL_UNSIGNED_INT),
+		Indices(0),
+		PrimCount(1),
+		BaseVertex(0)
 	{}
 
 }//namespace detail
 
-	void creator::setFirst(glm::uint First)
+	void creator::setPrimitive(primitive const & Primitive)
 	{
-		Data.First = First;
+		GLenum Cast[] = 
+		{
+			GL_TRIANGLES
+		};
+
+		assert(Primitive < sizeof(Cast) / sizeof(GLenum));
+
+		this->Data.Mode = Cast[Primitive];
 	}
 
-	void creator::setCount(glm::uint Count)
+	void creator::setType(type const & Type)
 	{
-		Data.Count = Count;
+		GLenum Cast[] = 
+		{
+			GL_UNSIGNED_BYTE,
+			GL_UNSIGNED_SHORT,
+			GL_UNSIGNED_INT
+		};
+
+		assert(Type < sizeof(Cast) / sizeof(GLenum));
+
+		this->Data.Type = Cast[Type];
 	}
 
-	void creator::setInstances(glm::uint Instances)
+	void creator::setFirst(glm::uint const & First)
 	{
-		Data.Instances = Instances;
+		this->Data.Indices = KUEKEN_BUFFER_OFFSET(First);
+	}
+
+	void creator::setCount(glm::uint const & Count)
+	{
+		this->Data.Count = Count;
+	}
+
+	void creator::setInstances(glm::uint const & Instances)
+	{
+		this->Data.PrimCount = Instances;
+	}
+
+	void creator::setBaseVertex(glm::uint const & BaseVertex)
+	{
+		this->Data.BaseVertex = BaseVertex;
 	}
 
 	//void creator::setCondition(draw::name Draw, target Target, mode Mode)
@@ -164,22 +198,23 @@ namespace detail{
 		//	glBeginTransformFeedbackEXT(Primitive);
 		//}
 
-		if(IndexType != GL_NONE)
+		if(this->Data.Type != GL_NONE)
 		{
-			glDrawElementsInstanced(
-				Primitive, 
-				Data.Count, 
-				IndexType,
-				KUEKEN_BUFFER_OFFSET(Data.First), 
-				Data.Instances);
+			glDrawElementsInstancedBaseVertex(
+				this->Data.Mode, 
+				this->Data.Count, 
+				this->Data.Type,
+				this->Data.Indices, 
+				this->Data.PrimCount,
+				this->Data.BaseVertex);
 		}
 		else
 		{
 			glDrawArraysInstanced(
-				Primitive, 
-				Data.First, 
-				Data.Count, 
-				Data.Instances);
+				this->Data.Mode, 
+				0, 
+				this->Data.Count, 
+				this->Data.PrimCount);
 		}
 
 		//if(!Data.Feedbacks.empty())
