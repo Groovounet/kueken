@@ -254,8 +254,10 @@ namespace
 		glBindImageTextureEXT = (PFNGLBINDIMAGETEXTUREEXTPROC)glfGetProcAddress("glBindImageTextureEXT");
 	}
 
-	SDL_WindowID MainWindow;
-	SDL_GLContext MainContext;
+	//SDL_WindowID MainWindow;
+	//SDL_GLContext MainContext;
+
+	SDL_Surface* Surface = 0;
 
 	void CreateWindowSDL
 	(
@@ -268,6 +270,23 @@ namespace
 		if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
 			return;
 
+		unsigned int VideoFlags = SDL_OPENGL | SDL_DOUBLEBUF;
+		if(Fullscreen)
+			VideoFlags |= SDL_FULLSCREEN;
+
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 0);
+
+		SDL_Surface* Surface = NULL;
+		if((Surface = SDL_SetVideoMode(Width, Height, 32, VideoFlags)) == 0)
+			return;
+
+		/*
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -282,7 +301,7 @@ namespace
 			Name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			Width, Height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		SDL_GLContext MainContext = SDL_GL_CreateContext(MainWindow);
-
+		*/
 		SDL_WM_SetCaption(Name, Name);
 
 		glewInit();
@@ -292,11 +311,13 @@ namespace
 
 	void DeleteWindowSDL()
 	{
-		if(MainWindow)
-		{
-			SDL_GL_DeleteContext(MainContext);
-			SDL_DestroyWindow(MainWindow);
-		}
+		//if(MainWindow)
+		//{
+		//	SDL_GL_DeleteContext(MainContext);
+		//	SDL_DestroyWindow(MainWindow);
+		//}
+		if(Surface)
+			SDL_FreeSurface(Surface);
 		SDL_Quit();
 	}
 
@@ -306,7 +327,8 @@ namespace glf
 {
 	void swapbuffers()
 	{
-		SDL_GL_SwapWindow(MainWindow);
+		//SDL_GL_SwapWindow(MainWindow);
+		SDL_GL_SwapBuffers();
 		glGetError();
 	}
 
