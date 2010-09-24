@@ -28,15 +28,29 @@ namespace draw{
 		TARGET_MAX
 	};
 
+	enum primitive
+	{
+		TRIANGLES
+	};
+
+	enum type
+	{
+		UINT8,
+		UINT16,
+		UINT32
+	};
+
 namespace detail
 {
 	struct data
 	{
 		data();
-
-		glm::uint First;
-		glm::uint Count;
-		glm::uint Instances;
+		GLenum Mode;
+		GLsizei Count;
+		GLenum Type;
+		const void* Indices;
+		GLsizei PrimCount; 
+		GLint BaseVertex;
 	};
 
 }//namespace detail
@@ -50,9 +64,12 @@ namespace detail
 		friend class object;
 
 	public:
-		void setFirst(glm::uint First);
-		void setCount(glm::uint Count);
-		void setInstances(glm::uint Instances);
+		void setPrimitive(primitive const & Primitive);
+		void setFirst(glm::uint const & First);
+		void setCount(glm::uint const & Count);
+		void setType(type const & Type);
+		void setInstances(glm::uint const & Instances);
+		void setBaseVertex(glm::uint const & BaseVertex);
 
 		bool validate();
 
