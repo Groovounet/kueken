@@ -169,7 +169,6 @@ void sample::render()
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
 	Renderer->bind(0, kueken::layout::VERTEX, Layout);
 
-	//glDrawElementsInstancedBaseVertex(GL_TRIANGLES, ElementCount, GL_UNSIGNED_INT, 0, 1, 0);
 	Renderer->exec(Draw);
 
 	glf::swapbuffers();

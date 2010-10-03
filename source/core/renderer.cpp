@@ -171,7 +171,7 @@ namespace kueken
 	)
 	{
 		//return manager::instance().Draw.create(Creator);
-		draw::object * Object = new draw::object(Creator);
+		draw::object * Object = new draw::objectArray(Creator);
 		return manager::instance().Draw.reserve(Object);
 	}
 
@@ -181,7 +181,7 @@ namespace kueken
 	)
 	{
 		//return manager::instance().Draw.create(Creator);
-		draw::object * Object = new draw::object(Creator);
+		draw::object * Object = new draw::objectElement(Creator);
 		return manager::instance().Draw.reserve(Object);
 	}
 

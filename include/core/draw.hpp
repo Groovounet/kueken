@@ -43,7 +43,9 @@ namespace draw{
 	enum type
 	{
 		ARRAY,
-		ELEMENT
+		ELEMENT,
+		ARRAY_INDIRECT,
+		ELEMENT_INDIRECT
 	};
 
 namespace detail
@@ -63,6 +65,10 @@ namespace detail
 }//namespace detail
 
 	class object;
+	class objectArray;
+	class objectArrayIndirect;
+	class objectElement;
+	class objectElementIndirect;
 	typedef kueken::detail::name<object> name;
 	typedef kueken::detail::manager<name, object> manager;
 
@@ -73,7 +79,7 @@ namespace detail
 	template <>
 	class creator<ARRAY> : public kueken::detail::creator
 	{
-		friend class object;
+		friend class objectArray;
 
 	public:
 		creator();
@@ -84,14 +90,29 @@ namespace detail
 
 		bool validate();
 
-	private:
+	protected:
+		detail::data Data;
+	};
+
+	template <>
+	class creator<ARRAY_INDIRECT> : public kueken::detail::creator
+	{
+		friend class objectArrayIndirect;
+
+	public:
+		creator();
+		void setPrimitive(primitive const & Primitive);
+
+		bool validate();
+
+	protected:
 		detail::data Data;
 	};
 
 	template <>
 	class creator<ELEMENT> : public kueken::detail::creator
 	{
-		friend class object;
+		friend class objectElement;
 
 	public:
 		creator();
@@ -104,24 +125,80 @@ namespace detail
 
 		bool validate();
 
-	private:
+	protected:
+		detail::data Data;
+	};
+
+	template <>
+	class creator<ELEMENT_INDIRECT> : public kueken::detail::creator
+	{
+		friend class objectElementIndirect;
+
+	public:
+		creator();
+		void setPrimitive(primitive const & Primitive);
+		void setElementFormat(format const & ElementFormat);
+
+		bool validate();
+
+	protected:
 		detail::data Data;
 	};
 
 	class object
 	{
-		template <type TYPE>
-		friend class creator;
+	public:
+		object(detail::data const & Data);
+		virtual ~object(){}
+
+		virtual void exec() = 0;
+
+	protected:
+		detail::data Data;
+	};
+
+	class objectArray : public object
+	{
+		friend class creator<ARRAY>;
 
 	public:
-		object(creator<ARRAY> const & Creator);
-		object(creator<ELEMENT> const & Creator);
-		~object();
+		objectArray(creator<ARRAY> const & Creator);
+		virtual ~objectArray();
 
 		void exec();
+	};
 
-	private:
-		detail::data Data;
+	class objectElement : public object
+	{
+		friend class creator<ELEMENT>;
+
+	public:
+		objectElement(creator<ELEMENT> const & Creator);
+		virtual ~objectElement();
+
+		void exec();
+	};
+
+	class objectArrayIndirect : public object
+	{
+		friend class creator<ARRAY_INDIRECT>;
+
+	public:
+		objectArrayIndirect(creator<ARRAY_INDIRECT> const & Creator);
+		virtual ~objectArrayIndirect();
+
+		void exec();
+	};
+
+	class objectElementIndirect : public object
+	{
+		friend class creator<ELEMENT_INDIRECT>;
+
+	public:
+		objectElementIndirect(creator<ELEMENT_INDIRECT> const & Creator);
+		virtual ~objectElementIndirect();
+
+		void exec();
 	};
 
 	typedef kueken::detail::name<object> name;

@@ -106,6 +106,31 @@ namespace detail{
 	}
 
 	///////////////////////
+	// creator<ARRAY_INDIRECT>
+
+	creator<ARRAY_INDIRECT>::creator() :
+		Data(ARRAY_INDIRECT)
+	{}
+
+	void creator<ARRAY_INDIRECT>::setPrimitive(primitive const & Primitive)
+	{
+		GLenum Cast[] = 
+		{
+			GL_TRIANGLES
+		};
+
+		assert(Primitive < sizeof(Cast) / sizeof(GLenum));
+
+		this->Data.Mode = Cast[Primitive];
+	}
+
+	bool creator<ARRAY_INDIRECT>::validate()
+	{
+		assert(0); 
+		return false;
+	}
+
+	///////////////////////
 	// creator<ELEMENT>
 
 	creator<ELEMENT>::creator() :
@@ -164,6 +189,46 @@ namespace detail{
 		return false;
 	}
 
+
+	///////////////////////
+	// creator<ELEMENT_INDIRECT>
+
+	creator<ELEMENT_INDIRECT>::creator() :
+		Data(ELEMENT_INDIRECT)
+	{}
+
+	void creator<ELEMENT_INDIRECT>::setPrimitive(primitive const & Primitive)
+	{
+		GLenum Cast[] = 
+		{
+			GL_TRIANGLES
+		};
+
+		assert(Primitive < sizeof(Cast) / sizeof(GLenum));
+
+		this->Data.Mode = Cast[Primitive];
+	}
+
+	void creator<ELEMENT_INDIRECT>::setElementFormat(format const & ElementFormat)
+	{
+		GLenum Cast[] = 
+		{
+			GL_UNSIGNED_BYTE,
+			GL_UNSIGNED_SHORT,
+			GL_UNSIGNED_INT
+		};
+
+		assert(ElementFormat < sizeof(Cast) / sizeof(GLenum));
+
+		this->Data.ElementType = Cast[ElementFormat];
+	}
+
+	bool creator<ELEMENT_INDIRECT>::validate()
+	{
+		assert(0); 
+		return false;
+	}
+
 	//void creator::setCondition(draw::name Draw, target Target, mode Mode)
 	//{
 	//	kueken::manager& Manager = kueken::manager::instance();
@@ -192,9 +257,9 @@ namespace detail{
 
 	object::object
 	(
-		creator<ARRAY> const & Creator
+		detail::data const & Data
 	) :
-		Data(Creator.Data)
+		Data(Data)
 	{
 		//for(std::size_t i = 0; i < TARGET_MAX; ++i)
 		//{
@@ -206,12 +271,6 @@ namespace detail{
 		//}
 	}
 
-	object::object
-	(
-		creator<ELEMENT> const & Creator
-	) :
-		Data(Creator.Data)
-	{
 		//for(std::size_t i = 0; i < TARGET_MAX; ++i)
 		//{
 		//	if(!Data.Queries[i].Enabled)
@@ -220,17 +279,11 @@ namespace detail{
 		//	Data.Queries[i].Target = draw_target_cast(target(i));
 		//	glGenQueries(1, &Data.Queries[i].Name);
 		//}
-	}
 
-	object::~object()
-	{
 		//for(std::size_t i = 0; i < TARGET_MAX; ++i)
 		//	if(Data.Queries[i].Enabled)
 		//		glDeleteQueries(1, &Data.Queries[i].Name);
-	}
 
-	void object::exec()
-	{
 		//if(Data.Condition.Enabled)
 		//{
 		//	glBeginConditionalRenderNV(
@@ -261,25 +314,6 @@ namespace detail{
 		//	glBeginTransformFeedbackEXT(Primitive);
 		//}
 
-		if(this->Data.Type != GL_NONE)
-		{
-			glDrawElementsInstancedBaseVertex(
-				this->Data.Mode, 
-				this->Data.Count, 
-				this->Data.ElementType,
-				this->Data.Indices, 
-				this->Data.PrimCount,
-				this->Data.BaseVertex);
-		}
-		else
-		{
-			glDrawArraysInstanced(
-				this->Data.Mode, 
-				this->Data.First, 
-				this->Data.Count, 
-				this->Data.PrimCount);
-		}
-
 		//if(!Data.Feedbacks.empty())
 		//	glEndTransformFeedbackEXT();
 
@@ -291,7 +325,6 @@ namespace detail{
 
 		//if(Data.Condition.Enabled)
 		//	glEndConditionalRenderNV();
-	}
 
 	//glm::uint64 object::query(target Target, bool Wait) const
 	//{
@@ -313,6 +346,81 @@ namespace detail{
 	//		&Result);
 	//	return glm::uint64(Result);
 	//}
+
+	objectArray::objectArray
+	(
+		creator<ARRAY> const & Creator
+	) :
+		object(Creator.Data)
+	{}
+
+	objectArray::~objectArray()
+	{}
+
+	void objectArray::exec()
+	{
+		glDrawArraysInstanced(
+			this->Data.Mode, 
+			this->Data.First, 
+			this->Data.Count, 
+			this->Data.PrimCount);
+	}
+
+	objectElement::objectElement
+	(
+		creator<ELEMENT> const & Creator
+	) : 
+		object(Creator.Data)
+	{}
+
+	objectElement::~objectElement()
+	{}
+
+	void objectElement::exec()
+	{
+		glDrawElementsInstancedBaseVertex(
+			this->Data.Mode, 
+			this->Data.Count, 
+			this->Data.ElementType,
+			this->Data.Indices, 
+			this->Data.PrimCount,
+			this->Data.BaseVertex);
+	}
+
+	objectArrayIndirect::objectArrayIndirect
+	(
+		creator<ARRAY_INDIRECT> const & Creator
+	) : 
+		object(Creator.Data)
+	{}
+
+	objectArrayIndirect::~objectArrayIndirect()
+	{}
+
+	void objectArrayIndirect::exec()
+	{
+		glDrawArraysIndirect(
+			this->Data.Mode, 
+			0);
+	}
+
+	objectElementIndirect::objectElementIndirect
+	(
+		creator<ELEMENT_INDIRECT> const & Creator
+	) : 
+		object(Creator.Data)
+	{}
+
+	objectElementIndirect::~objectElementIndirect()
+	{}
+
+	void objectElementIndirect::exec()
+	{
+		glDrawElementsIndirect(
+			this->Data.Mode, 
+			this->Data.ElementType,
+			0);
+	}
 
 }//namespace draw
 }//namespace kueken
