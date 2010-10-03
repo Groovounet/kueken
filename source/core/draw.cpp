@@ -54,18 +54,25 @@ namespace detail{
 	//	Enabled(false)
 	//{}
 
-	data::data() :
+	data::data(type const & Type) :
+		Type(Type),
 		Mode(GL_NONE),
 		Count(0),
-		Type(GL_UNSIGNED_INT),
+		ElementType(GL_UNSIGNED_INT),
 		Indices(0),
 		PrimCount(1),
 		BaseVertex(0)
 	{}
-
 }//namespace detail
 
-	void creator::setPrimitive(primitive const & Primitive)
+	///////////////////////
+	// creator<ARRAY>
+
+	creator<ARRAY>::creator() :
+		Data(ARRAY)
+	{}
+
+	void creator<ARRAY>::setPrimitive(primitive const & Primitive)
 	{
 		GLenum Cast[] = 
 		{
@@ -77,7 +84,47 @@ namespace detail{
 		this->Data.Mode = Cast[Primitive];
 	}
 
-	void creator::setType(type const & Type)
+	void creator<ARRAY>::setFirst(glm::uint32 const & First)
+	{
+		this->Data.First = First;
+	}
+
+	void creator<ARRAY>::setCount(glm::uint32 const & Count)
+	{
+		this->Data.Count = Count;
+	}
+
+	void creator<ARRAY>::setInstances(glm::uint const & Instances)
+	{
+		this->Data.PrimCount = Instances;
+	}
+
+	bool creator<ARRAY>::validate()
+	{
+		assert(0); 
+		return false;
+	}
+
+	///////////////////////
+	// creator<ELEMENT>
+
+	creator<ELEMENT>::creator() :
+		Data(ELEMENT)
+	{}
+
+	void creator<ELEMENT>::setPrimitive(primitive const & Primitive)
+	{
+		GLenum Cast[] = 
+		{
+			GL_TRIANGLES
+		};
+
+		assert(Primitive < sizeof(Cast) / sizeof(GLenum));
+
+		this->Data.Mode = Cast[Primitive];
+	}
+
+	void creator<ELEMENT>::setElementFormat(format const & ElementFormat)
 	{
 		GLenum Cast[] = 
 		{
@@ -86,29 +133,35 @@ namespace detail{
 			GL_UNSIGNED_INT
 		};
 
-		assert(Type < sizeof(Cast) / sizeof(GLenum));
+		assert(ElementFormat < sizeof(Cast) / sizeof(GLenum));
 
-		this->Data.Type = Cast[Type];
+		this->Data.ElementType = Cast[ElementFormat];
 	}
 
-	void creator::setFirst(glm::uint const & First)
+	void creator<ELEMENT>::setFirst(glm::uint const & First)
 	{
 		this->Data.Indices = KUEKEN_BUFFER_OFFSET(First);
 	}
 
-	void creator::setCount(glm::uint const & Count)
+	void creator<ELEMENT>::setCount(glm::uint const & Count)
 	{
 		this->Data.Count = Count;
 	}
 
-	void creator::setInstances(glm::uint const & Instances)
+	void creator<ELEMENT>::setInstances(glm::uint const & Instances)
 	{
 		this->Data.PrimCount = Instances;
 	}
 
-	void creator::setBaseVertex(glm::uint const & BaseVertex)
+	void creator<ELEMENT>::setBaseVertex(glm::uint const & BaseVertex)
 	{
 		this->Data.BaseVertex = BaseVertex;
+	}
+
+	bool creator<ELEMENT>::validate()
+	{
+		assert(0); 
+		return false;
 	}
 
 	//void creator::setCondition(draw::name Draw, target Target, mode Mode)
@@ -137,15 +190,25 @@ namespace detail{
 	//	Data.Feedbacks.push_back(Feedback);
 	//}
 
-	bool creator::validate()
+	object::object
+	(
+		creator<ARRAY> const & Creator
+	) :
+		Data(Creator.Data)
 	{
-		assert(0); 
-		return false;
+		//for(std::size_t i = 0; i < TARGET_MAX; ++i)
+		//{
+		//	if(!Data.Queries[i].Enabled)
+		//		continue;
+
+		//	Data.Queries[i].Target = draw_target_cast(target(i));
+		//	glGenQueries(1, &Data.Queries[i].Name);
+		//}
 	}
 
 	object::object
 	(
-		creator const & Creator
+		creator<ELEMENT> const & Creator
 	) :
 		Data(Creator.Data)
 	{
@@ -166,7 +229,7 @@ namespace detail{
 		//		glDeleteQueries(1, &Data.Queries[i].Name);
 	}
 
-	void object::exec(GLenum Primitive, GLenum IndexType)
+	void object::exec()
 	{
 		//if(Data.Condition.Enabled)
 		//{
@@ -203,7 +266,7 @@ namespace detail{
 			glDrawElementsInstancedBaseVertex(
 				this->Data.Mode, 
 				this->Data.Count, 
-				this->Data.Type,
+				this->Data.ElementType,
 				this->Data.Indices, 
 				this->Data.PrimCount,
 				this->Data.BaseVertex);
@@ -212,7 +275,7 @@ namespace detail{
 		{
 			glDrawArraysInstanced(
 				this->Data.Mode, 
-				0, 
+				this->Data.First, 
 				this->Data.Count, 
 				this->Data.PrimCount);
 		}

@@ -201,6 +201,7 @@ namespace detail{
 	///////////////////////////////
 	// object
 
+	template <>
 	object::object
 	(
 		creator<POLYGON> const & Creator
@@ -219,6 +220,7 @@ namespace detail{
 #endif//KUEKEN_STATE_OBJECTS
 	}
 
+	template <>
 	object::object
 	(
 		creator<LINE> const & Creator
@@ -237,6 +239,7 @@ namespace detail{
 #endif//KUEKEN_STATE_OBJECTS	
 	}
 
+	template <>
 	object::object
 	(
 		creator<POINT> const & Creator
@@ -255,6 +258,7 @@ namespace detail{
 #endif//KUEKEN_STATE_OBJECTS
 	}
 
+	template <>
 	object::object
 	(
 		creator<DISCARD> const & Creator

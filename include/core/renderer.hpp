@@ -25,7 +25,8 @@ namespace kueken
 		void free(clear::name & Name);
 		void exec(clear::name const & Name);
 
-		draw::name create(draw::creator const & Creator);
+		draw::name create(draw::creator<draw::ARRAY> const & Creator);
+		draw::name create(draw::creator<draw::ELEMENT> const & Creator);
 		void free(draw::name & Name);
 		void exec(draw::name const & Name);
 		draw::object* map(draw::name& Name);
@@ -140,8 +141,6 @@ namespace kueken
 		//bool Check(glm::uint32 Flags) const;
 
 	private:
-		GLenum Primitive;
-		GLenum ElementFormat;
 	};
 
 }//namespace kueken

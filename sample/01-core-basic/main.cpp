@@ -207,19 +207,13 @@ bool sample::initQuery()
 
 bool sample::initDraw()
 {
-	kueken::draw::creator Creator;
-	//Creator.setInstances(0);
-	//Creator.setBaseVertex(0);
-	//Creator.setPrimitives(kueken::draw::TRIANGLES);
-	//Creator.setLayout(0, kueken::draw::VERTEX, Layout);
-	//Creator.setBuffer(0, kueken::buffer::ARRAY, ArrayBuffer);
-	//Creator.setBuffer(1, kueken::buffer::ARRAY, ArrayBuffer);
-	//Creator.setBuffer(0, kueken::buffer::ELEMENT, ElementBuffer);
-	//Object->setBuffer(0, kueken::buffer::INDIRECT, IndirectBuffer);
+	kueken::draw::creator<kueken::draw::ELEMENT> Creator;
 	Creator.setPrimitive(kueken::draw::TRIANGLES);
-	Creator.setType(kueken::draw::UINT32);
+	Creator.setElementFormat(kueken::draw::UINT32);
 	Creator.setFirst(0);
 	Creator.setCount(ElementCount);
+	Creator.setInstances(1);
+	Creator.setBaseVertex(0);
 	Draw = Renderer->create(Creator);
 
 	return glf::checkError("initDraw");

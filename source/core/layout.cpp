@@ -128,9 +128,11 @@ namespace layout
 					GL_FALSE, 
 					VertexArray.Stride,
 					VertexArray.Offset);
+				
 				glVertexAttribDivisor(
 					VertexArray.Semantic, 
 					VertexArray.Divisor);
+
 				glEnableVertexAttribArray(
 					VertexArray.Semantic);
 			}

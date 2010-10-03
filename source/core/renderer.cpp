@@ -167,13 +167,24 @@ namespace kueken
 
 	draw::name renderer::create
 	(	
-		draw::creator const & Creator
+		draw::creator<draw::ARRAY> const & Creator
 	)
 	{
 		//return manager::instance().Draw.create(Creator);
 		draw::object * Object = new draw::object(Creator);
 		return manager::instance().Draw.reserve(Object);
 	}
+
+	draw::name renderer::create
+	(	
+		draw::creator<draw::ELEMENT> const & Creator
+	)
+	{
+		//return manager::instance().Draw.create(Creator);
+		draw::object * Object = new draw::object(Creator);
+		return manager::instance().Draw.reserve(Object);
+	}
+
 
 	void renderer::free
 	(
@@ -188,7 +199,7 @@ namespace kueken
 		draw::name const & Name
 	)
 	{
-		manager::instance().Draw.getObject(Name).exec(Primitive, ElementFormat);
+		manager::instance().Draw.getObject(Name).exec();
 	}
 
 	draw::object* renderer::map(draw::name& Name)

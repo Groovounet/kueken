@@ -43,6 +43,7 @@ namespace detail{
 		PIXEL_PACK,
         PIXEL_UNPACK,
 		FEEDBACK,
+		INDIRECT,
 		TARGET_MAX
 	};
 

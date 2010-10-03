@@ -33,41 +33,72 @@ namespace draw{
 		TRIANGLES
 	};
 
-	enum type
+	enum format
 	{
 		UINT8,
 		UINT16,
 		UINT32
 	};
 
+	enum type
+	{
+		ARRAY,
+		ELEMENT
+	};
+
 namespace detail
 {
 	struct data
 	{
-		data();
+		data(type const & Type);
+		type Type;
 		GLenum Mode;
+		GLint First;
 		GLsizei Count;
-		GLenum Type;
+		GLenum ElementType;
 		const void* Indices;
 		GLsizei PrimCount; 
 		GLint BaseVertex;
 	};
-
 }//namespace detail
 
 	class object;
 	typedef kueken::detail::name<object> name;
 	typedef kueken::detail::manager<name, object> manager;
 
-	class creator : public kueken::detail::creator
+	template <type TYPE>
+	class creator
+	{};
+
+	template <>
+	class creator<ARRAY> : public kueken::detail::creator
 	{
 		friend class object;
 
 	public:
+		creator();
+		void setPrimitive(primitive const & Primitive);
+		void setFirst(glm::uint32 const & First);
+		void setCount(glm::uint32 const & Count);
+		void setInstances(glm::uint const & Instances);
+
+		bool validate();
+
+	private:
+		detail::data Data;
+	};
+
+	template <>
+	class creator<ELEMENT> : public kueken::detail::creator
+	{
+		friend class object;
+
+	public:
+		creator();
 		void setPrimitive(primitive const & Primitive);
 		void setFirst(glm::uint const & First);
 		void setCount(glm::uint const & Count);
-		void setType(type const & Type);
+		void setElementFormat(format const & ElementFormat);
 		void setInstances(glm::uint const & Instances);
 		void setBaseVertex(glm::uint const & BaseVertex);
 
@@ -79,13 +110,15 @@ namespace detail
 
 	class object
 	{
+		template <type TYPE>
 		friend class creator;
 
 	public:
-		object(creator const & Creator);
+		object(creator<ARRAY> const & Creator);
+		object(creator<ELEMENT> const & Creator);
 		~object();
 
-		void exec(GLenum Primitive, GLenum ElementFormat);
+		void exec();
 
 	private:
 		detail::data Data;

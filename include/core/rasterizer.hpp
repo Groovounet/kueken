@@ -148,10 +148,8 @@ namespace detail{
 	class object
 	{
 	public:
-		object(creator<POLYGON> const & Creator);
-		object(creator<LINE> const & Creator);
-		object(creator<POINT> const & Creator);
-		object(creator<DISCARD> const & Creator);
+		template <type TYPE>
+		object(creator<TYPE> const & Creator);
 		~object();
 
 		void bind();
