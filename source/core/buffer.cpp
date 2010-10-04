@@ -4,7 +4,7 @@ namespace
 {
 	GLenum buffer_usage_cast(kueken::buffer::usage Usage)
 	{
-		static GLenum const CastBufferUsage[kueken::buffer::USAGE_MAX] = 
+		static GLenum const Cast[kueken::buffer::USAGE_MAX] = 
 		{
 			GL_STREAM_DRAW,		// STREAM_DRAW
 			GL_STREAM_READ,		// STREAM_READ
@@ -17,23 +17,32 @@ namespace
 			GL_DYNAMIC_COPY		// DYNAMIC_COPY
 		};
 
-		return CastBufferUsage[Usage];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::buffer::USAGE_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Usage];
 	}
 
 	GLenum buffer_target_cast(kueken::buffer::target Target)
 	{
-		static GLenum const CastBufferTarget[kueken::buffer::TARGET_MAX] =
+		static GLenum const Cast[kueken::buffer::TARGET_MAX] =
 		{
-			GL_ARRAY_BUFFER,			// ARRAY
-			GL_ELEMENT_ARRAY_BUFFER,	// ELEMENT
-			GL_UNIFORM_BUFFER_EXT,		// UNIFORM
-			GL_TEXTURE_BUFFER_EXT,		// TEXTURE
-			GL_PIXEL_PACK_BUFFER,		// PIXEL_PACK 
-			GL_PIXEL_UNPACK_BUFFER,		// PIXEL_UNPACK
-			GL_TRANSFORM_FEEDBACK_BUFFER_EXT// FEEDBACK
+			GL_ARRAY_BUFFER,				// ARRAY
+			GL_ELEMENT_ARRAY_BUFFER,		// ELEMENT
+			GL_UNIFORM_BUFFER,				// UNIFORM
+			GL_TEXTURE_BUFFER,				// TEXTURE
+			GL_PIXEL_PACK_BUFFER,			// PIXEL_PACK 
+			GL_PIXEL_UNPACK_BUFFER,			// PIXEL_UNPACK
+			GL_TRANSFORM_FEEDBACK_BUFFER,	// FEEDBACK
+			GL_DRAW_INDIRECT_BUFFER			// INDIRECT
 		};
 
-		return CastBufferTarget[Target];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::buffer::TARGET_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Target];
 	}
 
 }//namespace

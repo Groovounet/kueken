@@ -26,26 +26,34 @@ namespace
 
 	GLenum sampler_min_cast(kueken::sampler::filter Filter)
 	{
-		static GLenum const CastImageMin[kueken::sampler::FILTER_MAX] = 
+		static GLenum const Cast[kueken::sampler::FILTER_MAX] = 
 		{
 			GL_NEAREST,						// NEAREST
 			GL_LINEAR,						// BILINEAR
 			GL_LINEAR_MIPMAP_LINEAR,		// TRILINEAR
 		};
 
-		return CastImageMin[Filter];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::sampler::FILTER_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Filter];
 	}
 
 	GLenum sampler_mag_cast(kueken::sampler::filter Filter)
 	{
-		static GLenum const CastImageMag[kueken::sampler::FILTER_MAX] = 
+		static GLenum const Cast[kueken::sampler::FILTER_MAX] = 
 		{
 			GL_NEAREST,						// NEAREST
 			GL_LINEAR,						// BILINEAR
 			GL_LINEAR,						// TRILINEAR
 		};
 
-		return CastImageMag[Filter];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::sampler::FILTER_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Filter];
 	}
 
 	GLenum sampler_wrap_cast(kueken::sampler::wrap Wrap)
@@ -57,6 +65,10 @@ namespace
 			GL_MIRRORED_REPEAT,				// MIRRORED_REPEAT
 			GL_REPEAT,						// REPEAT
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::sampler::WRAP_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Wrap];
 	}
@@ -72,6 +84,10 @@ namespace
 			GL_BLUE,	//BLUE,
 			GL_ALPHA,	//ALPHA
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::sampler::SWIZZLE_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Swizzle];
 	}
@@ -90,6 +106,10 @@ namespace
 			GL_ALWAYS,	//ALWAYS
 			GL_NEVER	//NEVER
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::sampler::COMPARE_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Compare];
 	}

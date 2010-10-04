@@ -26,7 +26,7 @@ namespace detail
 		bool operator==(name<T> const & Name) const;
 		bool operator!() const;
 
-		name<T>& operator=(name<T> const & Name);
+		name<T> & operator=(name<T> const & Name);
 
 		static name<T> null();
 

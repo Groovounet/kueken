@@ -4,18 +4,23 @@ namespace kueken
 {
 	GLenum buffer_target_cast(kueken::buffer::target Target)
 	{
-		static GLenum const CastBufferTarget[kueken::buffer::TARGET_MAX] =
+		static GLenum const Cast[kueken::buffer::TARGET_MAX] =
 		{
-			GL_ARRAY_BUFFER,			// ARRAY
-			GL_ELEMENT_ARRAY_BUFFER,	// ELEMENT
-			GL_UNIFORM_BUFFER_EXT,		// UNIFORM
-			GL_TEXTURE_BUFFER_EXT,		// TEXTURE
-			GL_PIXEL_PACK_BUFFER,		// PIXEL_PACK 
-			GL_PIXEL_UNPACK_BUFFER,		// PIXEL_UNPACK
-			GL_TRANSFORM_FEEDBACK_BUFFER_EXT// FEEDBACK
+			GL_ARRAY_BUFFER,				// ARRAY
+			GL_ELEMENT_ARRAY_BUFFER,		// ELEMENT
+			GL_UNIFORM_BUFFER,				// UNIFORM
+			GL_TEXTURE_BUFFER,				// TEXTURE
+			GL_PIXEL_PACK_BUFFER,			// PIXEL_PACK 
+			GL_PIXEL_UNPACK_BUFFER,			// PIXEL_UNPACK
+			GL_TRANSFORM_FEEDBACK_BUFFER,	// FEEDBACK
+			GL_DRAW_INDIRECT_BUFFER,		// INDIRECT
 		};
 
-		return CastBufferTarget[Target];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::buffer::TARGET_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Target];
 	}
 
 	renderer::renderer()
@@ -90,7 +95,7 @@ namespace kueken
 		return manager::instance().Buffer.reserve(Object);
 	}
 
-	void renderer::free(buffer::name& Name)
+	void renderer::free(buffer::name & Name)
 	{
 		manager::instance().Buffer.release(Name);
 	}

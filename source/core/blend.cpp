@@ -13,12 +13,16 @@ namespace
 			GL_MAX						// MAX
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::blend::EQUATION_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Equation];
 	}
 
 	GLenum blend_function_cast(kueken::blend::function Function)
 	{
-		static GLenum const CastBlendFunction[kueken::blend::FUNCTION_MAX] =
+		static GLenum const Cast[kueken::blend::FUNCTION_MAX] =
 		{
 			GL_ZERO,						// ZERO
 			GL_ONE,							// ONE
@@ -37,7 +41,11 @@ namespace
 			GL_SRC_ALPHA_SATURATE,			// SRC_ALPHA_SATURATE
 		};
 
-		return CastBlendFunction[Function];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::blend::FUNCTION_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Function];
 	}
 
 }//namespace

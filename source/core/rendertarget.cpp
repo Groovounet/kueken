@@ -7,10 +7,14 @@ namespace
 	{
 		static GLenum const Cast[kueken::rendertarget::TARGET_MAX] =
 		{
-			GL_READ_FRAMEBUFFER_EXT,		// READ
-			GL_DRAW_FRAMEBUFFER_EXT,		// DRAW
-			GL_FRAMEBUFFER_EXT				// RENDERTARGET
+			GL_READ_FRAMEBUFFER,		// READ
+			GL_DRAW_FRAMEBUFFER,		// DRAW
+			GL_FRAMEBUFFER				// RENDERTARGET
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::rendertarget::TARGET_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Target];
 	}
@@ -19,16 +23,20 @@ namespace
 	{
 		static GLenum const Cast[kueken::rendertarget::SLOT_MAX] =
 		{
-			GL_DEPTH_ATTACHMENT_EXT,	//DEPTH,
-			GL_COLOR_ATTACHMENT0_EXT,	//COLOR0,
-			GL_COLOR_ATTACHMENT1_EXT,	//COLOR1,
-			GL_COLOR_ATTACHMENT2_EXT,	//COLOR2,
-			GL_COLOR_ATTACHMENT3_EXT,	//COLOR3,
-			GL_COLOR_ATTACHMENT4_EXT,	//COLOR4,
-			GL_COLOR_ATTACHMENT5_EXT,	//COLOR5,
-			GL_COLOR_ATTACHMENT6_EXT,	//COLOR6,
-			GL_COLOR_ATTACHMENT7_EXT	//COLOR7
+			GL_DEPTH_ATTACHMENT,	//DEPTH,
+			GL_COLOR_ATTACHMENT0,	//COLOR0,
+			GL_COLOR_ATTACHMENT1,	//COLOR1,
+			GL_COLOR_ATTACHMENT2,	//COLOR2,
+			GL_COLOR_ATTACHMENT3,	//COLOR3,
+			GL_COLOR_ATTACHMENT4,	//COLOR4,
+			GL_COLOR_ATTACHMENT5,	//COLOR5,
+			GL_COLOR_ATTACHMENT6,	//COLOR6,
+			GL_COLOR_ATTACHMENT7	//COLOR7
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::rendertarget::SLOT_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Slot];
 	}
