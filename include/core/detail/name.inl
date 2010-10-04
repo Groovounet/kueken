@@ -12,12 +12,12 @@ namespace detail
 	{}
 
 	template <typename T>
-	inline name<T>::name(std::size_t Value) :
+	inline name<T>::name(std::size_t const & Value) :
 		value(Value)
 	{}
 
 	template <typename T>
-	inline name<T>::name(const name& Name) :
+	inline name<T>::name(name const & Name) :
 		value(Name.value)
 	{}
 
@@ -38,7 +38,7 @@ namespace detail
 	}
 
 	template <typename T>
-	inline name<T>& name<T>::operator=(const name<T>& Name)
+	inline name<T>& name<T>::operator=(name<T> const & Name)
 	{
 		value = Name.value;
 		return *this;
@@ -51,13 +51,13 @@ namespace detail
 	}
 
 	template <typename T>
-	inline bool name<T>::operator==(const name<T>& Name) const
+	inline bool name<T>::operator==(name<T> const & Name) const
 	{
 		return value == Name.value;
 	}
 
 	template <typename T>
-	inline bool name<T>::operator<(const name<T>& Name) const
+	inline bool name<T>::operator<(name<T> const & Name) const
 	{
 		return value < Name.value;
 	}

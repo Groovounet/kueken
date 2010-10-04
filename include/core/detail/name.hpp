@@ -31,7 +31,7 @@ namespace detail
 		static name<T> null();
 
 	//private:
-		explicit name(std::size_t Value);
+		explicit name(std::size_t const & Value);
 		explicit name(bool Null); // Detail for static Null function
 
 		std::size_t operator()() const; 

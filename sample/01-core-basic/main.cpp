@@ -39,19 +39,19 @@ namespace
 	kueken::renderer * Renderer(nullptr);
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
-	kueken::rasterizer::name RasterizerBackground;
-	kueken::rasterizer::name RasterizerScene;
-	kueken::clear::name ClearBackground;
-	kueken::clear::name ClearScene;
-	kueken::draw::name Draw;
-	kueken::program::name Program;
-	kueken::texture::name Texture;
-	kueken::layout::name Layout;
-	kueken::sampler::name Sampler;
-	kueken::buffer::name ArrayBuffer;
-	kueken::buffer::name ElementBuffer;
-	kueken::test::name Test;
-	kueken::rendertarget::name Rendertarget;
+	kueken::rasterizer::name RasterizerBackground(kueken::rasterizer::name::null());
+	kueken::rasterizer::name RasterizerScene(kueken::rasterizer::name::null());
+	kueken::clear::name ClearBackground(kueken::clear::name::null());
+	kueken::clear::name ClearScene(kueken::clear::name::null());
+	kueken::draw::name Draw(kueken::draw::name::null());
+	kueken::program::name Program(kueken::program::name::null());
+	kueken::texture::name Texture(kueken::texture::name::null());
+	kueken::layout::name Layout(kueken::layout::name::null());
+	kueken::sampler::name Sampler(kueken::sampler::name::null());
+	kueken::buffer::name ArrayBuffer(kueken::buffer::name::null());
+	kueken::buffer::name ElementBuffer(kueken::buffer::name::null());
+	kueken::test::name Test(kueken::test::name::null());
+	kueken::rendertarget::name Rendertarget(kueken::rendertarget::name::null());
 
 	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
 	kueken::program::semantic const SEMANTIC_MVP(1);
