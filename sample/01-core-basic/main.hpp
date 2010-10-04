@@ -3,7 +3,6 @@
 
 #include "base.hpp"
 #include <core/kueken.hpp>
-#include <fx/effect.hpp>
 
 struct vertex_v2fv2f
 {
@@ -39,13 +38,10 @@ private:
 	bool initDraw();
 	bool initLayout();
 	bool initProgram();
-	bool initQuery();
 	bool initRendertarget();
 	bool initRasterizer();
 	bool initTest();
 	bool initTexture2D();
-
-	glv::mesh Mesh;
 };
 
 #endif//GLF_MAIN_INCLUDED

@@ -45,7 +45,7 @@ namespace detail
 	}
 
 	template <typename T>
-	inline name<T> name<T>::Null()
+	inline name<T> name<T>::null()
 	{
 		return name(true);
 	}

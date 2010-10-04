@@ -28,7 +28,7 @@ namespace detail
 
 		name<T>& operator=(name<T> const & Name);
 
-		static name<T> Null();
+		static name<T> null();
 
 	//private:
 		explicit name(std::size_t Value);

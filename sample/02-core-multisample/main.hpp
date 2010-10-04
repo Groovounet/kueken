@@ -4,16 +4,31 @@
 #include "base.hpp"
 #include <core/kueken.hpp>
 
-class CMain : public glf::IBase
+struct vertex_v2fv2f
+{
+	vertex_v2fv2f
+	(
+		glm::vec2 const & Position,
+		glm::vec2 const & Texcoord
+	) :
+		Position(Position),
+		Texcoord(Texcoord)
+	{}
+
+	glm::vec2 Position;
+	glm::vec2 Texcoord;
+};
+
+class sample : public glf::base
 {
 public:
-	CMain(std::string const & Name, glm::ivec2 const & WindowSize);
-	virtual ~CMain();
+	sample(std::string const & Name, glm::ivec2 const & WindowSize);
+	virtual ~sample();
 
-	virtual bool Check() const;
-    virtual bool Begin(const glm::ivec2& WindowSize);
-    virtual bool End();
-    virtual void Render();
+	virtual bool check() const;
+    virtual bool begin(const glm::ivec2& WindowSize);
+    virtual bool end();
+    virtual void render();
 
 private:
 	bool initArrayBuffer();
@@ -29,8 +44,6 @@ private:
 	bool initSampler();
 	bool initTest();
 	bool initTexture2D();
-
-	glv::mesh mesh;
 };
 
 #endif//GLF_MAIN_INCLUDED

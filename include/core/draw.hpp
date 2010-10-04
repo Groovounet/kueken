@@ -8,8 +8,8 @@ namespace kueken
 {
 	class renderer;
 
-namespace draw{
-
+namespace draw
+{
 	enum mode
 	{
 		QUERY_WAIT,					//GL_QUERY_WAIT
@@ -46,6 +46,30 @@ namespace draw{
 		ELEMENT,
 		ARRAY_INDIRECT,
 		ELEMENT_INDIRECT
+	};
+
+	struct DrawArraysIndirectCommand
+	{
+		DrawArraysIndirectCommand() :
+			Count(0),
+			PrimCount(1),
+			First(0),
+			ReservedMustBeZero(0)
+		{}
+
+		glm::uint32 Count;
+		glm::uint32 PrimCount;
+		glm::int32 First;
+		glm::uint32 ReservedMustBeZero;
+	};
+
+	struct DrawElementsIndirectCommand
+	{
+		glm::uint32 Count;
+		glm::uint32 PrimCount;
+		glm::uint32 FirstIndex;
+		glm::int32 BaseVertex;
+		glm::uint32 ReservedMustBeZero;
 	};
 
 namespace detail

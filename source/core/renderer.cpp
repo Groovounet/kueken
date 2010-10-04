@@ -104,7 +104,7 @@ namespace kueken
 	{
 		manager & Manager = manager::instance();
 
-		if(Name == buffer::name::Null())
+		if(Name == buffer::name::null())
 		{
 			glBindBuffer(buffer_target_cast(Target), 0);
 			return;

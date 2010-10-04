@@ -75,7 +75,7 @@ namespace detail{
 		OBJECT * Object
 	)
 	{
-		NAME Name = NAME::Null();
+		NAME Name = NAME::null();
 
 		if(Deleted.empty())
 		{

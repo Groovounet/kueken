@@ -18,7 +18,25 @@ namespace
 	const char* FRAGMENT_SHADER_SOURCE = "../data/multisampling.frag";
 	const char* TEXTURE_DIFFUSE = "../data/küken256.tga";
 
-	kueken::renderer* Renderer = 0;
+	GLsizei const VertexCount = 4;
+	GLsizeiptr const VertexSize = VertexCount * sizeof(vertex_v2fv2f);
+	vertex_v2fv2f const VertexData[VertexCount] =
+	{
+		vertex_v2fv2f(glm::vec2(-1.0f,-1.0f), glm::vec2(0.0f, 1.0f)),
+		vertex_v2fv2f(glm::vec2( 1.0f,-1.0f), glm::vec2(1.0f, 1.0f)),
+		vertex_v2fv2f(glm::vec2( 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)),
+		vertex_v2fv2f(glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f))
+	};
+
+	GLsizei const ElementCount = 6;
+	GLsizeiptr const ElementSize = ElementCount * sizeof(GLuint);
+	GLuint const ElementData[ElementCount] =
+	{
+		0, 1, 2, 
+		2, 3, 0
+	};
+
+	kueken::renderer * Renderer(nullptr);
 	
 	kueken::blend::name Blend;
 	kueken::blit::name Blit;
@@ -35,7 +53,7 @@ namespace
 	kueken::buffer::name ArrayBuffer;
 	kueken::buffer::name ElementBuffer;
 	kueken::test::name Test;
-	kueken::assembler::name Assembler;
+	kueken::layout::name Layout;
 	kueken::buffer::name UniformBuffer;
 
 	kueken::rendertarget::name RendertargetFramebuffer;
@@ -45,13 +63,14 @@ namespace
 	kueken::texture::name TextureRendertarget;
 	kueken::texture::name TextureDiffuse;
 
-	kueken::program::variable VariablePosition;
-	kueken::program::variable VariableTexcoord;
-	kueken::program::variable VariableDiffuse;
-	kueken::program::variable VariableMVP;
+	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
+	kueken::program::semantic const SEMANTIC_MVP(1);
+
+	kueken::program::semantic const SEMANTIC_POSITION(0);
+	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
 }
 
-CMain::CMain
+sample::sample
 (
 	std::string const & Name, 
 	glm::ivec2 const & WindowSize
@@ -59,10 +78,10 @@ CMain::CMain
 	IBase(Name, WindowSize)
 {}
 
-CMain::~CMain()
+sample::~sample()
 {}
 
-bool CMain::Check() const
+bool sample::check() const
 {
 	return 
 		GLEW_EXT_framebuffer_object == GL_TRUE && 
@@ -71,7 +90,7 @@ bool CMain::Check() const
 		GLEW_EXT_texture_swizzle == GL_TRUE;
 }
 
-bool CMain::Begin(glm::ivec2 const & WindowSize)
+bool sample::begin(glm::ivec2 const & WindowSize)
 {
 	windowSize = WindowSize;
 
@@ -109,7 +128,7 @@ bool CMain::Begin(glm::ivec2 const & WindowSize)
 	return Result;
 }
 
-bool CMain::End()
+bool sample::end()
 {
 	delete Renderer;
 	Renderer = 0;
@@ -117,7 +136,7 @@ bool CMain::End()
 	return glf::checkError("End");
 }
 
-void CMain::Render()
+void sample::render()
 {
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	Renderer->bind(Assembler);
@@ -183,7 +202,7 @@ void CMain::Render()
 	glf::checkError("Render");
 }
 
-bool CMain::initBlend()
+bool sample::initBlend()
 {
 	{
 		kueken::blend::creator Creator;
@@ -204,7 +223,7 @@ bool CMain::initBlend()
 	return glf::checkError("initBlend");
 }
 
-bool CMain::initBlit()
+bool sample::initBlit()
 {
 	{
 		kueken::blit::creator Creator;
@@ -218,7 +237,7 @@ bool CMain::initBlit()
 	return glf::checkError("initBlit");
 }
 
-bool CMain::initClear()
+bool sample::initClear()
 {
 	{
 		kueken::clear::creator Creator;
@@ -230,7 +249,7 @@ bool CMain::initClear()
 	return glf::checkError("initClear");
 }
 
-bool CMain::initDraw()
+bool sample::initDraw()
 {
 	{
 		kueken::draw::creator Creator;
@@ -251,7 +270,7 @@ bool CMain::initDraw()
 	return glf::checkError("initDraw");
 }
 
-bool CMain::initTexture2D()
+bool sample::initTexture2D()
 {
 	{
 		kueken::texture::creator Creator;
@@ -285,7 +304,7 @@ bool CMain::initTexture2D()
 	return glf::checkError("initTexture2D");
 }
 
-bool CMain::initTest()
+bool sample::initTest()
 {
 	{
 		kueken::test::creator Creator;
@@ -297,7 +316,7 @@ bool CMain::initTest()
 	return glf::checkError("initTest");
 }
 
-bool CMain::initRasterizer()
+bool sample::initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator;
@@ -318,7 +337,7 @@ bool CMain::initRasterizer()
 	return glf::checkError("initRasterizer");
 }
 
-bool CMain::initSampler()
+bool sample::initSampler()
 {
 	{
 		kueken::sampler::creator Creator;
@@ -339,7 +358,7 @@ bool CMain::initSampler()
 	return glf::checkError("initSampler");
 }
 
-bool CMain::initProgram()
+bool sample::initProgram()
 {
 	kueken::program::creator Creator;
 	Creator.addSource(
@@ -364,7 +383,7 @@ bool CMain::initProgram()
 	return glf::checkError("initProgram");
 }
 
-bool CMain::initAssembler()
+bool sample::initAssembler()
 {
 	{
 		kueken::assembler::creator Creator;
@@ -396,7 +415,7 @@ bool CMain::initAssembler()
 	return glf::checkError("initAssembler");
 }
 
-bool CMain::initUniformBuffer()
+bool sample::initUniformBuffer()
 {
 	kueken::buffer::creator Creator;
 	Creator.setSize(sizeof(glm::mat4) * 2);
@@ -407,7 +426,7 @@ bool CMain::initUniformBuffer()
 	return glf::checkError("initUniformBuffer");
 }
 
-bool CMain::initArrayBuffer()
+bool sample::initArrayBuffer()
 {
 	mesh = glv::buildPlane(glv::ELEMENT_BIT | glv::POSITION2_BIT | glv::TEXCOORD_BIT, glm::vec2(1.0f));
 
@@ -430,7 +449,7 @@ bool CMain::initArrayBuffer()
 	return glf::checkError("initArrayBuffer");
 }
 
-bool CMain::initRendertarget()
+bool sample::initRendertarget()
 {
 	{
 		kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
@@ -465,22 +484,25 @@ bool CMain::initRendertarget()
 	return glf::checkError("initRendertarget");
 }
 
-//int main(int argc, char* argv[])
-int run()
+int main(int argc, char* argv[])
 {
 	glm::ivec2 ScreenSize = glm::ivec2(640, 480);
 
-	CMain* Main = new CMain(SAMPLE_NAME, ScreenSize);
-	if(Main->Check())
+	sample * Sample = new sample(SAMPLE_NAME, ScreenSize);
+	if(Sample->check())
 	{
-		Main->Begin(ScreenSize);
-		Main->Run();
-		Main->End();
+		Sample->begin(ScreenSize);
+		do
+		{
+			Sample->render();
+		}
+		while(Sample->event());
+		Sample->end();
 
-		delete Main;
+		delete Sample;
 		return 0;
 	}
 
-	delete Main;
+	delete Sample;
 	return 1;
 }

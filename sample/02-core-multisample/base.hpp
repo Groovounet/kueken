@@ -11,6 +11,7 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+#	define glfGetProcAddress wglGetProcAddress
 
 // STL
 #include <vector>
@@ -28,21 +29,16 @@ namespace glf
 		MOUSE_BUTTON_MIDDLE = (1 << 2)
 	};
 
-	class IBase
+	class base
 	{
 	public:
-		IBase(std::string const & Title, glm::ivec2 const & WindowSise);
-		virtual ~IBase();
+		base(std::string const & Title, glm::ivec2 const & WindowSise);
+		virtual ~base();
 
-		virtual bool Check() const = 0;
-		virtual bool Begin(glm::ivec2 const & WindowSize) = 0;
-		virtual bool End() = 0;
-		virtual void Render() = 0;
-
-		bool Run();
-		void OnMouseMove(glm::vec2 const & _MouseCurrent);
-		void OnMouseDown(EMouseButton MouseButton);
-		void OnMouseUp(EMouseButton MouseButton);
+		bool event();
+		void onMouseMove(glm::vec2 const & _MouseCurrent);
+		void onMouseDown(EMouseButton MouseButton);
+		void onMouseUp(EMouseButton MouseButton);
 
 		std::string Title(){return title;}
 
@@ -62,6 +58,7 @@ namespace glf
 		std::string title;
 	};
 
+	void swapbuffers();
 	std::string loadFile(const char* Filename);
 	bool checkError(const char* Title);
 	bool checkProgram(GLuint ProgramName);

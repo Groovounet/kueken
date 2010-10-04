@@ -50,8 +50,8 @@ namespace rendertarget
 	creator<FRAMEBUFFER>::creator()
 	{
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
-		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::Null();
-		Data.Slot[COLOR0].Texture = texture::name::Null();
+		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::null();
+		Data.Slot[COLOR0].Texture = texture::name::null();
 		Data.Slot[COLOR0].Attachment = rendertarget_attachment_cast(COLOR0);
 	}
 
@@ -66,7 +66,7 @@ namespace rendertarget
 	)
 	{
 		Data.Slot[Slot].Type = detail::TEXTURE;
-		Data.Slot[Slot].Renderbuffer = renderbuffer::name::Null();
+		Data.Slot[Slot].Renderbuffer = renderbuffer::name::null();
 		Data.Slot[Slot].Texture = Texture;
 		Data.Slot[Slot].Level = Level;
 		Data.Slot[Slot].Attachment = rendertarget_attachment_cast(Slot);
@@ -80,15 +80,15 @@ namespace rendertarget
 	{
 		Data.Slot[Slot].Type = detail::RENDERBUFFER;
 		Data.Slot[Slot].Renderbuffer = Renderbuffer;
-		Data.Slot[Slot].Texture = texture::name::Null();
+		Data.Slot[Slot].Texture = texture::name::null();
 		Data.Slot[Slot].Attachment = rendertarget_attachment_cast(Slot);
 	}
 
 	void creator<CUSTOM>::setFramebuffer()
 	{
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
-		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::Null();
-		Data.Slot[COLOR0].Texture = texture::name::Null();
+		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::null();
+		Data.Slot[COLOR0].Texture = texture::name::null();
 		Data.Slot[COLOR0].Attachment = rendertarget_attachment_cast(COLOR0);
 	}
 

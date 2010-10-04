@@ -36,9 +36,9 @@ namespace
 		2, 3, 0
 	};
 
-	kueken::renderer * Renderer = 0;
+	kueken::renderer * Renderer(nullptr);
 	
-	kueken::blend::name Blend;
+	kueken::blend::name Blend(kueken::blend::name::null());
 	kueken::rasterizer::name RasterizerBackground;
 	kueken::rasterizer::name RasterizerScene;
 	kueken::clear::name ClearBackground;
@@ -52,13 +52,12 @@ namespace
 	kueken::buffer::name ElementBuffer;
 	kueken::test::name Test;
 	kueken::rendertarget::name Rendertarget;
-	kueken::query::name Query;
 
-	kueken::program::semantic const SEMANTIC_DIFFUSE = 0;
-	kueken::program::semantic const SEMANTIC_MVP = 1;
+	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
+	kueken::program::semantic const SEMANTIC_MVP(1);
 
-	kueken::program::semantic const SEMANTIC_POSITION = 0;
-	kueken::program::semantic const SEMANTIC_TEXCOORD = 4;
+	kueken::program::semantic const SEMANTIC_POSITION(0);
+	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
 
 	namespace buffer
 	{
@@ -95,8 +94,6 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 
 	bool Result = true;
 
-	if(Result)
-		Result = initQuery();
 	if(Result)
 		Result = initBlend();
 	if(Result)
@@ -193,15 +190,6 @@ bool sample::initClear()
 	ClearScene = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
-}
-
-bool sample::initQuery()
-{
-	kueken::query::creator Creator;
-	Creator.setTarget(kueken::query::SAMPLES);
-	Query = Renderer->create(Creator);
-
-	return glf::checkError("initQuery");	
 }
 
 bool sample::initDraw()
