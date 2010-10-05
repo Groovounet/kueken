@@ -26,6 +26,10 @@ namespace
 			4  //U8VEC4
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(std::size_t) == kueken::layout::ARRAY_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Array];
 	}
 
@@ -49,6 +53,10 @@ namespace
 			GL_UNSIGNED_BYTE,	//U8VEC3,
 			GL_UNSIGNED_BYTE	//U8VEC4
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::layout::ARRAY_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Array];
 	}

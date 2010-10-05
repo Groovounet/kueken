@@ -13,6 +13,10 @@ namespace
 			GL_TIME_ELAPSED_EXT							//TIME
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::query::TARGET_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Target];
 	}
 
@@ -25,6 +29,10 @@ namespace
 			GL_QUERY_BY_REGION_WAIT,		//QUERY_BY_REGION_WAIT
 			GL_QUERY_BY_REGION_NO_WAIT,		//QUERY_BY_REGION_NO_WAIT
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::query::MODE_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Mode];
 	}

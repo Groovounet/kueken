@@ -10,6 +10,10 @@ namespace
 			GL_CW		// CW
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::rasterizer::FRONT_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Front];
 	}
 
@@ -22,6 +26,10 @@ namespace
 			GL_BACK,			// BACK
 			GL_FRONT_AND_BACK	// FRONT_AND_BACK
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::rasterizer::CULL_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Cull];
 	}

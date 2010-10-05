@@ -11,6 +11,10 @@ namespace
 			GL_RGBA						// RGBA
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::renderbuffer::FORMAT_MAX,
+			"Cast array size mismatch");
+
 		return CastRenderbufferFormat[Format];
 	}
 

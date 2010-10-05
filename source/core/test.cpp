@@ -16,6 +16,10 @@ namespace
 			GL_ALWAYS,						// ALWAYS
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::test::FUNCTION_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Function];
 	}
 
@@ -32,6 +36,10 @@ namespace
 			GL_DECR_WRAP,				// DECR_WRAP
 			GL_INVERT,					// INVERT
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::test::ACTION_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Action];
 	}

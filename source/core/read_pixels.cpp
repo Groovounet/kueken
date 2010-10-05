@@ -10,6 +10,10 @@ namespace
 			GL_BGRA			// BGRA8U
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::readpixels::FORMAT_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Format];
 	}
 
@@ -20,6 +24,10 @@ namespace
 			GL_UNSIGNED_BYTE,		// RGBA8U
 			GL_UNSIGNED_BYTE		// BGRA8U
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::readpixels::FORMAT_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Format];
 	}

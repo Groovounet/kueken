@@ -11,6 +11,10 @@ namespace
 			GL_SEPARATE_ATTRIBS			//SEPARATED,
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::buffer::MODE_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Mode];
 	}
 
