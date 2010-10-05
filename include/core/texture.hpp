@@ -5,10 +5,10 @@
 #include "program.hpp"
 
 namespace kueken{
-namespace rendertarget
+namespace framebuffer
 {
 	class object;
-}//namespace rendertarget
+}//namespace framebuffer
 
 namespace texture{
 
@@ -310,7 +310,7 @@ namespace detail
 
 	class object : boost::noncopyable
 	{
-		friend class rendertarget::object;
+		friend class framebuffer::object;
 
 	public:
 		object(creator const & Creator);

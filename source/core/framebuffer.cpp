@@ -1,11 +1,11 @@
-#include <core/rendertarget.hpp>
+#include <core/framebuffer.hpp>
 #include <core/manager.hpp>
 
 namespace
 {
-	GLenum rendertarget_format_cast(kueken::rendertarget::target Target)
+	GLenum framebuffer_format_cast(kueken::framebuffer::target Target)
 	{
-		static GLenum const Cast[kueken::rendertarget::TARGET_MAX] =
+		static GLenum const Cast[kueken::framebuffer::TARGET_MAX] =
 		{
 			GL_READ_FRAMEBUFFER,		// READ
 			GL_DRAW_FRAMEBUFFER,		// DRAW
@@ -13,15 +13,15 @@ namespace
 		};
 
 		static_assert(
-			sizeof(Cast) / sizeof(GLenum) == kueken::rendertarget::TARGET_MAX,
+			sizeof(Cast) / sizeof(GLenum) == kueken::framebuffer::TARGET_MAX,
 			"Cast array size mismatch");
 
 		return Cast[Target];
 	}
 
-	GLenum rendertarget_attachment_cast(kueken::rendertarget::slot Slot)
+	GLenum framebuffer_attachment_cast(kueken::framebuffer::slot Slot)
 	{
-		static GLenum const Cast[kueken::rendertarget::SLOT_MAX] =
+		static GLenum const Cast[kueken::framebuffer::SLOT_MAX] =
 		{
 			GL_DEPTH_ATTACHMENT,	//DEPTH,
 			GL_COLOR_ATTACHMENT0,	//COLOR0,
@@ -35,7 +35,7 @@ namespace
 		};
 
 		static_assert(
-			sizeof(Cast) / sizeof(GLenum) == kueken::rendertarget::SLOT_MAX,
+			sizeof(Cast) / sizeof(GLenum) == kueken::framebuffer::SLOT_MAX,
 			"Cast array size mismatch");
 
 		return Cast[Slot];
@@ -44,7 +44,7 @@ namespace
 }//namespace
 
 namespace kueken{
-namespace rendertarget
+namespace framebuffer
 {
 	enum format
 	{
@@ -60,7 +60,7 @@ namespace rendertarget
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
 		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::null();
 		Data.Slot[COLOR0].Texture = texture::name::null();
-		Data.Slot[COLOR0].Attachment = rendertarget_attachment_cast(COLOR0);
+		Data.Slot[COLOR0].Attachment = framebuffer_attachment_cast(COLOR0);
 	}
 
 	////////////////////////////////////
@@ -77,7 +77,7 @@ namespace rendertarget
 		Data.Slot[Slot].Renderbuffer = renderbuffer::name::null();
 		Data.Slot[Slot].Texture = Texture;
 		Data.Slot[Slot].Level = Level;
-		Data.Slot[Slot].Attachment = rendertarget_attachment_cast(Slot);
+		Data.Slot[Slot].Attachment = framebuffer_attachment_cast(Slot);
 	}
 
 	void creator<CUSTOM>::setRenderbuffer
@@ -89,7 +89,7 @@ namespace rendertarget
 		Data.Slot[Slot].Type = detail::RENDERBUFFER;
 		Data.Slot[Slot].Renderbuffer = Renderbuffer;
 		Data.Slot[Slot].Texture = texture::name::null();
-		Data.Slot[Slot].Attachment = rendertarget_attachment_cast(Slot);
+		Data.Slot[Slot].Attachment = framebuffer_attachment_cast(Slot);
 	}
 
 	void creator<CUSTOM>::setFramebuffer()
@@ -97,7 +97,7 @@ namespace rendertarget
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
 		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::null();
 		Data.Slot[COLOR0].Texture = texture::name::null();
-		Data.Slot[COLOR0].Attachment = rendertarget_attachment_cast(COLOR0);
+		Data.Slot[COLOR0].Attachment = framebuffer_attachment_cast(COLOR0);
 	}
 
 	////////////////////////////////////
@@ -142,8 +142,8 @@ namespace rendertarget
 						Data.Slot[i].Level); // Level
 
 
-					//glNamedFramebufferDrawBufferEXT(Name, GL_COLOR_ATTACHMENT0_EXT);
-					//glNamedFramebufferReadBufferEXT(Name, GL_COLOR_ATTACHMENT0_EXT);
+					//glNamedFramebufferDrawBufferEXT(Name, GL_COLOR_ATTACHMENT0);
+					//glNamedFramebufferReadBufferEXT(Name, GL_COLOR_ATTACHMENT0);
 
 					assert(glGetError() == GL_NO_ERROR);
 				}
@@ -157,7 +157,7 @@ namespace rendertarget
 					glNamedFramebufferRenderbufferEXT(
 						Name,
 						Data.Slot[i].Attachment,
-						GL_RENDERBUFFER_EXT,
+						GL_RENDERBUFFER,
 						Object.GetName());
 				}
 				break;
@@ -181,8 +181,8 @@ namespace rendertarget
 
 	void object::bind(target const & Target)
 	{
-		glBindFramebuffer(rendertarget_format_cast(Target), Name);
+		glBindFramebuffer(framebuffer_format_cast(Target), Name);
 	}
 
-}//namespace rendertarget
+}//namespace framebuffer
 }//namespace kueken

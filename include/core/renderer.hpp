@@ -98,12 +98,12 @@ namespace kueken
 		renderbuffer::name create(renderbuffer::creator const & Creator);
 		void free(renderbuffer::name & Name);		
 
-		template <rendertarget::type Type>
-		rendertarget::name create(rendertarget::creator<Type> const & Creator);
-		void free(rendertarget::name& Name);		
+		template <framebuffer::type Type>
+		framebuffer::name create(framebuffer::creator<Type> const & Creator);
+		void free(framebuffer::name& Name);		
 		void bind(
-			rendertarget::target const & Target,
-			rendertarget::name const & Name);
+			framebuffer::target const & Target,
+			framebuffer::name const & Name);
 
 		texture::name create(texture::creator const & Creator);
 		void free(texture::name & Name);

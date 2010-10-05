@@ -38,7 +38,7 @@ private:
 	bool initDraw();
 	bool initLayout();
 	bool initProgram();
-	bool initRendertarget();
+	bool initFramebuffer();
 	bool initRasterizer();
 	bool initTest();
 	bool initTexture2D();

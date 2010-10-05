@@ -475,48 +475,47 @@ namespace kueken
 	}
 
 	///////////////////////////
-	// rendertarget
+	// framebuffer
 
 	template <>
-	rendertarget::name renderer::create
+	framebuffer::name renderer::create
 	(
-		rendertarget::creator<rendertarget::FRAMEBUFFER> const & Creator
+		framebuffer::creator<framebuffer::FRAMEBUFFER> const & Creator
 	)
 	{
-		rendertarget::object * Object = new rendertarget::object(Creator);
-		return manager::instance().Rendertarget.reserve(Object);
+		framebuffer::object * Object = new framebuffer::object(Creator);
+		return manager::instance().Framebuffer.reserve(Object);
 	}
 
 	template <>
-	rendertarget::name renderer::create
+	framebuffer::name renderer::create
 	(
-		rendertarget::creator<rendertarget::CUSTOM> const & Creator
+		framebuffer::creator<framebuffer::CUSTOM> const & Creator
 	)
 	{
-		rendertarget::object * Object = new rendertarget::object(Creator);
-		return manager::instance().Rendertarget.reserve(Object);
-		//return manager::instance().Rendertarget.create(Creator);
+		framebuffer::object * Object = new framebuffer::object(Creator);
+		return manager::instance().Framebuffer.reserve(Object);
 	}
 
-	void renderer::free(rendertarget::name& Name)
+	void renderer::free(framebuffer::name & Name)
 	{
-		manager::instance().Rendertarget.release(Name);
+		manager::instance().Framebuffer.release(Name);
 	}
 
 	void renderer::bind
 	(
-		rendertarget::target const & Target,
-		rendertarget::name const & Name
+		framebuffer::target const & Target,
+		framebuffer::name const & Name
 	)
 	{
 		manager& Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
-		if(Manager.Rendertarget.isCurrent(0, Name))
+		if(Manager.Framebuffer.isCurrent(0, Name))
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Rendertarget.setCurrentObject(0, Name).bind(Target);
+		Manager.Framebuffer.setCurrentObject(0, Name).bind(Target);
 	}
 
 	///////////////////////////

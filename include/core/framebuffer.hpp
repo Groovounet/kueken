@@ -1,13 +1,13 @@
-#ifndef KUEKEN_RENDERTARGET_INCLUDED
-#define KUEKEN_RENDERTARGET_INCLUDED
+#ifndef KUEKEN_FRAMEBUFFER_INCLUDED
+#define KUEKEN_FRAMEBUFFER_INCLUDED
 
 #include "detail/detail.hpp"
 #include "texture.hpp"
 #include "renderbuffer.hpp"
 
 namespace kueken{
-namespace rendertarget{
-
+namespace framebuffer
+{
 	enum slot
 	{
 		DEPTH,
@@ -38,8 +38,8 @@ namespace rendertarget{
 		LAYERED
 	};
 
-namespace detail{
-
+namespace detail
+{
 	enum type
 	{
 		TEXTURE,
@@ -61,7 +61,6 @@ namespace detail{
 		slot Slot[SLOT_MAX];
 		glm::uvec2 Size;
 	};
-
 }//namespace detail
 
 	class renderer;
@@ -138,9 +137,9 @@ namespace detail{
 	typedef kueken::detail::name<object> name;
 	typedef kueken::detail::manager<name, object> manager;
 
-}//namespace rendertarget
+}//namespace framebuffer
 }//namespace kueken
 
-#include "rendertarget.inl"
+#include "framebuffer.inl"
 
-#endif//KUEKEN_RENDERTARGET_INCLUDED
+#endif//KUEKEN_FRAMEBUFFER_INCLUDED

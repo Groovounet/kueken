@@ -7,7 +7,7 @@
 #include "query.hpp"
 #include "rasterizer.hpp"
 #include "renderbuffer.hpp"
-#include "rendertarget.hpp"
+#include "framebuffer.hpp"
 #include "sampler.hpp"
 #include "test.hpp"
 #include "texture.hpp"

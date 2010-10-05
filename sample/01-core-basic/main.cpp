@@ -51,7 +51,7 @@ namespace
 	kueken::buffer::name ArrayBuffer(kueken::buffer::name::null());
 	kueken::buffer::name ElementBuffer(kueken::buffer::name::null());
 	kueken::test::name Test(kueken::test::name::null());
-	kueken::rendertarget::name Rendertarget(kueken::rendertarget::name::null());
+	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
 	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
 	kueken::program::semantic const SEMANTIC_MVP(1);
@@ -91,7 +91,7 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 	if(Result)
 		Result = initRasterizer();
 	if(Result)
-		Result = initRendertarget();
+		Result = initFramebuffer();
 	if(Result)
 		Result = initArrayBuffer();
 	if(Result)
@@ -136,7 +136,7 @@ void sample::render()
 	Object->setUniform(SEMANTIC_MVP, MVP);
 	Renderer->unmap(Program);
 
-	Renderer->bind(kueken::rendertarget::EXEC, Rendertarget);
+	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
 
 	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerBackground);
 	Renderer->exec(ClearBackground);
@@ -329,13 +329,13 @@ bool sample::initArrayBuffer()
 	return glf::checkError("initArrayBuffer");
 }
 
-bool sample::initRendertarget()
+bool sample::initFramebuffer()
 {
-	kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
+	kueken::framebuffer::creator<kueken::framebuffer::CUSTOM> Creator;
 	Creator.setFramebuffer();
-	Rendertarget = Renderer->create(Creator);
+	Framebuffer = Renderer->create(Creator);
 
-	return glf::checkError("initRendertarget");
+	return glf::checkError("initFramebuffer");
 }
 
 int main(int argc, char* argv[])

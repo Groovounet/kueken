@@ -12,7 +12,7 @@
 #include "rasterizer.hpp"
 #include "read_pixels.hpp"
 #include "renderbuffer.hpp"
-#include "rendertarget.hpp"
+#include "framebuffer.hpp"
 #include "sampler.hpp"
 #include "test.hpp"
 #include "texture.hpp"
@@ -41,7 +41,7 @@ public:
 	rasterizer::manager Rasterizer; 
 	readpixels::manager ReadPixels;
 	renderbuffer::manager Renderbuffer;
-	rendertarget::manager Rendertarget;
+	framebuffer::manager Framebuffer;
 	sampler::manager Sampler; 
 	test::manager Test; 
 	texture::manager Texture; 
