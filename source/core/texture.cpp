@@ -188,7 +188,6 @@ namespace
 			true,	//RGBA_DXT1
 			true,	//RGBA_DXT3
 			true,	//RGBA_DXT5
-
 			true,	//COMPRESSED_RED_RGTC1
 			true,	//COMPRESSED_SIGNED_RED_RGTC1
 			true,	//COMPRESSED_RG_RGTC2
@@ -196,11 +195,11 @@ namespace
 			true,	//COMPRESSED_RGBA_BPTC_UNORM
 			true,	//COMPRESSED_SRGB_ALPHA_BPTC_UNORM
 			true,	//COMPRESSED_RGB_BPTC_SIGNED_FLOAT
-			true,	//COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
+			true	//COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
 		};
 
 		static_assert(
-			sizeof(Cast) / sizeof(GLenum) == kueken::texture::FORMAT_MAX,
+			sizeof(Cast) / sizeof(bool) == kueken::texture::FORMAT_MAX,
 			"Cast array size mismatch");
 
 		return Cast[Format];
