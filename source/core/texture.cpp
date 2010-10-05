@@ -3,9 +3,9 @@
 
 namespace
 {
-	GLenum image_target_cast(kueken::texture::target Target)
+	GLenum image_target_cast(kueken::texture::target const & Target)
 	{
-		static GLenum const CastImageTarget[kueken::texture::TARGET_MAX] =
+		static GLenum const Cast[kueken::texture::TARGET_MAX] =
 		{
 			GL_TEXTURE_1D,						// IMAGE_1D
 			GL_TEXTURE_2D,						// IMAGE_2D
@@ -21,10 +21,14 @@ namespace
 			GL_TEXTURE_CUBE_MAP_NEGATIVE_Z		// CUBE_NEG_Z
 		};
 
-		return CastImageTarget[Target];
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::texture::TARGET_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Target];
 	}
 
-	GLenum image_internal_cast(kueken::texture::format Format)
+	GLenum image_internal_cast(kueken::texture::format const & Format)
 	{
 		static GLenum const Cast[kueken::texture::FORMAT_MAX] =
 		{
@@ -105,12 +109,16 @@ namespace
 			GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB,		//COMPRESSED16_RGB_UFLOAT		// BC6H
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::texture::FORMAT_MAX,
+			"Cast array size mismatch");
+
 		assert(Cast[Format] != GL_NONE);
 
 		return Cast[Format];
 	}
 
-	bool image_compressed_cast(kueken::texture::format Format)
+	bool image_compressed_cast(kueken::texture::format const & Format)
 	{
 		static bool const Cast[kueken::texture::FORMAT_MAX] =
 		{
@@ -190,6 +198,10 @@ namespace
 			true,	//COMPRESSED_RGB_BPTC_SIGNED_FLOAT
 			true,	//COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::texture::FORMAT_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Format];
 	}
@@ -275,10 +287,14 @@ namespace
 			GL_RGB,		//COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::texture::FORMAT_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Format];
 	}
 
-	GLenum image_type_cast(kueken::texture::format Format)
+	GLenum image_type_cast(kueken::texture::format const & Format)
 	{
 		static GLenum const Cast[kueken::texture::FORMAT_MAX] =
 		{
@@ -349,9 +365,13 @@ namespace
 			GL_NONE		//RGBA_DXT5
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::texture::FORMAT_MAX,
+			"Cast array size mismatch");
+
 		GLenum Value = Cast[Format];
 
-		//assert(Value != GL_NONE);
+		assert(Value != GL_NONE);
 
 		return Value;
 	}

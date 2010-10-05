@@ -22,6 +22,10 @@ namespace
 			GL_LINEAR		// LINEAR
 		};
 
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::blit::FILTER_MAX,
+			"Cast array size mismatch");
+
 		return Cast[Filter];
 	}
 
