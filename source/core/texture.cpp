@@ -375,6 +375,25 @@ namespace
 		return Value;
 	}
 
+	GLenum swizzle_cast(kueken::texture::swizzle const & Swizzle)
+	{
+		static GLenum const Cast[kueken::texture::SWIZZLE_MAX] =
+		{
+			GL_RED,		//RED
+			GL_GREEN,	//GREEN
+			GL_BLUE,	//BLUE
+			GL_ALPHA,	//ALPHA
+			GL_ZERO,	//ZERO
+			GL_ONE,		//ONE
+		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::texture::SWIZZLE_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Swizzle];
+	}
+
 }//namespace
 
 namespace kueken{
@@ -397,6 +416,30 @@ namespace texture{
 		Data.Compressed = image_compressed_cast(Format);
 	}
 
+	void creator::setSwizzle
+	(
+		swizzle const & Red, 
+		swizzle const & Green, 
+		swizzle const & Blue, 
+		swizzle const & Alpha
+	)
+	{
+		this->Data.Swizzle[0] = swizzle_cast(Red);
+		this->Data.Swizzle[1] = swizzle_cast(Green);
+		this->Data.Swizzle[2] = swizzle_cast(Blue);
+		this->Data.Swizzle[3] = swizzle_cast(Alpha);
+	}
+
+	void creator::setLevel
+	(
+		glm::int32 const & BaseLevel, 
+		glm::int32 const & MaxLevel
+	)
+	{
+		this->Data.BaseLevel = GLint(BaseLevel);
+		this->Data.MaxLevel = GLint(MaxLevel);
+	}
+
 	void creator::setImage
 	(
 		level const & Level, 
@@ -404,12 +447,12 @@ namespace texture{
 		void const * const Pointer // shared_array?
 	)
 	{
-		if(Data.Mipmaps.size() <= Level)
-			Data.Mipmaps.resize(Level + 1);
-		Data.Mipmaps[Level].Data = Pointer;
-		Data.Mipmaps[Level].Width = Size.x;
-		Data.Mipmaps[Level].Height = Size.y;
-		Data.Mipmaps[Level].Depth = Size.z;
+		if(this->Data.Mipmaps.size() <= Level)
+			this->Data.Mipmaps.resize(Level + 1);
+		this->Data.Mipmaps[Level].Data = Pointer;
+		this->Data.Mipmaps[Level].Width = Size.x;
+		this->Data.Mipmaps[Level].Height = Size.y;
+		this->Data.Mipmaps[Level].Depth = Size.z;
 	}
 
 	bool creator::validate()
@@ -448,13 +491,13 @@ namespace texture{
 				Name, 
 				Data.Target, 
 				GL_TEXTURE_BASE_LEVEL, 
-				0);
+				Data.BaseLevel);
 
 			glTextureParameteriEXT(
 				Name, 
 				Data.Target, 
 				GL_TEXTURE_MAX_LEVEL, 
-				GLint(Data.Mipmaps.size()));
+				glm::min(GLint(Data.MaxLevel), GLint(Data.Mipmaps.size())));
 
 			std::size_t BlockSize = Data.InternalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 8 : 16;
 

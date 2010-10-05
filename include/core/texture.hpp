@@ -10,7 +10,18 @@ namespace framebuffer
 	class object;
 }//namespace framebuffer
 
-namespace texture{
+namespace texture
+{
+	enum swizzle
+	{
+		RED,
+		GREEN,
+		BLUE,
+		ALPHA,
+		ZERO,
+		ONE,
+		SWIZZLE_MAX
+	};
 
 	enum type
 	{
@@ -294,12 +305,22 @@ namespace detail
 
 	public:
 		creator(renderer & Renderer);
-		void setTarget(target const & Target);
-		void setFormat(format const & Format);
+		void setTarget(
+			target const & Target);
+		void setFormat(
+			format const & Format);
+		void setSwizzle(
+			swizzle const & Red, 
+			swizzle const & Green, 
+			swizzle const & Blue, 
+			swizzle const & Alpha);
+		void setLevel(
+			glm::int32 const & BaseLevel, 
+			glm::int32 const & MaxLevel);
 		void setImage(
 			level const & Level, 
 			glm::uvec3 const & Size,
-			void const * const Pointer); // shared_array?
+			void const * const Pointer); // gli::image?
 
 		virtual bool validate();
 
