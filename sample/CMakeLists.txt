@@ -2,6 +2,7 @@ set(KUEKEN_SAMPLES_NAME kueken-samples)
 add_group_target_GTC(${KUEKEN_SAMPLES_NAME})
 
 add_subdirectory (01-core-basic)
+add_subdirectory (02-core-uniformbuffer)
 add_subdirectory (02-core-multisample)
 add_subdirectory (03-core-query)
 add_subdirectory (04-core-texturebuffer)

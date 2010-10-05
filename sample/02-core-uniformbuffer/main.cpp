@@ -1,6 +1,6 @@
 //**********************************
-// Kueken sample 01
-// 05/01/2009
+// Kueken sample 02
+// 05/10/2010
 //**********************************
 // Christophe Riccio
 // christophe@g-truc.net
@@ -14,8 +14,8 @@
 namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 01";	
-	const char* VERTEX_SHADER_SOURCE = "../data/texture.vert";
-	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
+	const char* VERTEX_SHADER_SOURCE = "../data/uniform-buffer.vert";
+	const char* FRAGMENT_SHADER_SOURCE = "../data/uniform-buffer.frag";
 	const char* TEXTURE_DIFFUSE = "../data/küken256dxt5.dds";
 
 	GLsizei const VertexCount = 4;
@@ -50,12 +50,12 @@ namespace
 	kueken::sampler::name Sampler(kueken::sampler::name::null());
 	kueken::buffer::name ArrayBuffer(kueken::buffer::name::null());
 	kueken::buffer::name ElementBuffer(kueken::buffer::name::null());
+	kueken::buffer::name UniformBuffer(kueken::buffer::name::null());
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::rendertarget::name Rendertarget(kueken::rendertarget::name::null());
 
 	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
 	kueken::program::semantic const SEMANTIC_MVP(1);
-
 	kueken::program::semantic const SEMANTIC_POSITION(0);
 	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
 }//namespace
@@ -119,22 +119,32 @@ bool sample::end()
 
 void sample::render()
 {
-	static float Rotate = 0.0f;
-	Rotate += 0.01f;
+	// Update buffer object
+	{
+		static float Rotate = 0.0f;
+		Rotate += 0.01f;
 
-    glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -4.0f);//-tranlationCurrent.y);
-	glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, rotationCurrent.y,-1.f, 0.f, 0.f);
-	glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotationCurrent.x, 0.f, 1.f, 0.f);
-	glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, 0.f, 0.f, 1.f);
-	glm::mat4 View = ViewRotateZ;
-	glm::mat4 Model = glm::mat4(1.0f);
-	glm::mat4 MVP = Projection * View * Model;
- 
-	kueken::program::object * Object = Renderer->map(Program);
-	Object->setSampler(SEMANTIC_DIFFUSE, 0);
-	Object->setUniform(SEMANTIC_MVP, MVP);
-	Renderer->unmap(Program);
+		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+		glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -4.0f);//-tranlationCurrent.y);
+		glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, rotationCurrent.y,-1.f, 0.f, 0.f);
+		glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotationCurrent.x, 0.f, 1.f, 0.f);
+		glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, 0.f, 0.f, 1.f);
+		glm::mat4 View = ViewRotateZ;
+		glm::mat4 Model = glm::mat4(1.0f);
+		glm::mat4 MVP = Projection * View * Model;
+
+		kueken::buffer::object* Object = Renderer->map(UniformBuffer);
+		Object->set(0, sizeof(glm::mat4), &MVP[0][0]);
+		Renderer->unmap(UniformBuffer);
+	}
+
+	// Update program object
+	{
+		kueken::program::object * Object = Renderer->map(Program);
+		Object->setSampler(SEMANTIC_DIFFUSE, 0);
+		Object->setBlock(SEMANTIC_MVP, 2);
+		Renderer->unmap(Program);
+	}
 
 	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
 
@@ -154,6 +164,7 @@ void sample::render()
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
+	Renderer->bind(2, kueken::buffer::UNIFORM, UniformBuffer);
 	Renderer->bind(0, kueken::layout::VERTEX, Layout);
 
 	Renderer->exec(Draw);
@@ -276,7 +287,7 @@ bool sample::initProgram()
 	Creator.addVariable(
 		SEMANTIC_DIFFUSE, 
 		"Diffuse");
-	Creator.addVariable(
+	Creator.addBlock(
 		SEMANTIC_MVP, 
 		"MVP");
 
