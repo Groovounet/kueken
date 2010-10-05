@@ -75,7 +75,7 @@ sample::sample
 	std::string const & Name, 
 	glm::ivec2 const & WindowSize
 ) :
-	IBase(Name, WindowSize)
+	base(Name, WindowSize)
 {}
 
 sample::~sample()

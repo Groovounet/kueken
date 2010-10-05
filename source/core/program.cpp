@@ -97,7 +97,8 @@ namespace detail
 
 	creator::creator(renderer & Renderer) :
 		Renderer(Renderer),
-		SemanticsMax(0),
+		UniformSemanticsMax(0),
+		BlockSemanticsMax(0),
 		FeedbackBufferMode(0),
 		Quiet(false),
 		Built(false)
@@ -208,7 +209,18 @@ namespace detail
 	{
 		this->UniformVariables.push_back(
 			detail::indirection(Semantic, Name));
-		this->SemanticsMax = glm::max(this->SemanticsMax, Semantic);
+		this->UniformSemanticsMax = glm::max(this->UniformSemanticsMax, Semantic);
+	}
+
+	void creator::addBlock
+	(
+		semantic const & Semantic, 
+		std::string const & Name
+	)
+	{
+		this->BlockVariables.push_back(
+			detail::indirection(Semantic, Name));
+		this->BlockSemanticsMax = glm::max(this->BlockSemanticsMax, Semantic);
 	}
 
 	void creator::setFeedbackVariable
@@ -364,11 +376,18 @@ namespace detail
 		// Load variables
 		if(Success)
 		{
-			this->Indirection.resize(Creator.SemanticsMax + 1);
+			this->UniformIndirection.resize(Creator.UniformSemanticsMax + 1);
 			for(std::size_t i = 0; i < Creator.UniformVariables.size(); ++i)
 			{
 				GLuint Location = glGetUniformLocation(this->Name, Creator.UniformVariables[i].Name.c_str());
-				this->Indirection[Creator.UniformVariables[i].Semantic] = Location;
+				this->UniformIndirection[Creator.UniformVariables[i].Semantic] = Location;
+			}
+
+			this->BlockIndirection.resize(Creator.BlockSemanticsMax + 1);
+			for(std::size_t i = 0; i < Creator.BlockVariables.size(); ++i)
+			{
+				GLuint Location = glGetUniformBlockIndex(this->Name, Creator.BlockVariables[i].Name.c_str());
+				this->BlockIndirection[Creator.UniformVariables[i].Semantic] = Location;
 			}
 		}
 	}
@@ -392,8 +411,10 @@ namespace detail
 	)
 	{
 		glProgramUniform2fvEXT(
-			this->Name, this->Indirection[Semantic], 
-			1, glm::value_ptr(Value));
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
 	}
 
 	template <>
@@ -404,8 +425,10 @@ namespace detail
 	)
 	{
 		glProgramUniform3fvEXT(
-			this->Name, this->Indirection[Semantic], 
-			1, glm::value_ptr(Value));
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
 	}
 
 	template <>
@@ -416,8 +439,10 @@ namespace detail
 	)
 	{
 		glProgramUniform4fvEXT(
-			this->Name, this->Indirection[Semantic], 
-			1, glm::value_ptr(Value));
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
 	}
 
 	template <>
@@ -428,8 +453,10 @@ namespace detail
 	)
 	{
 		glProgramUniformMatrix2fvEXT(
-			this->Name, this->Indirection[Semantic], 
-			1, GL_FALSE, glm::value_ptr(Value));
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, GL_FALSE, 
+			glm::value_ptr(Value));
 	}
 
 	template <>
@@ -440,8 +467,10 @@ namespace detail
 	)
 	{
 		glProgramUniformMatrix3fv(
-			this->Name, this->Indirection[Semantic], 
-			1, GL_FALSE, glm::value_ptr(Value));
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, GL_FALSE, 
+			glm::value_ptr(Value));
 	}
 
 	template <>
@@ -452,8 +481,11 @@ namespace detail
 	)
 	{
 		glProgramUniformMatrix4fvEXT(
-			this->Name, this->Indirection[Semantic], 
-			1, GL_FALSE, glm::value_ptr(Value));
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			GL_FALSE, 
+			glm::value_ptr(Value));
 	}
 
 	void object::setSampler
@@ -463,7 +495,8 @@ namespace detail
 	)
 	{
 		glProgramUniform1iEXT(
-			this->Name, this->Indirection[Semantic], 
+			this->Name, 
+			this->UniformIndirection[Semantic], 
 			Value);
 	}
 
@@ -475,8 +508,38 @@ namespace detail
 	)
 	{
 		glProgramUniform1ivEXT(
-			this->Name, this->Indirection[Semantic], 
-			GLsizei(Count), Value);
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			GLsizei(Count), 
+			Value);
+	}
+
+	void object::setBlock
+	(
+		semantic const & Semantic, 
+		block const & Value
+	)
+	{
+		glUniformBlockBinding(
+			this->Name, 
+			this->BlockIndirection[Semantic], 
+			Value);
+	}
+
+	void object::setBlock
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		block const * Value
+	)
+	{
+		for(count Index = 0; Index < Count; ++Index)
+		{
+			glUniformBlockBinding(
+				this->Name, 
+				this->BlockIndirection[Semantic] + Index, 
+				GLuint(Value + Index));
+		}
 	}
 
 }//namespace program

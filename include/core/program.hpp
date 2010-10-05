@@ -62,6 +62,7 @@ namespace program
 	typedef std::size_t semantic;
 	typedef std::size_t count;
 	typedef int sampler;
+	typedef glm::uint32 block;
 
 namespace detail
 {
@@ -107,6 +108,9 @@ namespace detail
 		void addVariable(
 			semantic const & Semantic, 
 			std::string const & Name);
+		void addBlock(
+			semantic const & Semantic, 
+			std::string const & Name);
 		void setFeedbackVariable(
 			std::vector<std::string> const & Names, 
 			buffer::mode const & Mode);
@@ -125,8 +129,10 @@ namespace detail
 
 		std::vector<std::string> FeedbackVariables;
 		std::vector<detail::indirection> UniformVariables;
+		semantic UniformSemanticsMax;
+		std::vector<detail::indirection> BlockVariables;
+		semantic BlockSemanticsMax;
 		renderer & Renderer;
-		semantic SemanticsMax;
 		GLenum FeedbackBufferMode;
 		bool Quiet;
 		bool Built;
@@ -164,9 +170,21 @@ namespace detail
 			count const & Count, 
 			sampler const * Value);
 
+		// Block
+		void setBlock(
+			semantic const & Semantic, 
+			block const & Value);
+
+		// Block array
+		void setBlock(
+			semantic const & Semantic, 
+			count const & Count, 
+			block const * Value);
+
 	private:
 		//detail::data Data;
-		std::vector<GLuint> Indirection;
+		std::vector<GLuint> UniformIndirection;
+		std::vector<GLuint> BlockIndirection;
 		GLuint Name;
 		std::string Log;
 	};

@@ -370,7 +370,7 @@ namespace
 
 		GLenum Value = Cast[Format];
 
-		assert(Value != GL_NONE);
+		//assert(Value != GL_NONE);
 
 		return Value;
 	}
