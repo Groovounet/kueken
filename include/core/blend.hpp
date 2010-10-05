@@ -7,7 +7,12 @@ namespace kueken
 {
 	class renderer;
 
-namespace blend{
+namespace blend
+{
+	enum target
+	{
+		BLEND
+	};
 
 	enum slot
 	{

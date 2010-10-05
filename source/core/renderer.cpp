@@ -52,6 +52,7 @@ namespace kueken
 
 	void renderer::bind
 	(
+		blend::target const & Target, 
 		blend::name const & Name
 	)
 	{
@@ -425,6 +426,7 @@ namespace kueken
 
 	void renderer::bind
 	(
+		rasterizer::target const & Target, 
 		rasterizer::name const & Name
 	)
 	{
@@ -503,8 +505,8 @@ namespace kueken
 
 	void renderer::bind
 	(
-		rendertarget::name const & Name,
-		rendertarget::target const & Target
+		rendertarget::target const & Target,
+		rendertarget::name const & Name
 	)
 	{
 		manager& Manager = manager::instance();
@@ -578,6 +580,7 @@ namespace kueken
 
 	void renderer::bind
 	(
+		test::target const & Target, 
 		test::name const & Name
 	)
 	{

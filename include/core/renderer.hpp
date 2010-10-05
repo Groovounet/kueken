@@ -14,11 +14,13 @@ namespace kueken
 		program::version getVersion() const;
 
 		blend::name create(blend::creator const & Creator);
-		void free(blend::name& Name);
-		void bind(blend::name const & Name);
+		void free(blend::name & Name);
+		void bind(
+			blend::target const & Target, 
+			blend::name const & Name);
 
 		blit::name create(blit::creator const & Creator);
-		void free(blit::name& Name);
+		void free(blit::name & Name);
 		void exec(blit::name const & Name);
 
 		clear::name create(clear::creator const & Creator);
@@ -55,30 +57,34 @@ namespace kueken
 			program::slot const & Slot, 
 			program::target const & Target, 
 			program::name const & Name);
-		program::object* map(program::name& Name);
+		program::object* map(program::name & Name);
 		void unmap(program::name& Name);
 
 		query::name create(query::creator const & Creator);
-		void free(query::name& Name);
+		void free(query::name & Name);
 		void begin(query::name const & Name, query::use const & Use);
 		void end(query::name const & Name, query::use const & Use);
 		glm::uint64 get(query::name const & Name);
 
 		template <rasterizer::type Type>
 		rasterizer::name create(rasterizer::creator<Type> const & Creator);
-		void free(rasterizer::name& Name);
-		void bind(rasterizer::name const & Name);
+		void free(rasterizer::name & Name);
+		void bind(
+			rasterizer::target const & Target, 
+			rasterizer::name const & Name);
 
 		sampler::name create(sampler::creator const & Creator);
-		void free(sampler::name& Name);
+		void free(sampler::name & Name);
 		void bind(
 			sampler::slot const & Slot, 
 			sampler::target const & Target, 
 			sampler::name const & Name);
 
 		test::name create(test::creator const & Creator);
-		void free(test::name& Name);
-		void bind(test::name const & Name);
+		void free(test::name & Name);
+		void bind(
+			test::target const & Target,
+			test::name const & Name);
 
 		//template <texture::type Type>
 		//texture::name create(texture::creator<Type> const & Creator);
@@ -86,18 +92,18 @@ namespace kueken
 		//void bind(texture::name const & Name, texture::slot Slot);
 
 		readpixels::name create(readpixels::creator const & Creator);
-		void free(readpixels::name& Name);
+		void free(readpixels::name & Name);
 		void exec(readpixels::name const & Name);
 
 		renderbuffer::name create(renderbuffer::creator const & Creator);
-		void free(renderbuffer::name& Name);		
+		void free(renderbuffer::name & Name);		
 
 		template <rendertarget::type Type>
 		rendertarget::name create(rendertarget::creator<Type> const & Creator);
 		void free(rendertarget::name& Name);		
 		void bind(
-			rendertarget::name const & Name, 
-			rendertarget::target const & Target);
+			rendertarget::target const & Target,
+			rendertarget::name const & Name);
 
 		texture::name create(texture::creator const & Creator);
 		void free(texture::name & Name);

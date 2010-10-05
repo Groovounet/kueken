@@ -4,7 +4,12 @@
 #include "detail/detail.hpp"
 
 namespace kueken{
-namespace test{
+namespace test
+{
+	enum target
+	{
+		TEST
+	};
 
 	enum function
 	{

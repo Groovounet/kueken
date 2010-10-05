@@ -136,16 +136,16 @@ void sample::render()
 	Object->setUniform(SEMANTIC_MVP, MVP);
 	Renderer->unmap(Program);
 
-	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
+	Renderer->bind(kueken::rendertarget::EXEC, Rendertarget);
 
-	Renderer->bind(RasterizerBackground);
+	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerBackground);
 	Renderer->exec(ClearBackground);
 
-	Renderer->bind(RasterizerScene);
+	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerScene);
 	Renderer->exec(ClearScene);
 
-	Renderer->bind(Test);
-	Renderer->bind(Blend);
+	Renderer->bind(kueken::test::TEST, Test);
+	Renderer->bind(kueken::blend::BLEND, Blend);
 	
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	

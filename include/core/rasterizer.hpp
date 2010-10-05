@@ -7,7 +7,12 @@ namespace kueken
 {
 	class renderer;
 
-namespace rasterizer{
+namespace rasterizer
+{
+	enum target
+	{
+		RASTERIZER
+	};
 
 	enum type
 	{
