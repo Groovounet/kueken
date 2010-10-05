@@ -36,6 +36,19 @@ namespace detail{
 
 	enum target
 	{
+		ARRAY,
+		ELEMENT,
+		UNIFORM,
+		TEXTURE,
+		PIXEL_PACK,
+		PIXEL_UNPACK,
+		FEEDBACK,
+		INDIRECT,
+		TARGET_MAX
+	};
+/*
+	enum target
+	{
 		ELEMENT,
 		ARRAY,
 		ARRAY0 = ARRAY,
@@ -78,7 +91,7 @@ namespace detail{
         PIXEL_UNPACK,
 		TARGET_MAX
 	};
-
+*/
 	typedef std::size_t slot;
 
 	enum usage
