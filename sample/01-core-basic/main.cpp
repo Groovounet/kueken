@@ -36,7 +36,7 @@ namespace
 		2, 3, 0
 	};
 
-	kueken::renderer * Renderer(nullptr);
+	std::unique_ptr<kueken::renderer> Renderer(nullptr);
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
 	kueken::rasterizer::name RasterizerBackground(kueken::rasterizer::name::null());
@@ -80,7 +80,7 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 {
 	windowSize = WindowSize;
 
-	Renderer = new kueken::renderer;
+	Renderer.reset(new kueken::renderer);
 
 	bool Result = true;
 
@@ -111,8 +111,7 @@ bool sample::begin(glm::ivec2 const & WindowSize)
 
 bool sample::end()
 {
-	delete Renderer;
-	Renderer = 0;
+	Renderer.reset();
 
 	return glf::checkError("End");
 }
@@ -131,9 +130,9 @@ void sample::render()
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 MVP = Projection * View * Model;
  
-	kueken::program::object * Object = Renderer->map(Program);
-	Object->setSampler(SEMANTIC_DIFFUSE, 0);
-	Object->setUniform(SEMANTIC_MVP, MVP);
+	kueken::program::object & Object = Renderer->map(Program);
+	Object.setSampler(SEMANTIC_DIFFUSE, 0);
+	Object.setUniform(SEMANTIC_MVP, MVP);
 	Renderer->unmap(Program);
 
 	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
@@ -164,7 +163,7 @@ void sample::render()
 
 bool sample::initBlend()
 {
-	kueken::blend::creator Creator;
+	kueken::blend::creator Creator(*Renderer);
 	Creator.setColorMask(kueken::blend::SLOT0, glm::bvec4(true));
 	Blend = Renderer->create(Creator);
 
@@ -173,7 +172,7 @@ bool sample::initBlend()
 
 bool sample::initClear()
 {
-	kueken::clear::creator Creator;
+	kueken::clear::creator Creator(*Renderer);
 	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 	ClearBackground = Renderer->create(Creator);
 	Creator.setColor(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
@@ -184,7 +183,7 @@ bool sample::initClear()
 
 bool sample::initDraw()
 {
-	kueken::draw::creator<kueken::draw::ELEMENT> Creator;
+	kueken::draw::creator<kueken::draw::ELEMENT> Creator(*Renderer);
 	Creator.setPrimitive(kueken::draw::TRIANGLES);
 	Creator.setElementFormat(kueken::draw::UINT32);
 	Creator.setFirst(0);
@@ -198,7 +197,7 @@ bool sample::initDraw()
 
 bool sample::initTest()
 {
-	kueken::test::creator Creator;
+	kueken::test::creator Creator(*Renderer);
 	Creator.setDepthEnable(false);
 	Test = Renderer->create(Creator);
 
@@ -208,7 +207,7 @@ bool sample::initTest()
 bool sample::initRasterizer()
 {
 	{
-		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator;
+		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setViewport(
 			glm::ivec4(0, 0, windowSize));
 		Creator.setScissor(
@@ -217,7 +216,7 @@ bool sample::initRasterizer()
 	}
 
 	{
-		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator;
+		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setViewport(
 			glm::ivec4(0, 0, windowSize));
 		Creator.setScissor(
@@ -245,8 +244,8 @@ bool sample::initTexture2D()
 		}
 		Texture = Renderer->create(Creator);
 
-		kueken::texture::object* Object = Renderer->map(Texture);
-		Object->generateMipmaps();
+		kueken::texture::object & Object = Renderer->map(Texture);
+		Object.generateMipmaps();
 		Renderer->unmap(Texture);
 	}
 
@@ -311,7 +310,7 @@ bool sample::initLayout()
 bool sample::initArrayBuffer()
 {
 	{
-		kueken::buffer::creator Creator;
+		kueken::buffer::creator Creator(*Renderer);
 		Creator.setSize(VertexSize);
 		Creator.setData(VertexData);
 		Creator.setUsage(kueken::buffer::STATIC_DRAW);
@@ -319,7 +318,7 @@ bool sample::initArrayBuffer()
 	}
 
 	{
-		kueken::buffer::creator Creator;
+		kueken::buffer::creator Creator(*Renderer);
 		Creator.setSize(ElementSize);
 		Creator.setData(ElementData);
 		Creator.setUsage(kueken::buffer::STATIC_DRAW);
@@ -331,7 +330,7 @@ bool sample::initArrayBuffer()
 
 bool sample::initFramebuffer()
 {
-	kueken::framebuffer::creator<kueken::framebuffer::CUSTOM> Creator;
+	kueken::framebuffer::creator<kueken::framebuffer::CUSTOM> Creator(*Renderer);
 	Creator.setFramebuffer();
 	Framebuffer = Renderer->create(Creator);
 

@@ -7,7 +7,7 @@ namespace
 
 namespace kueken
 {
-	manager * manager::Manager(nullptr);
+	std::unique_ptr<manager> manager::Manager(nullptr);
 
 	manager::manager() :
 		Blend(1),
@@ -29,15 +29,14 @@ namespace kueken
 
 	manager & manager::instance()
 	{
-		if(Manager == 0)
-			Manager = new manager;
+		if(Manager.get() == nullptr)
+			Manager.reset(new manager);
 		return * Manager;
 	}
 
 	void manager::destroy()
 	{
-		delete Manager;
-		Manager = nullptr;
+		Manager.reset();
 	}
 
 }//namespace kueken

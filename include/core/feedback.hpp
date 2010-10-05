@@ -3,6 +3,11 @@
 
 #include "detail/detail.hpp"
 
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
+
 namespace kueken{
 namespace feedback{
 namespace detail
@@ -24,7 +29,7 @@ namespace detail
 		friend class object;
 
 	public:
-
+		creator(renderer & Renderer);
 		virtual bool validate(){assert(0); return false;}
 
 	private:

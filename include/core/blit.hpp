@@ -3,9 +3,14 @@
 
 #include "detail/detail.hpp"
 
-namespace kueken{
-namespace blit{
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
 
+namespace kueken{
+namespace blit
+{
 	enum filter
 	{
 		NEAREST,
@@ -13,8 +18,8 @@ namespace blit{
 		FILTER_MAX
 	};
 
-namespace detail{
-
+namespace detail
+{
 	struct data
 	{
 		data();
@@ -24,7 +29,6 @@ namespace detail{
 		GLbitfield Mask;
 		GLenum Filter;
 	};
-
 }//namespace detail
 
 	class creator : public kueken::detail::creator
@@ -32,6 +36,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setRectSrc(glm::ivec4 const & SrcRect);
 		void setRectDst(glm::ivec4 const & DstRect);
 		void setMask(bool Color, bool Depth, bool Stencil);

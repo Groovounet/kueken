@@ -7,7 +7,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace program
 {
 	enum target

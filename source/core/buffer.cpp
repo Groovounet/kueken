@@ -50,6 +50,12 @@ namespace
 namespace kueken{
 namespace buffer
 {
+	creator::creator
+	(
+		renderer & Renderer
+	)
+	{}
+
 	void creator::setUsage(usage Usage)
 	{
 		Data.Usage = buffer_usage_cast(Usage);

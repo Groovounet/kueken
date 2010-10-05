@@ -21,6 +21,7 @@
 #include <set>
 #include <map>
 #include <fstream>
+#include <memory>
 
 // Boost
 #include <boost/shared_ptr.hpp>

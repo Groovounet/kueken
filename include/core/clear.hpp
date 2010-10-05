@@ -7,7 +7,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace clear{
 namespace detail{
 
@@ -39,6 +41,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setColor(glm::vec4 const & Color);
 		void setDepth(float Depth);
 		void setStencil(int Stencil);

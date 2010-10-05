@@ -55,7 +55,7 @@ namespace framebuffer
 	////////////////////////////////////
 	// creator<FRAMEBUFFER>
 
-	creator<FRAMEBUFFER>::creator()
+	creator<FRAMEBUFFER>::creator(renderer & Renderer)
 	{
 		Data.Slot[COLOR0].Type = detail::FRAMEBUFFER;
 		Data.Slot[COLOR0].Renderbuffer = renderbuffer::name::null();
@@ -65,6 +65,12 @@ namespace framebuffer
 
 	////////////////////////////////////
 	// creator<CUSTOM>
+
+	creator<CUSTOM>::creator
+	(
+		renderer & Renderer
+	)
+	{}
 
 	void creator<CUSTOM>::setTexture
 	(

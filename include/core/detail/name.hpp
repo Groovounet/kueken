@@ -6,16 +6,12 @@
 namespace kueken{
 namespace detail
 {
-	//template <typename OBJECT>
-	//class CObjectManager;
-
 	template <typename T>
 	class name : public boost::totally_ordered<name<T> >
 	{
-		//friend class CObjectManager<T, CName<T> >;
-
 	public:
 		typedef T object_type;
+		typedef std::size_t size_type;
 
 	public:
 		name();
@@ -31,13 +27,13 @@ namespace detail
 		static name<T> null();
 
 	//private:
-		explicit name(std::size_t const & Value);
+		explicit name(size_type const & Value);
 		explicit name(bool Null); // Detail for static Null function
 
-		std::size_t operator()() const; 
+		size_type operator()() const; 
 
 	private:
-		std::size_t value;
+		size_type value;
 	};
 
 }//namespace detail

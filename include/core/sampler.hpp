@@ -6,7 +6,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace sampler{
 namespace detail{
 

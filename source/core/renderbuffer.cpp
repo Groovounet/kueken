@@ -21,12 +21,12 @@ namespace
 }//namespace
 
 namespace kueken{
-namespace renderbuffer{
-
+namespace renderbuffer
+{
 	///////////////////////////////////
 	// object
 
-	creator::creator()
+	creator::creator(renderer & Renderer)
 	{
 		Data.Attachment = GL_NONE;
 		Data.Format = GL_NONE;

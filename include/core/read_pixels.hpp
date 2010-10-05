@@ -3,9 +3,14 @@
 
 #include "detail/detail.hpp"
 
-namespace kueken{
-namespace readpixels{
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
 
+namespace kueken{
+namespace readpixels
+{
 	enum format
 	{
 		RGBA8U,
@@ -31,6 +36,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setRect(glm::uvec4 const & Rect);
 		void setFormat(format const & Format);
 

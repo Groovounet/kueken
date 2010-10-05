@@ -3,9 +3,14 @@
 
 #include "detail/detail.hpp"
 
-namespace kueken{
-namespace renderbuffer{
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
 
+namespace kueken{
+namespace renderbuffer
+{
 	enum format
 	{
 		DEPTH24,
@@ -13,25 +18,24 @@ namespace renderbuffer{
 		FORMAT_MAX
 	};
 
-namespace detail{
-
-	struct data
+	namespace detail
 	{
-		GLenum Attachment;
-		GLenum Format;
-		GLsizei Width; 
-		GLsizei Height;
-		GLsizei Samples;
-	};
-
-}//namespace detail
+		struct data
+		{
+			GLenum Attachment;
+			GLenum Format;
+			GLsizei Width; 
+			GLsizei Height;
+			GLsizei Samples;
+		};
+	}//namespace detail
 
 	class creator : public kueken::detail::creator
 	{
 		friend class object;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setFormat(format const & Format);
 		void setSize(glm::uvec2 const & Size);
 		void setSamples(glm::uint Sampels);

@@ -21,6 +21,12 @@ namespace detail{
 
 }//namespace detail
 
+	creator::creator
+	(
+		renderer & Renderer
+	)
+	{}
+
 	void creator::setColor(glm::vec4 const & Color)
 	{
 		Data.BitField |= GL_COLOR_BUFFER_BIT;

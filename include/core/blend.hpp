@@ -6,7 +6,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace blend
 {
 	enum target
@@ -87,6 +89,7 @@ namespace detail
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setSource(function Color, function Alpha);
 		void setDestination(function Color, function Alpha);
 		void setEquation(equation Color, equation Alpha);

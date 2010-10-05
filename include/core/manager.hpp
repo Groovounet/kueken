@@ -27,7 +27,7 @@ struct manager
 public:
 	manager();
 	
-	static manager& instance();
+	static manager & instance();
 	static void destroy();
 
 	blend::manager Blend; 
@@ -47,7 +47,7 @@ public:
 	texture::manager Texture; 
 
 private:
-	static manager * Manager;
+	static std::unique_ptr<manager> Manager;
 };
 
 }//namespace kueken

@@ -3,6 +3,11 @@
 
 #include "detail/detail.hpp"
 
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
+
 namespace kueken{
 namespace test
 {
@@ -71,6 +76,7 @@ namespace detail
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setDepthEnable(bool Enabled);
 		void setDepthFunc(function Func);
 		void setDepthRange(float Near, float Far);

@@ -40,6 +40,11 @@ namespace
 	}
 }//namespace
 
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
+
 namespace kueken{
 namespace draw{
 namespace detail{
@@ -76,7 +81,7 @@ namespace detail{
 	///////////////////////
 	// creator<ARRAY>
 
-	creator<ARRAY>::creator() :
+	creator<ARRAY>::creator(renderer & Renderer) :
 		Data(ARRAY)
 	{}
 
@@ -116,7 +121,10 @@ namespace detail{
 	///////////////////////
 	// creator<ARRAY_INDIRECT>
 
-	creator<ARRAY_INDIRECT>::creator() :
+	creator<ARRAY_INDIRECT>::creator
+	(
+		renderer & Renderer
+	) :
 		Data(ARRAY_INDIRECT)
 	{}
 
@@ -141,7 +149,10 @@ namespace detail{
 	///////////////////////
 	// creator<ELEMENT>
 
-	creator<ELEMENT>::creator() :
+	creator<ELEMENT>::creator
+	(
+		renderer & Renderer
+	) :
 		Data(ELEMENT)
 	{}
 
@@ -201,7 +212,10 @@ namespace detail{
 	///////////////////////
 	// creator<ELEMENT_INDIRECT>
 
-	creator<ELEMENT_INDIRECT>::creator() :
+	creator<ELEMENT_INDIRECT>::creator
+	(
+		renderer & Renderer
+	) :
 		Data(ELEMENT_INDIRECT)
 	{}
 

@@ -5,6 +5,11 @@
 #include "texture.hpp"
 #include "renderbuffer.hpp"
 
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
+
 namespace kueken{
 namespace framebuffer
 {
@@ -63,8 +68,6 @@ namespace detail
 	};
 }//namespace detail
 
-	class renderer;
-
 	template <type Type>
 	class creator
 	{};
@@ -75,7 +78,7 @@ namespace detail
 		friend class object;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 
 		virtual bool validate(){assert(0); return false;}
 
@@ -89,7 +92,7 @@ namespace detail
 		friend class object;
 
 	public:
-		creator(){}
+		creator(renderer & Renderer);
 		void setTexture(slot const & Slot, texture::name const & Texture, glm::uint Level);
 		void setRenderbuffer(slot const & Slot, renderbuffer::name const & Renderbuffer);
 		void setFramebuffer();
@@ -106,7 +109,7 @@ namespace detail
 		friend class object;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setSamples(std::size_t Samples);
 		void setSize(glm::uvec2 const & Size);
 		//void setSlot(std::size_t Color, std::);

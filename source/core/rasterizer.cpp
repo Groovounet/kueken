@@ -70,6 +70,12 @@ namespace detail{
 	///////////////////////////////
 	// creator<POLYGON>
 
+	creator<POLYGON>::creator
+	(
+		renderer & Renderer
+	)
+	{}
+
 	void creator<POLYGON>::setId(glm::uint32 Id)
 	{
 		Data.Id = Id;
@@ -116,6 +122,12 @@ namespace detail{
 	///////////////////////////////
 	// creator<LINE>
 
+	creator<LINE>::creator
+	(
+		renderer & Renderer
+	)
+	{}
+
 	void creator<LINE>::setId(glm::uint32 Id)
 	{
 		Data.Id = Id;
@@ -154,6 +166,12 @@ namespace detail{
 
 	///////////////////////////////
 	// creator<POINT>
+
+	creator<POINT>::creator
+	(
+		renderer & Renderer
+	)
+	{}
 
 	void creator<POINT>::setId(glm::uint32 Id)
 	{

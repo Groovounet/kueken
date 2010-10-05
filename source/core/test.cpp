@@ -73,6 +73,12 @@ namespace detail{
 
 }//namespace detail
 
+creator::creator
+(
+	renderer & Renderer
+)
+{}
+
 void creator::setDepthEnable(bool Enabled)
 {
 	Data.DepthTest = Enabled;

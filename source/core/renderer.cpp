@@ -129,9 +129,9 @@ namespace kueken
 		return manager::instance().Buffer.getCurrentName(Slot);
 	}
 
-	buffer::object* renderer::map(buffer::name& Name)
+	buffer::object & renderer::map(buffer::name& Name)
 	{
-		return manager::instance().Buffer.mapObject(Name);
+		return *manager::instance().Buffer.mapObject(Name);
 	}
 
 	void renderer::unmap(buffer::name& Name)
@@ -208,9 +208,9 @@ namespace kueken
 		manager::instance().Draw.getObject(Name).exec();
 	}
 
-	draw::object* renderer::map(draw::name& Name)
+	draw::object & renderer::map(draw::name& Name)
 	{
-		return manager::instance().Draw.mapObject(Name);
+		return *manager::instance().Draw.mapObject(Name);
 	}
 
 	void renderer::unmap(draw::name& Name)
@@ -257,9 +257,9 @@ namespace kueken
 		Manager.Texture.setCurrentObject(Slot, Name).bind(Slot, Target);
 	}
 
-	texture::object* renderer::map(texture::name & Name)
+	texture::object & renderer::map(texture::name & Name)
 	{
-		return manager::instance().Texture.mapObject(Name);
+		return *manager::instance().Texture.mapObject(Name);
 	}
 
 	void renderer::unmap(texture::name & Name)
@@ -338,9 +338,9 @@ namespace kueken
 		Manager.Program.setCurrentObject(0, Name).bind();
 	}
 
-	program::object* renderer::map(program::name& Name)
+	program::object & renderer::map(program::name& Name)
 	{
-		return manager::instance().Program.mapObject(Name);
+		return *manager::instance().Program.mapObject(Name);
 	}
 
 	void renderer::unmap(program::name& Name)

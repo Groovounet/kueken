@@ -7,7 +7,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace draw
 {
 	enum mode
@@ -106,7 +108,7 @@ namespace detail
 		friend class objectArray;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setPrimitive(primitive const & Primitive);
 		void setFirst(glm::uint32 const & First);
 		void setCount(glm::uint32 const & Count);
@@ -124,7 +126,7 @@ namespace detail
 		friend class objectArrayIndirect;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setPrimitive(primitive const & Primitive);
 
 		bool validate();
@@ -139,7 +141,7 @@ namespace detail
 		friend class objectElement;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setPrimitive(primitive const & Primitive);
 		void setFirst(glm::uint const & First);
 		void setCount(glm::uint const & Count);
@@ -159,7 +161,7 @@ namespace detail
 		friend class objectElementIndirect;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setPrimitive(primitive const & Primitive);
 		void setElementFormat(format const & ElementFormat);
 

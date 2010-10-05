@@ -78,6 +78,12 @@ namespace detail{
 
 }//namespace detail
 
+creator::creator
+(
+	renderer & Renderer
+)
+{}
+
 void creator::setSource(function Color, function Alpha)
 {
 	Data.ColorSrc = blend_function_cast(Color);

@@ -7,7 +7,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace environment
 {
 	enum semantic
@@ -20,7 +22,7 @@ namespace environment
 		friend class object;
 
 	public:
-		creator();
+		creator(renderer & Renderer);
 		void setUniformSampler(
 			semantic const & Semantic,
 			sampler const & Sampler);

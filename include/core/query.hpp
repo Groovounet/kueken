@@ -3,9 +3,14 @@
 
 #include "detail/detail.hpp"
 
-namespace kueken{
-namespace query{
+namespace kueken
+{
+	class renderer;
+}//namespace kueken
 
+namespace kueken{
+namespace query
+{
 	enum target
 	{
 		PRIMITIVES,		//GL_PRIMITIVES_GENERATED
@@ -39,7 +44,6 @@ namespace detail
 		GLenum ConditionMode;
 		bool Wait;
 	};
-
 }//namespace detail
 
 	class creator
@@ -47,6 +51,7 @@ namespace detail
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setTarget(target Target);
 		void setCondition(mode Mode);
 		void setWait(bool Wait);

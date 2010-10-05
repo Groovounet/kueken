@@ -6,7 +6,9 @@
 namespace kueken
 {
 	class renderer;
+}//namespace kueken
 
+namespace kueken{
 namespace rasterizer
 {
 	enum target
@@ -82,6 +84,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setId(glm::uint32 Id);
 		void setViewport(glm::ivec4 const & Viewport);
 		void setMultisample(bool Multisample);
@@ -103,6 +106,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setId(glm::uint32 Id);
 		void setViewport(glm::ivec4 const & Viewport);
 		void setMultisample(bool Multisample);
@@ -123,6 +127,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setId(glm::uint32 Id);
 		void setViewport(glm::ivec4 const & Viewport);
 		void setMultisample(bool Multisample);
@@ -145,6 +150,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 
 	private:
 		detail::data Data;

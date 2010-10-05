@@ -100,6 +100,7 @@ namespace detail{
 		friend class object;
 
 	public:
+		creator(renderer & Renderer);
 		void setUsage(usage Usage);
 		void setSize(std::size_t Size);
 		void setData(void const * const Pointer); // shared_array?
