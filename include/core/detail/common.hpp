@@ -46,4 +46,8 @@
 
 typedef unsigned int flag;
 
+#if(GLM_COMPILER != GLM_COMPILER_VC2010)
+#define nullptr NULL
+#endif//(GLM_COMPILER != GLM_COMPILER_VC2010)
+
 #endif//KUEKEN_DETAIL_COMMON_INCLUDED

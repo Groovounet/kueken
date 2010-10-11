@@ -12,7 +12,9 @@ macro(add_group_target_GTC Target)
 endmacro(add_group_target_GTC)
 
 macro(add_parallel_build_GTC Count)
-	add_definitions(/MP${Count})
+	if(MSVC)
+		add_definitions(/MP${Count})
+	endif(MSVC)
 endmacro(add_parallel_build_GTC)
 
 macro(add_sample_target_GTC SampleName GroupName DataName SourceFiles)
@@ -36,26 +38,21 @@ endmacro(add_sample_target_GTC)
 project(kueken)
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
+add_definitions(-std=gnu++0x)
 
 ##########################
 # Setup binary directory
 
 if(MSVC)
-	if(MSVC_VERSION EQUAL 1400)
-		set(BINARY_DIRECTORY "win32-vc2005")
-	endif(MSVC_VERSION EQUAL 1400)
-	if(MSVC_VERSION EQUAL 1500)
-		set(BINARY_DIRECTORY "win32-vc2008")
-	endif(MSVC_VERSION EQUAL 1500)	
 	if(MSVC_VERSION EQUAL 1600)
 		set(BINARY_DIRECTORY "win32-vc2010")
 	endif(MSVC_VERSION EQUAL 1600)
 else(MSVC)
-	set(BINARY_DIRECTORY "unknowned")
+	set(BINARY_DIRECTORY "win32-vc2008")
 endif(MSVC)
 
 set(GLF_LIBRARY_BINARY_FILE_SDL "tinyxml")
-set(GLF_LIBRARY_BINARY_FILE_OGL "glew32s" "OpenGL32" "freeglut_static")
+set(GLF_LIBRARY_BINARY_FILE_OGL "opengl32" "glew32s" "freeglut_static")
 set(GLF_LIBRARY_BINARY_FILE ${GLF_LIBRARY_BINARY_FILE_OGL})
 
 ############
@@ -79,14 +76,12 @@ link_directories("${TINYXML_DIRECTORY}/library/${BINARY_DIRECTORY}")
 ############
 # Add GLUT 
 
-if(MSVC)
-	set(GLUT_VERSION "freeglut-2.6.0")
-	set(GLUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLUT_VERSION})
+set(GLUT_VERSION "freeglut-2.6.0")
+set(GLUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLUT_VERSION})
 
-	add_definitions(-DFREEGLUT_STATIC)
-	include_directories("${GLUT_DIRECTORY}")
-	link_directories("${GLUT_DIRECTORY}/lib/${BINARY_DIRECTORY}")
-endif(MSVC)
+add_definitions(-DFREEGLUT_STATIC)
+include_directories("${GLUT_DIRECTORY}")
+link_directories("${GLUT_DIRECTORY}/lib/${BINARY_DIRECTORY}")
 
 ############
 # Add GLEW 

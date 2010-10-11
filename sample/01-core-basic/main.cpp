@@ -11,21 +11,21 @@
 
 #include <glf/glf.hpp>
 #include <core/kueken.hpp>
- 
+
 namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 01";	
 	const char* VERTEX_SHADER_SOURCE = "../data/texture.vert";
 	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
 	const char* TEXTURE_DIFFUSE = "../data/küken256dxt5.dds";
-	int const SAMPLE_SIZE_WIDTH = 640;
-	int const SAMPLE_SIZE_HEIGHT = 480;
-	int const SAMPLE_MAJOR_VERSION = 4;
-	int const SAMPLE_MINOR_VERSION = 0;
+	int const SAMPLE_SIZE_WIDTH(640);
+	int const SAMPLE_SIZE_HEIGHT(480);
+	int const SAMPLE_MAJOR_VERSION(4);
+	int const SAMPLE_MINOR_VERSION(0);
 
 	glf::window Window(glm::ivec2(SAMPLE_SIZE_WIDTH, SAMPLE_SIZE_HEIGHT));
 
-	GLsizei const VertexCount = 4;
+	GLsizei const VertexCount(4);
 	GLsizeiptr const VertexSize = VertexCount * sizeof(glf::vertex_v2fv2f);
 	glf::vertex_v2fv2f const VertexData[VertexCount] =
 	{
@@ -35,7 +35,7 @@ namespace
 		glf::vertex_v2fv2f(glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f))
 	};
 
-	GLsizei const ElementCount = 6;
+	GLsizei const ElementCount(6);
 	GLsizeiptr const ElementSize = ElementCount * sizeof(GLuint);
 	GLuint const ElementData[ElementCount] =
 	{

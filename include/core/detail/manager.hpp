@@ -81,7 +81,7 @@ namespace detail{
 
 		if(Deleted.empty())
 		{
-			Name = typename NAME(Created.size());
+			Name = NAME(Created.size());
 			Created.push_back(Object);
 		}
 		else
