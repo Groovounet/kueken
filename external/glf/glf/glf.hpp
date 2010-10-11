@@ -18,7 +18,7 @@
 #	error "Unsupported platform"
 #endif
 
-// GLF libraries
+// GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_projection.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -26,6 +26,7 @@
 #include <glm/gtc/type_precision.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// GLI
 #include <gli/gli.hpp>
 #include <gli/gtx/loader.hpp>
 

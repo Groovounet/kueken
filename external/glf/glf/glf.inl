@@ -645,6 +645,12 @@ namespace glf
 		glGetError();
 		glf::init();
 
+		{
+			GLuint Name = 0;
+			glGenVertexArrays(1, &Name);
+			glBindVertexArray(Name);
+		}
+
 		if(begin())
 		{
 			glutDisplayFunc(display); 

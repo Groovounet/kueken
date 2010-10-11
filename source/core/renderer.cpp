@@ -205,7 +205,8 @@ namespace kueken
 		draw::name const & Name
 	)
 	{
-		manager::instance().Draw.getObject(Name).exec();
+		draw::object & Object = manager::instance().Draw.getObject(Name);
+		Object.exec();
 	}
 
 	draw::object & renderer::map(draw::name& Name)

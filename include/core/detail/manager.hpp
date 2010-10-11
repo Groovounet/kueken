@@ -52,6 +52,8 @@ namespace detail{
 	template <typename NAME, typename OBJECT>
 	inline OBJECT& manager<NAME, OBJECT>::getObject(NAME const & Name) const
 	{
+		assert(this->Created.size() > Name());
+
 		return *Created[Name()];
 	}
 

@@ -69,7 +69,7 @@ namespace detail
 		void * Pointer
 	)
 	{
-		kueken::blend::creator Creator;
+		kueken::blend::creator Creator();
 		glm::uint Id = 0;
 
 		TiXmlElement* Blend = reinterpret_cast<TiXmlElement*>(Pointer);

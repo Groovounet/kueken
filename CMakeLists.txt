@@ -54,9 +54,9 @@ else(MSVC)
 	set(BINARY_DIRECTORY "unknowned")
 endif(MSVC)
 
-set(GLF_LIBRARY_BINARY_FILE_SDL "SDL" "SDLmain" "tinyxml")
-set(GLF_LIBRARY_BINARY_FILE_OGL "glew32s" "OpenGL32" "glu32")
-set(GLF_LIBRARY_BINARY_FILE ${GLF_LIBRARY_BINARY_FILE_SDL} ${GLF_LIBRARY_BINARY_FILE_OGL})
+set(GLF_LIBRARY_BINARY_FILE_SDL "tinyxml")
+set(GLF_LIBRARY_BINARY_FILE_OGL "glew32s" "OpenGL32" "freeglut_static")
+set(GLF_LIBRARY_BINARY_FILE ${GLF_LIBRARY_BINARY_FILE_OGL})
 
 ############
 # Boost 
@@ -76,52 +76,41 @@ set(TINYXML_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${TINYXML_VERSION})
 include_directories("${TINYXML_DIRECTORY}/include")
 link_directories("${TINYXML_DIRECTORY}/library/${BINARY_DIRECTORY}")
 
-###########
-# Add SDL 
-
-set(SDL_VERSION "sdl-1.3.0-4634") 
-set(SDL_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION})
+############
+# Add GLUT 
 
 if(MSVC)
-	link_directories("${SDL_DIRECTORY}/lib/${BINARY_DIRECTORY}")
-	execute_process(COMMAND cmake -E copy ${SDL_DIRECTORY}/binary/${BINARY_DIRECTORY}/SDL.dll ${CMAKE_CURRENT_BINARY_DIR}/build/release/SDL.dll)
-	execute_process(COMMAND cmake -E copy ${SDL_DIRECTORY}/binary/${BINARY_DIRECTORY}/SDL.dll ${CMAKE_CURRENT_BINARY_DIR}/build/debug/SDL.dll)
-	execute_process(COMMAND cmake -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/build/release)
-	execute_process(COMMAND cmake -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/build/debug)
-else(MSVC)
-	if(DEFINED CMAKE_BUILD_TYPE)
+	set(GLUT_VERSION "freeglut-2.6.0")
+	set(GLUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLUT_VERSION})
 
-	else()
-		set(CMAKE_BUILD_TYPE Release)
-	endif()
-	
-	set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-
-    execute_process(COMMAND sh ./autogen.sh	WORKING_DIRECTORY ${SDL_DIRECTORY})
-    execute_process(COMMAND ./configure --prefix=${SDL_DIRECTORY} WORKING_DIRECTORY ${SDL_DIRECTORY})
-    execute_process(COMMAND make WORKING_DIRECTORY ${SDL_DIRECTORY})
-    execute_process(COMMAND make install WORKING_DIRECTORY ${SDL_DIRECTORY})
-    link_directories("${SDL_DIRECTORY}/lib")
+	add_definitions(-DFREEGLUT_STATIC)
+	include_directories("${GLUT_DIRECTORY}")
+	link_directories("${GLUT_DIRECTORY}/lib/${BINARY_DIRECTORY}")
 endif(MSVC)
-
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/external/${SDL_VERSION}/include")
 
 ############
 # Add GLEW 
 
-set(GLEW_VERSION "glew-1.5.6") 
+set(GLEW_VERSION "glew-1.5.6")
 set(GLEW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLEW_VERSION})
 
-if(MSVC)
-	include_directories("${GLEW_DIRECTORY}/include")
-	link_directories("${GLEW_DIRECTORY}/lib/${BINARY_DIRECTORY}")
-endif(MSVC)
+add_definitions(-DGLEW_STATIC)
+include_directories(${GLEW_DIRECTORY}/include)
+link_directories(${GLEW_DIRECTORY}/lib/${BINARY_DIRECTORY})
 
 ############
 # Add GLEXT 
 
 set(GL_VERSION "GL") 
 set(GL_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GL_VERSION})
+
+###########
+# Add GLF 
+
+set(GLF_VERSION "glf")
+set(GLF_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLF_VERSION})
+
+include_directories("${GLF_DIRECTORY}")
 
 ###########
 # Add GLM 
@@ -142,7 +131,7 @@ include_directories("${GLV_DIRECTORY}")
 ###########
 # Add GLI
 
-set(GLI_VERSION "gli")
+set(GLI_VERSION "gli-0.3.0.0")
 set(GLI_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLI_VERSION})
 
 include_directories("${GLI_DIRECTORY}")

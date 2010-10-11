@@ -2,17 +2,19 @@
 #define KUEKEN_DETAIL_COMMON_INCLUDED
 
 // OpenGL
-#define GLEW_STATIC
 #include <GL/glew.h>
 
 // GLM
-#define GLM_GTX_INCLUDED
 #include <glm/glm.hpp>
-#include <glm/gtx/matrix_projection.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtx/raw_data.hpp>
-#include <glm/gtx/number_precision.hpp>
+#include <glm/gtc/matrix_projection.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/half_float.hpp>
+#include <glm/gtc/type_precision.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// GLI
+#include <gli/gli.hpp>
+#include <gli/gtx/loader.hpp>
 
 // STL
 #include <cassert>
