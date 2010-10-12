@@ -15,9 +15,9 @@
 namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 01";	
-	const char* VERTEX_SHADER_SOURCE = "../data/texture.vert";
-	const char* FRAGMENT_SHADER_SOURCE = "../data/texture.frag";
-	const char* TEXTURE_DIFFUSE = "../data/küken256dxt5.dds";
+	const char* VERTEX_SHADER_SOURCE = "./data/texture.vert";
+	const char* FRAGMENT_SHADER_SOURCE = "./data/texture.frag";
+	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
 	int const SAMPLE_MAJOR_VERSION(4);
@@ -139,7 +139,7 @@ bool initTexture2D()
 
 		kueken::texture::creator Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
-		Creator.setTarget(kueken::texture::IMAGE2D);
+		Creator.setTarget(kueken::texture::TEXTURE2D);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setImage(
@@ -169,21 +169,14 @@ bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
 	Creator.setVersion(kueken::program::CORE_400);
-	Creator.addSource(
-		kueken::program::VERTEX, 
-		kueken::program::FILE,
-		VERTEX_SHADER_SOURCE);
-	Creator.addSource(
-		kueken::program::FRAGMENT, 
-		kueken::program::FILE,
-		FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(
-		SEMANTIC_DIFFUSE, 
-		"Diffuse");
-	Creator.addVariable(
-		SEMANTIC_MVP, 
-		"MVP");
-
+	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
+	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
+	Creator.addVariable(SEMANTIC_DIFFUSE, "Diffuse");
+	Creator.addVariable(SEMANTIC_MVP, "MVP");
+	Creator.addDefinition("ATTR_POSITION", "0");
+	Creator.addDefinition("ATTR_COLOR", "3");
+	Creator.addDefinition("ATTR_TEXCOORD", "4");
+	Creator.addDefinition("FRAG_COLOR", "0");
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -287,18 +280,13 @@ bool end()
 
 void display()
 {
-	static float Rotate = 0.0f;
-	Rotate += 0.01f;
-
-    glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0f));//-tranlationCurrent.y);
-	glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, Window.RotationCurrent.y, glm::vec3(-1.f, 0.f, 0.f));
-	glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
-	glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, glm::vec3(0.f, 0.f, 1.f));
-	glm::mat4 View = ViewRotateZ;
+	glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Window.TranlationCurrent.y));
+	glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, Window.RotationCurrent.y, glm::vec3(1.f, 0.f, 0.f));
+	glm::mat4 View = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 MVP = Projection * View * Model;
- 
+
 	kueken::program::object & Object = Renderer->map(Program);
 	Object.setSampler(SEMANTIC_DIFFUSE, 0);
 	Object.setUniform(SEMANTIC_MVP, MVP);
@@ -317,7 +305,7 @@ void display()
 	
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	
-	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
+	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);

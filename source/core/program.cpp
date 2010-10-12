@@ -192,11 +192,17 @@ namespace detail
 
 		switch(Input)
 		{
-		case DATA:
-			this->Sources[Target] += Source;
+			case DATA:
+			{
+				this->Sources[Target] += Source;
+			}
 			break;
-		case FILE:
-			this->Sources[Target] += detail::loadFile(Source);
+			case FILE:
+			{
+				std::string Data = detail::loadFile(Source);
+				assert(!Data.empty());
+				this->Sources[Target] += Data;
+			}
 			break;
 		}
 	}
@@ -283,6 +289,7 @@ namespace detail
 
 			SourcesBuilt[i].clear();
 			SourcesBuilt[i] += Version;
+			SourcesBuilt[i] += std::string("\n");
 
 			if(!Extensions.empty())
 			{
