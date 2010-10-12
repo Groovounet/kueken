@@ -139,7 +139,7 @@ bool initTexture2D()
 
 		kueken::texture::creator Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
-		Creator.setTarget(kueken::texture::IMAGE2D);
+		Creator.setTarget(kueken::texture::TEXTURE2D);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setImage(
@@ -169,21 +169,14 @@ bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
 	Creator.setVersion(kueken::program::CORE_400);
-	Creator.addSource(
-		kueken::program::VERTEX, 
-		kueken::program::FILE,
-		VERTEX_SHADER_SOURCE);
-	Creator.addSource(
-		kueken::program::FRAGMENT, 
-		kueken::program::FILE,
-		FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(
-		SEMANTIC_DIFFUSE, 
-		"Diffuse");
-	Creator.addVariable(
-		SEMANTIC_MVP, 
-		"MVP");
-
+	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
+	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
+	Creator.addVariable(SEMANTIC_DIFFUSE, "Diffuse");
+	Creator.addVariable(SEMANTIC_MVP, "MVP");
+	Creator.addDefinition("ATTR_POSITION", "0");
+	Creator.addDefinition("ATTR_COLOR", "3");
+	Creator.addDefinition("ATTR_TEXCOORD", "4");
+	Creator.addDefinition("FRAG_COLOR", "0");
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -317,7 +310,7 @@ void display()
 	
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	
-	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
+	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);

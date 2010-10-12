@@ -38,7 +38,9 @@ endmacro(add_sample_target_GTC)
 project(kueken)
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
-add_definitions(-std=gnu++0x)
+if(NOT MSVC)
+	add_definitions(-std=gnu++0x)
+endif(NOT MSVC)
 
 ##########################
 # Setup binary directory

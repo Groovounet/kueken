@@ -283,6 +283,7 @@ namespace detail
 
 			SourcesBuilt[i].clear();
 			SourcesBuilt[i] += Version;
+			SourcesBuilt[i] += std::string("\n");
 
 			if(!Extensions.empty())
 			{

@@ -1,6 +1,6 @@
 //**********************************
 // Kueken sample 02
-// 05/10/2010
+// 12/10/2010
 //**********************************
 // Christophe Riccio
 // christophe@g-truc.net
@@ -9,26 +9,33 @@
 // www.g-truc.net
 //**********************************
 
-#include "main.hpp"
- 
+#include <glf/glf.hpp>
+#include <core/kueken.hpp>
+
 namespace
 {
-	const char* SAMPLE_NAME = "Kueken sample 01";	
+	const char* SAMPLE_NAME = "Kueken sample 02";	
 	const char* VERTEX_SHADER_SOURCE = "../data/uniform-buffer.vert";
 	const char* FRAGMENT_SHADER_SOURCE = "../data/uniform-buffer.frag";
 	const char* TEXTURE_DIFFUSE = "../data/küken256dxt5.dds";
+	int const SAMPLE_SIZE_WIDTH(640);
+	int const SAMPLE_SIZE_HEIGHT(480);
+	int const SAMPLE_MAJOR_VERSION(4);
+	int const SAMPLE_MINOR_VERSION(0);
 
-	GLsizei const VertexCount = 4;
-	GLsizeiptr const VertexSize = VertexCount * sizeof(vertex_v2fv2f);
-	vertex_v2fv2f const VertexData[VertexCount] =
+	glf::window Window(glm::ivec2(SAMPLE_SIZE_WIDTH, SAMPLE_SIZE_HEIGHT));
+
+	GLsizei const VertexCount(4);
+	GLsizeiptr const VertexSize = VertexCount * sizeof(glf::vertex_v2fv2f);
+	glf::vertex_v2fv2f const VertexData[VertexCount] =
 	{
-		vertex_v2fv2f(glm::vec2(-1.0f,-1.0f), glm::vec2(0.0f, 1.0f)),
-		vertex_v2fv2f(glm::vec2( 1.0f,-1.0f), glm::vec2(1.0f, 1.0f)),
-		vertex_v2fv2f(glm::vec2( 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)),
-		vertex_v2fv2f(glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f))
+		glf::vertex_v2fv2f(glm::vec2(-1.0f,-1.0f), glm::vec2(0.0f, 1.0f)),
+		glf::vertex_v2fv2f(glm::vec2( 1.0f,-1.0f), glm::vec2(1.0f, 1.0f)),
+		glf::vertex_v2fv2f(glm::vec2( 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)),
+		glf::vertex_v2fv2f(glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f))
 	};
 
-	GLsizei const ElementCount = 6;
+	GLsizei const ElementCount(6);
 	GLsizeiptr const ElementSize = ElementCount * sizeof(GLuint);
 	GLuint const ElementData[ElementCount] =
 	{
@@ -36,7 +43,7 @@ namespace
 		2, 3, 0
 	};
 
-	kueken::renderer * Renderer(nullptr);
+	std::unique_ptr<kueken::renderer> Renderer(nullptr);
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
 	kueken::rasterizer::name RasterizerBackground(kueken::rasterizer::name::null());
@@ -52,139 +59,26 @@ namespace
 	kueken::buffer::name ElementBuffer(kueken::buffer::name::null());
 	kueken::buffer::name UniformBuffer(kueken::buffer::name::null());
 	kueken::test::name Test(kueken::test::name::null());
-	kueken::rendertarget::name Rendertarget(kueken::rendertarget::name::null());
+	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
 	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
-	kueken::program::semantic const SEMANTIC_MVP(1);
+	kueken::program::semantic const SEMANTIC_TRANSFORM(1);
 	kueken::program::semantic const SEMANTIC_POSITION(0);
 	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
 }//namespace
 
-sample::sample
-(
-	std::string const & Name, 
-	glm::ivec2 const & WindowSize
-) :
-	base(Name, WindowSize)
-{}
-
-sample::~sample()
-{}
-
-bool sample::check() const
+bool initBlend()
 {
-	return true;//GLEW_VERSION_2_1 == GL_TRUE;
-}
-
-bool sample::begin(glm::ivec2 const & WindowSize)
-{
-	windowSize = WindowSize;
-
-	Renderer = new kueken::renderer;
-
-	bool Result = true;
-
-	if(Result)
-		Result = initBlend();
-	if(Result)
-		Result = initClear();
-	if(Result)
-		Result = initRasterizer();
-	if(Result)
-		Result = initRendertarget();
-	if(Result)
-		Result = initArrayBuffer();
-	if(Result)
-		Result = initProgram();
-	if(Result)
-		Result = initLayout();
-	if(Result)
-		Result = initTexture2D();
-	if(Result)
-		Result = initTest();
-	if(Result)
-		Result = initDraw();
-
-	Result = Result || glf::checkError("Begin");
-	return Result;
-}
-
-bool sample::end()
-{
-	delete Renderer;
-	Renderer = 0;
-
-	return glf::checkError("End");
-}
-
-void sample::render()
-{
-	// Update buffer object
-	{
-		static float Rotate = 0.0f;
-		Rotate += 0.01f;
-
-		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-		glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -4.0f);//-tranlationCurrent.y);
-		glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, rotationCurrent.y,-1.f, 0.f, 0.f);
-		glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotationCurrent.x, 0.f, 1.f, 0.f);
-		glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, 0.f, 0.f, 1.f);
-		glm::mat4 View = ViewRotateZ;
-		glm::mat4 Model = glm::mat4(1.0f);
-		glm::mat4 MVP = Projection * View * Model;
-
-		kueken::buffer::object* Object = Renderer->map(UniformBuffer);
-		Object->set(0, sizeof(glm::mat4), &MVP[0][0]);
-		Renderer->unmap(UniformBuffer);
-	}
-
-	// Update program object
-	{
-		kueken::program::object * Object = Renderer->map(Program);
-		Object->setSampler(SEMANTIC_DIFFUSE, 0);
-		Object->setBlock(SEMANTIC_MVP, 2);
-		Renderer->unmap(Program);
-	}
-
-	Renderer->bind(Rendertarget, kueken::rendertarget::EXEC);
-
-	Renderer->bind(RasterizerBackground);
-	Renderer->exec(ClearBackground);
-
-	Renderer->bind(RasterizerScene);
-	Renderer->exec(ClearScene);
-
-	Renderer->bind(Test);
-	Renderer->bind(Blend);
-	
-	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	
-	Renderer->bind(0, kueken::texture::IMAGE2D, Texture);
-	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-
-	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
-	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-	Renderer->bind(2, kueken::buffer::UNIFORM, UniformBuffer);
-	Renderer->bind(0, kueken::layout::VERTEX, Layout);
-
-	Renderer->exec(Draw);
-
-	glf::swapbuffers();
-	glf::checkError("Render");
-}
-
-bool sample::initBlend()
-{
-	kueken::blend::creator Creator;
+	kueken::blend::creator Creator(*Renderer);
 	Creator.setColorMask(kueken::blend::SLOT0, glm::bvec4(true));
 	Blend = Renderer->create(Creator);
 
 	return glf::checkError("initBlend");
 }
 
-bool sample::initClear()
+bool initClear()
 {
-	kueken::clear::creator Creator;
+	kueken::clear::creator Creator(*Renderer);
 	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 	ClearBackground = Renderer->create(Creator);
 	Creator.setColor(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
@@ -193,9 +87,9 @@ bool sample::initClear()
 	return glf::checkError("initClear");
 }
 
-bool sample::initDraw()
+bool initDraw()
 {
-	kueken::draw::creator<kueken::draw::ELEMENT> Creator;
+	kueken::draw::creator<kueken::draw::ELEMENT> Creator(*Renderer);
 	Creator.setPrimitive(kueken::draw::TRIANGLES);
 	Creator.setElementFormat(kueken::draw::UINT32);
 	Creator.setFirst(0);
@@ -207,57 +101,57 @@ bool sample::initDraw()
 	return glf::checkError("initDraw");
 }
 
-bool sample::initTest()
+bool initTest()
 {
-	kueken::test::creator Creator;
+	kueken::test::creator Creator(*Renderer);
 	Creator.setDepthEnable(false);
 	Test = Renderer->create(Creator);
 
 	return glf::checkError("initTest");
 }
 
-bool sample::initRasterizer()
+bool initRasterizer()
 {
 	{
-		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator;
+		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setViewport(
-			glm::ivec4(0, 0, windowSize));
+			glm::ivec4(0, 0, Window.Size));
 		Creator.setScissor(
 			false, glm::ivec4(0));
 		RasterizerBackground = Renderer->create(Creator);
 	}
 
 	{
-		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator;
+		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setViewport(
-			glm::ivec4(0, 0, windowSize));
+			glm::ivec4(0, 0, Window.Size));
 		Creator.setScissor(
-			true, glm::ivec4(glm::ivec2(8), windowSize - glm::ivec2(16)));
+			true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
 		RasterizerScene = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initRasterizer");
 }
 
-bool sample::initTexture2D()
+bool initTexture2D()
 {
 	{
-		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
+		gli::texture2D ImageFile = gli::load(TEXTURE_DIFFUSE);
 
 		kueken::texture::creator Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
-		Creator.setTarget(kueken::texture::IMAGE2D);
+		Creator.setTarget(kueken::texture::TEXTURE2D);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setImage(
 				Level, 
-				ImageFile[Level].dimensions(), 
+				glm::uvec3(ImageFile[Level].dimensions(), 1), 
 				ImageFile[Level].data());
 		}
 		Texture = Renderer->create(Creator);
 
-		kueken::texture::object* Object = Renderer->map(Texture);
-		Object->generateMipmaps();
+		kueken::texture::object & Object = Renderer->map(Texture);
+		Object.generateMipmaps();
 		Renderer->unmap(Texture);
 	}
 
@@ -272,10 +166,10 @@ bool sample::initTexture2D()
 	return glf::checkError("initTexture2D");
 }
 
-bool sample::initProgram()
+bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
-	Creator.setVersion(kueken::program::CORE_410);
+	Creator.setVersion(kueken::program::CORE_400);
 	Creator.addSource(
 		kueken::program::VERTEX, 
 		kueken::program::FILE,
@@ -288,8 +182,8 @@ bool sample::initProgram()
 		SEMANTIC_DIFFUSE, 
 		"Diffuse");
 	Creator.addBlock(
-		SEMANTIC_MVP, 
-		"MVP");
+		SEMANTIC_TRANSFORM, 
+		"transform");
 
 	Creator.build();
 	Program = Renderer->create(Creator);
@@ -297,21 +191,21 @@ bool sample::initProgram()
 	return glf::checkError("initProgram");
 }
 
-bool sample::initLayout()
+bool initLayout()
 {
 	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
 		kueken::layout::POSITION,
 		kueken::layout::F32VEC2,
-		sizeof(vertex_v2fv2f),
+		sizeof(glf::vertex_v2fv2f),
 		0, 
 		0);
 	Creator.setVertexArray(
 		0, 
 		kueken::layout::TEXCOORD,
 		kueken::layout::F32VEC2,
-		sizeof(vertex_v2fv2f),
+		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
 		0);
 	Layout = Renderer->create(Creator);
@@ -319,10 +213,21 @@ bool sample::initLayout()
 	return glf::checkError("initLayout");
 }
 
-bool sample::initArrayBuffer()
+bool initUniformBuffer()
+{
+	kueken::buffer::creator Creator(*Renderer);
+	Creator.setSize(sizeof(glm::mat4));
+	Creator.setData(0);
+	Creator.setUsage(kueken::buffer::STREAM_READ);
+	UniformBuffer = Renderer->create(Creator);
+
+	return glf::checkError("initUniformBuffer");
+}
+
+bool initArrayBuffer()
 {
 	{
-		kueken::buffer::creator Creator;
+		kueken::buffer::creator Creator(*Renderer);
 		Creator.setSize(VertexSize);
 		Creator.setData(VertexData);
 		Creator.setUsage(kueken::buffer::STATIC_DRAW);
@@ -330,7 +235,7 @@ bool sample::initArrayBuffer()
 	}
 
 	{
-		kueken::buffer::creator Creator;
+		kueken::buffer::creator Creator(*Renderer);
 		Creator.setSize(ElementSize);
 		Creator.setData(ElementData);
 		Creator.setUsage(kueken::buffer::STATIC_DRAW);
@@ -340,34 +245,121 @@ bool sample::initArrayBuffer()
 	return glf::checkError("initArrayBuffer");
 }
 
-bool sample::initRendertarget()
+bool initFramebuffer()
 {
-	kueken::rendertarget::creator<kueken::rendertarget::CUSTOM> Creator;
+	kueken::framebuffer::creator<kueken::framebuffer::CUSTOM> Creator(*Renderer);
 	Creator.setFramebuffer();
-	Rendertarget = Renderer->create(Creator);
+	Framebuffer = Renderer->create(Creator);
 
-	return glf::checkError("initRendertarget");
+	return glf::checkError("initFramebuffer");
+}
+
+bool begin()
+{
+	// Check the OpenGL version
+	GLint MajorVersion = 0;
+	GLint MinorVersion = 0;
+	glGetIntegerv(GL_MAJOR_VERSION, &MajorVersion);
+	glGetIntegerv(GL_MINOR_VERSION, &MinorVersion);
+	bool Validated = glf::version(MajorVersion, MinorVersion) >= glf::version(SAMPLE_MAJOR_VERSION, SAMPLE_MINOR_VERSION);
+
+	Renderer.reset(new kueken::renderer);
+
+	if(Validated)
+		Validated = initBlend();
+	if(Validated)
+		Validated = initClear();
+	if(Validated)
+		Validated = initRasterizer();
+	if(Validated)
+		Validated = initFramebuffer();
+	if(Validated)
+		Validated = initArrayBuffer();
+	if(Validated)
+		Validated = initUniformBuffer();
+	if(Validated)
+		Validated = initProgram();
+	if(Validated)
+		Validated = initLayout();
+	if(Validated)
+		Validated = initTexture2D();
+	if(Validated)
+		Validated = initTest();
+	if(Validated)
+		Validated = initDraw();
+
+	Validated = Validated || glf::checkError("Begin");
+	return Validated;
+}
+
+bool end()
+{
+	Renderer.reset();
+
+	return glf::checkError("End");
+}
+
+void display()
+{
+	{
+		static float Rotate = 0.0f;
+		Rotate += 0.01f;
+
+		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+		glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0f));//-tranlationCurrent.y);
+		glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, Window.RotationCurrent.y, glm::vec3(-1.f, 0.f, 0.f));
+		glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
+		glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, glm::vec3(0.f, 0.f, 1.f));
+		glm::mat4 View = ViewRotateZ;
+		glm::mat4 Model = glm::mat4(1.0f);
+		glm::mat4 MVP = Projection * View * Model;
+ 
+		kueken::buffer::object & Object = Renderer->map(UniformBuffer);
+		Object.set(0, sizeof(glm::mat4), &MVP[0][0]);
+		Renderer->unmap(UniformBuffer);
+	}
+
+	kueken::program::object & Object = Renderer->map(Program);
+	Object.setSampler(SEMANTIC_DIFFUSE, 0);
+	Object.setBlock(SEMANTIC_TRANSFORM, 2);
+	Renderer->unmap(Program);
+
+	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
+
+	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerBackground);
+	Renderer->exec(ClearBackground);
+
+	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerScene);
+	Renderer->exec(ClearScene);
+
+	Renderer->bind(kueken::test::TEST, Test);
+	Renderer->bind(kueken::blend::BLEND, Blend);
+	
+	Renderer->bind(0, kueken::program::UNIFIED, Program);
+	
+	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
+	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
+
+	Renderer->bind(2, kueken::buffer::UNIFORM, UniformBuffer);
+
+	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
+	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
+	Renderer->bind(0, kueken::layout::VERTEX, Layout);
+
+	Renderer->exec(Draw);
+
+	glf::swapBuffers();
+	glf::checkError("Render");
 }
 
 int main(int argc, char* argv[])
 {
-	glm::ivec2 ScreenSize = glm::ivec2(640, 480);
-
-	sample * Sample = new sample(SAMPLE_NAME, ScreenSize);
-	if(Sample->check())
-	{
-		Sample->begin(ScreenSize);
-		do
-		{
-			Sample->render();
-		}
-		while(Sample->event());
-		Sample->end();
-
-		delete Sample;
+	if(glf::run(
+		argc, argv,
+		glm::ivec2(::SAMPLE_SIZE_WIDTH, ::SAMPLE_SIZE_HEIGHT), 
+		::SAMPLE_MAJOR_VERSION, 
+		::SAMPLE_MINOR_VERSION))
 		return 0;
-	}
-
-	delete Sample;
 	return 1;
 }
+

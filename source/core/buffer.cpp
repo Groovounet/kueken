@@ -96,7 +96,10 @@ namespace buffer
 
 	void object::bind(slot const & Slot, target const & Target)
 	{
-		glBindBuffer(buffer_target_cast(Target), this->Name);
+		if(Target == UNIFORM)
+			glBindBufferBase(buffer_target_cast(Target), Slot, this->Name);
+		else
+			glBindBuffer(buffer_target_cast(Target), this->Name);
 	}
 
 	GLuint object::GetName() const

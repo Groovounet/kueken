@@ -32,9 +32,9 @@ namespace texture
 
 	enum target
 	{
-		IMAGE1D,
-		IMAGE2D,
-		IMAGE3D,
+		TEXTURE1D,
+		TEXTURE2D,
+		TEXTURE3D,
 		ARRAY1D,
 		ARRAY2D,
 		RECT,
