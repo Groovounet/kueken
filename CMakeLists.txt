@@ -38,7 +38,9 @@ endmacro(add_sample_target_GTC)
 project(kueken)
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
-add_definitions(-std=gnu++0x)
+if(NOT MSVC)
+	add_definitions(-std=gnu++0x)
+endif(NOT MSVC)
 
 ##########################
 # Setup binary directory
@@ -126,7 +128,7 @@ include_directories("${GLV_DIRECTORY}")
 ###########
 # Add GLI
 
-set(GLI_VERSION "gli-0.3.0.0")
+set(GLI_VERSION "gli")
 set(GLI_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLI_VERSION})
 
 include_directories("${GLI_DIRECTORY}")
