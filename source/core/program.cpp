@@ -192,11 +192,17 @@ namespace detail
 
 		switch(Input)
 		{
-		case DATA:
-			this->Sources[Target] += Source;
+			case DATA:
+			{
+				this->Sources[Target] += Source;
+			}
 			break;
-		case FILE:
-			this->Sources[Target] += detail::loadFile(Source);
+			case FILE:
+			{
+				std::string Data = detail::loadFile(Source);
+				assert(!Data.empty());
+				this->Sources[Target] += Data;
+			}
 			break;
 		}
 	}

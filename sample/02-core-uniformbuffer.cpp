@@ -15,9 +15,9 @@
 namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 02";	
-	const char* VERTEX_SHADER_SOURCE = "../data/uniform-buffer.vert";
-	const char* FRAGMENT_SHADER_SOURCE = "../data/uniform-buffer.frag";
-	const char* TEXTURE_DIFFUSE = "../data/küken256dxt5.dds";
+	const char* VERTEX_SHADER_SOURCE = "./data/uniform-buffer.vert";
+	const char* FRAGMENT_SHADER_SOURCE = "./data/uniform-buffer.frag";
+	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
 	int const SAMPLE_MAJOR_VERSION(4);
@@ -302,18 +302,13 @@ bool end()
 void display()
 {
 	{
-		static float Rotate = 0.0f;
-		Rotate += 0.01f;
-
 		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-		glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0f));//-tranlationCurrent.y);
-		glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, Window.RotationCurrent.y, glm::vec3(-1.f, 0.f, 0.f));
-		glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
-		glm::mat4 ViewRotateZ = glm::rotate(ViewRotateY, Rotate, glm::vec3(0.f, 0.f, 1.f));
-		glm::mat4 View = ViewRotateZ;
+		glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Window.TranlationCurrent.y));
+		glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, Window.RotationCurrent.y, glm::vec3(1.f, 0.f, 0.f));
+		glm::mat4 View = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
 		glm::mat4 Model = glm::mat4(1.0f);
 		glm::mat4 MVP = Projection * View * Model;
- 
+
 		kueken::buffer::object & Object = Renderer->map(UniformBuffer);
 		Object.set(0, sizeof(glm::mat4), &MVP[0][0]);
 		Renderer->unmap(UniformBuffer);
