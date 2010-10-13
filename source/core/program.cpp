@@ -181,6 +181,17 @@ namespace detail
 		this->Definitions += std::string("#define ") + Name + std::string(" ") + Value + std::string("\n");
 	}
 
+	void creator::addSemantic
+	(
+		std::string const & Name, 
+		semantic const & Location
+	)
+	{
+		this->update();
+
+		this->Semantics += std::string("#define ") + Name + std::string(" ") /*+ int(Location)*/ + std::string("\n");
+	}
+
 	void creator::addSource
 	(
 		target const & Target, 
@@ -306,6 +317,12 @@ namespace detail
 			if(!Definitions.empty())
 			{
 				SourcesBuilt[i] += Definitions;
+				SourcesBuilt[i] += std::string("\n");
+			}
+
+			if(!Semantics.empty())
+			{
+				SourcesBuilt[i] += Semantics;
 				SourcesBuilt[i] += std::string("\n");
 			}
 

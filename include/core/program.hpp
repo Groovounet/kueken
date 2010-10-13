@@ -103,6 +103,9 @@ namespace detail
 		void addDefinition(
 			std::string const & Name, 
 			std::string const & Value);
+		void addSemantic(
+			std::string const & Name, 
+			semantic const & Location);
 		void addSource(
 			target const & Target, 
 			input const & Input, 
@@ -126,6 +129,7 @@ namespace detail
 		std::string Extensions;
 		std::string Options;
 		std::string Definitions;
+		std::string Semantics;
 		std::string Sources[TARGET_MAX];
 		std::string SourcesBuilt[TARGET_MAX];
 

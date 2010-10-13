@@ -60,10 +60,13 @@ namespace
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
-	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
-	kueken::program::semantic const SEMANTIC_MVP(1);
-	kueken::program::semantic const SEMANTIC_POSITION(0);
-	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
+	kueken::program::semantic const SEMANTIC_UNIF_DIFFUSE(0);
+	kueken::program::semantic const SEMANTIC_UNIF_MVP(1);
+	kueken::program::semantic const SEMANTIC_ATTR_POSITION(0);
+	kueken::program::semantic const SEMANTIC_ATTR_COLOR(1);
+	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(4);
+	kueken::program::semantic const SEMANTIC_FRAG_COLOR(1);
+	
 }//namespace
 
 bool initBlend()
@@ -171,12 +174,12 @@ bool initProgram()
 	Creator.setVersion(kueken::program::CORE_400);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SEMANTIC_DIFFUSE, "Diffuse");
-	Creator.addVariable(SEMANTIC_MVP, "MVP");
-	Creator.addDefinition("ATTR_POSITION", "0");
-	Creator.addDefinition("ATTR_COLOR", "3");
-	Creator.addDefinition("ATTR_TEXCOORD", "4");
-	Creator.addDefinition("FRAG_COLOR", "0");
+	Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
+	Creator.addVariable(SEMANTIC_UNIF_MVP, "MVP");
+	Creator.addSemantic("ATTR_POSITION", SEMANTIC_ATTR_POSITION);
+	Creator.addSemantic("ATTR_COLOR", SEMANTIC_ATTR_COLOR);
+	Creator.addSemantic("ATTR_TEXCOORD", SEMANTIC_ATTR_TEXCOORD);
+	Creator.addSemantic("FRAG_COLOR", SEMANTIC_FRAG_COLOR);
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -288,8 +291,8 @@ void display()
 	glm::mat4 MVP = Projection * View * Model;
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SEMANTIC_DIFFUSE, 0);
-	Object.setUniform(SEMANTIC_MVP, MVP);
+	Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
+	Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 	Renderer->unmap(Program);
 
 	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
