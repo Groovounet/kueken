@@ -7,7 +7,7 @@ namespace
 {
 	GLenum draw_target_cast(kueken::draw::target Target)
 	{
-		static GLenum const Cast[kueken::draw::TARGET_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_PRIMITIVES_GENERATED,					//PRIMITIVES_GENERATED,
 			GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN,	//PRIMITIVES_WRITTEN,
@@ -24,7 +24,7 @@ namespace
 
 	GLenum draw_mode_cast(kueken::draw::mode Mode)
 	{
-		static GLenum const Cast[kueken::draw::MODE_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_QUERY_WAIT,				//QUERY_WAIT,
 			GL_QUERY_NO_WAIT,			//QUERY_NO_WAIT,

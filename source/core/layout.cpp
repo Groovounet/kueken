@@ -10,7 +10,7 @@ namespace
 		kueken::layout::array Array
 	)
 	{
-		static std::size_t const Cast[kueken::layout::ARRAY_MAX] =
+		static std::size_t const Cast[] =
 		{
 			1, //F16VEC1,
 			2, //F16VEC2,
@@ -20,10 +20,30 @@ namespace
 			2, //F32VEC2,
 			3, //F32VEC3,
 			4, //F32VEC4,
+			1, //I8VEC1,
+			2, //I8VEC2,
+			3, //I8VEC3,
+			4, //I8VEC4
+			1, //I16VEC1,
+			2, //I16VEC2,
+			3, //I16VEC3,
+			4, //I16VEC4
+			1, //I32VEC1,
+			2, //I32VEC2,
+			3, //I32VEC3,
+			4, //I32VEC4
 			1, //U8VEC1,
 			2, //U8VEC2,
 			3, //U8VEC3,
-			4  //U8VEC4
+			4, //U8VEC4
+			1, //U16VEC1,
+			2, //U16VEC2,
+			3, //U16VEC3,
+			4, //U16VEC4
+			1, //U32VEC1,
+			2, //U32VEC2,
+			3, //U32VEC3,
+			4  //U32VEC4
 		};
 
 		static_assert(
@@ -38,7 +58,7 @@ namespace
 		kueken::layout::array Array
 	)
 	{
-		static GLenum const Cast[kueken::layout::ARRAY_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_HALF_FLOAT,		//F16VEC1,
 			GL_HALF_FLOAT,		//F16VEC2,
@@ -48,10 +68,30 @@ namespace
 			GL_FLOAT,			//F32VEC2,
 			GL_FLOAT,			//F32VEC3,
 			GL_FLOAT,			//F32VEC4,
+			GL_BYTE,			//I8VEC1,
+			GL_BYTE,			//I8VEC2,
+			GL_BYTE,			//I8VEC3,
+			GL_BYTE,			//I8VEC4
+			GL_SHORT,			//I16VEC1,
+			GL_SHORT,			//I16VEC2,
+			GL_SHORT,			//I16VEC3,
+			GL_SHORT,			//I16VEC4
+			GL_INT,				//I32VEC1,
+			GL_INT,				//I32VEC2,
+			GL_INT,				//I32VEC3,
+			GL_INT,				//I32VEC4
 			GL_UNSIGNED_BYTE,	//U8VEC1,
 			GL_UNSIGNED_BYTE,	//U8VEC2,
 			GL_UNSIGNED_BYTE,	//U8VEC3,
-			GL_UNSIGNED_BYTE	//U8VEC4
+			GL_UNSIGNED_BYTE,	//U8VEC4
+			GL_UNSIGNED_SHORT,	//U16VEC1,
+			GL_UNSIGNED_SHORT,	//U16VEC2,
+			GL_UNSIGNED_SHORT,	//U16VEC3,
+			GL_UNSIGNED_SHORT,	//U16VEC4
+			GL_UNSIGNED_INT,	//U32VEC1,
+			GL_UNSIGNED_INT,	//U32VEC2,
+			GL_UNSIGNED_INT,	//U32VEC3,
+			GL_UNSIGNED_INT		//U32VEC4
 		};
 
 		static_assert(

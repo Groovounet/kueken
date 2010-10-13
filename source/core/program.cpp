@@ -5,7 +5,7 @@ namespace
 {
 	GLenum program_buffer_mode_cast(kueken::buffer::mode Mode)
 	{
-		static GLenum const Cast[kueken::buffer::MODE_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_INTERLEAVED_ATTRIBS,		//INTERLEAVED,
 			GL_SEPARATE_ATTRIBS			//SEPARATED,
@@ -62,7 +62,7 @@ namespace detail
 {
 	GLenum program_target_cast(kueken::program::target Target)
 	{
-		static GLenum const Cast[kueken::program::TARGET_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_VERTEX_SHADER,			//VERTEX,
 			GL_TESS_CONTROL_SHADER,		//CONTROL,

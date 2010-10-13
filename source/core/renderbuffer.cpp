@@ -5,7 +5,7 @@ namespace
 {
 	GLenum renderbuffer_format_cast(kueken::renderbuffer::format Format)
 	{
-		static GLenum const Cast[kueken::renderbuffer::FORMAT_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_DEPTH_COMPONENT24,		// DEPTH24
 			GL_RGBA						// RGBA

@@ -378,7 +378,7 @@ namespace
 
 	GLenum swizzle_cast(kueken::texture::swizzle const & Swizzle)
 	{
-		static GLenum const Cast[kueken::texture::SWIZZLE_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_RED,		//RED
 			GL_GREEN,	//GREEN

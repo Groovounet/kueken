@@ -4,7 +4,7 @@ namespace
 {
 	GLenum buffer_usage_cast(kueken::buffer::usage Usage)
 	{
-		static GLenum const Cast[kueken::buffer::USAGE_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_STREAM_DRAW,		// STREAM_DRAW
 			GL_STREAM_READ,		// STREAM_READ
@@ -26,7 +26,7 @@ namespace
 
 	GLenum buffer_target_cast(kueken::buffer::target Target)
 	{
-		static GLenum const Cast[kueken::buffer::TARGET_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_ARRAY_BUFFER,				// ARRAY
 			GL_ELEMENT_ARRAY_BUFFER,		// ELEMENT

@@ -4,7 +4,7 @@ namespace
 {
 	//GLenum blit_mask_cast(kueken::blit::mask Mask)
 	//{
-	//	static GLenum const Cast[kueken::blit::MASK_MAX] =
+	//	static GLenum const Cast[] =
 	//	{
 	//		GL_COLOR_BUFFER_BIT,		// COLOR
 	//		GL_DEPTH_BUFFER_BIT,		// DEPTH
@@ -16,7 +16,7 @@ namespace
 
 	GLenum blit_filter_cast(kueken::blit::filter Filter)
 	{
-		static GLenum const Cast[kueken::blit::FILTER_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_NEAREST,		// NEAREST
 			GL_LINEAR		// LINEAR

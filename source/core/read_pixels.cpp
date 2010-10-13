@@ -4,7 +4,7 @@ namespace
 {
 	GLenum readpixels_format_cast(kueken::readpixels::format Format)
 	{
-		static GLenum const Cast[kueken::readpixels::FORMAT_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_RGBA,		// RGBA8U
 			GL_BGRA			// BGRA8U
@@ -19,7 +19,7 @@ namespace
 
 	GLenum readpixels_type_cast(kueken::readpixels::format Format)
 	{
-		static GLenum const Cast[kueken::readpixels::FORMAT_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_UNSIGNED_BYTE,		// RGBA8U
 			GL_UNSIGNED_BYTE		// BGRA8U
