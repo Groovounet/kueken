@@ -2,6 +2,7 @@
 #define KUEKEN_TEXTURE_INCLUDED
 
 #include "detail/detail.hpp"
+#include "buffer.hpp"
 #include "program.hpp"
 
 namespace kueken{
@@ -23,13 +24,6 @@ namespace texture
 		SWIZZLE_MAX
 	};
 
-	enum type
-	{
-		buffer,
-		image,
-		multisample
-	};
-
 	enum target
 	{
 		TEXTURE1D,
@@ -38,6 +32,7 @@ namespace texture
 		ARRAY1D,
 		ARRAY2D,
 		RECT,
+		TEXTURE_BUFFER,
 		CUBE_POS_X,
 		CUBE_NEG_X,
 		CUBE_POS_Y,
@@ -285,23 +280,26 @@ namespace detail
 */
 	typedef std::size_t slot;
 	typedef std::size_t level;
-/*
-	class creator
+
+	enum type
 	{
-	public:
-		void setVariable(program::variable const & Variable);
-		void setImage(image::name const & Image);
-		void setSampler(sampler::name const & Sampler);
-
-		virtual bool validate(){assert(0); return false;}
-
-	private:
-		detail::data Data;
+		IMAGE,
+		BUFFER,
+		MULTISAMPLE
 	};
-*/
+
+	class object;
+	class objectImage;
+	class objectTexture;
+
+	template <type TYPE>
 	class creator
+	{};
+
+	template <>
+	class creator<IMAGE> : public kueken::detail::creator
 	{
-		friend class object;
+		friend class objectImage;
 
 	public:
 		creator(renderer & Renderer);
@@ -329,17 +327,53 @@ namespace detail
 		detail::data Data;
 	};
 
+	template <>
+	class creator<BUFFER> : public kueken::detail::creator
+	{
+		friend class objectBuffer;
+
+	public:
+		creator(renderer & Renderer);
+		void setBuffer(
+			buffer::name const & Name);
+		void setFormat(
+			texture::format const & Format);
+
+		virtual bool validate();
+	private:
+		renderer & Renderer;
+		buffer::name Buffer;
+		GLenum InternalFormat;
+	};
+
 	class object : boost::noncopyable
 	{
 		friend class framebuffer::object;
 
 	public:
-		object(creator const & Creator);
-		~object();
+		object(renderer & Renderer) :
+			Renderer(Renderer)
+		{}
+		virtual ~object(){}
 
-		void bind(
+		virtual void bind(
 			slot const & Slot,
 			target const & Target);
+
+		virtual void generateMipmaps(){};
+
+		GLenum Name;
+		renderer & Renderer;
+	};
+
+	class objectImage : public object
+	{
+		friend class creator<IMAGE>;
+
+	public:
+		objectImage(creator<IMAGE> const & Creator);
+		virtual ~objectImage();
+
 		//void* map();
 		//void unmap();
 		//void flush();
@@ -349,13 +383,23 @@ namespace detail
 			glm::uvec2 const & Size,
 			void const * const Pointer);
 
-		void generateMipmaps();
+		virtual void generateMipmaps();
 
 	private:
 		void run();
 
 		detail::data Data;
-		GLenum Name;
+	};
+
+	class objectBuffer : public object
+	{
+		friend class creator<BUFFER>;
+
+	public:
+		objectBuffer(creator<BUFFER> const & Creator);
+		virtual ~objectBuffer();
+
+	private:
 	};
 
 	typedef kueken::detail::name<object> name;

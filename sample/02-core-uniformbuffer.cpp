@@ -138,7 +138,7 @@ bool initTexture2D()
 	{
 		gli::texture2D ImageFile = gli::load(TEXTURE_DIFFUSE);
 
-		kueken::texture::creator Creator(*Renderer);
+		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)

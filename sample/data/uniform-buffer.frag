@@ -10,5 +10,5 @@ layout(location = FRAG_COLOR, index = 0) out vec4 Color;
 
 void main()
 {
-	Color = vec4(texture2D(Diffuse, VertTexcoord).rgb, 0.7);
+	Color = texture2D(Diffuse, VertTexcoord);
 }

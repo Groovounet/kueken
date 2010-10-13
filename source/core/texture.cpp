@@ -5,14 +5,15 @@ namespace
 {
 	GLenum image_target_cast(kueken::texture::target const & Target)
 	{
-		static GLenum const Cast[kueken::texture::TARGET_MAX] =
+		static GLenum const Cast[] =
 		{
-			GL_TEXTURE_1D,						// IMAGE_1D
-			GL_TEXTURE_2D,						// IMAGE_2D
-			GL_TEXTURE_3D,						// IMAGE_3D
+			GL_TEXTURE_1D,						// TEXTURE_1D
+			GL_TEXTURE_2D,						// TEXTURE_2D
+			GL_TEXTURE_3D,						// TEXTURE_3D
 			GL_TEXTURE_1D_ARRAY,				// ARRAY_1D
 			GL_TEXTURE_2D_ARRAY,				// ARRAY_2D
 			GL_TEXTURE_RECTANGLE,				// RECT
+			GL_TEXTURE_BUFFER,					// TEXTURE_BUFFER
 			GL_TEXTURE_CUBE_MAP_POSITIVE_X,		// CUBE_POS_X
 			GL_TEXTURE_CUBE_MAP_NEGATIVE_X,		// CUBE_NEG_X
 			GL_TEXTURE_CUBE_MAP_POSITIVE_Y,		// CUBE_POS_Y
@@ -30,7 +31,7 @@ namespace
 
 	GLenum image_internal_cast(kueken::texture::format const & Format)
 	{
-		static GLenum const Cast[kueken::texture::FORMAT_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_R8,						// R8
 			GL_RG8,						// RG8
@@ -120,7 +121,7 @@ namespace
 
 	bool image_compressed_cast(kueken::texture::format const & Format)
 	{
-		static bool const Cast[kueken::texture::FORMAT_MAX] =
+		static bool const Cast[] =
 		{
 			false,						// R8
 			false,						// RG8
@@ -207,7 +208,7 @@ namespace
 
 	GLenum image_format_cast(kueken::texture::format Format)
 	{
-		static GLenum const Cast[kueken::texture::FORMAT_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_RED,					// R8
 			GL_RG,					// RG8
@@ -397,18 +398,18 @@ namespace
 }//namespace
 
 namespace kueken{
-namespace texture{
-
-	creator::creator(renderer & Renderer) :
+namespace texture
+{
+	creator<IMAGE>::creator(renderer & Renderer) :
 		Renderer(Renderer)
 	{}
 
-	void creator::setTarget(target const & Target)
+	void creator<IMAGE>::setTarget(target const & Target)
 	{
 		Data.Target	= image_target_cast(Target);
 	}
 
-	void creator::setFormat(format const & Format)
+	void creator<IMAGE>::setFormat(format const & Format)
 	{
 		Data.Type = image_type_cast(Format);
 		Data.InternalFormat = image_internal_cast(Format);
@@ -416,7 +417,7 @@ namespace texture{
 		Data.Compressed = image_compressed_cast(Format);
 	}
 
-	void creator::setSwizzle
+	void creator<IMAGE>::setSwizzle
 	(
 		swizzle const & Red, 
 		swizzle const & Green, 
@@ -430,7 +431,7 @@ namespace texture{
 		this->Data.Swizzle[3] = swizzle_cast(Alpha);
 	}
 
-	void creator::setLevel
+	void creator<IMAGE>::setLevel
 	(
 		glm::int32 const & BaseLevel, 
 		glm::int32 const & MaxLevel
@@ -440,7 +441,7 @@ namespace texture{
 		this->Data.MaxLevel = GLint(MaxLevel);
 	}
 
-	void creator::setImage
+	void creator<IMAGE>::setImage
 	(
 		level const & Level, 
 		glm::uvec3 const & Size,
@@ -455,12 +456,44 @@ namespace texture{
 		this->Data.Mipmaps[Level].Depth = Size.z;
 	}
 
-	bool creator::validate()
+	bool creator<IMAGE>::validate()
 	{
 		return true;
 	}
 
-	object::object(creator const & Creator) :
+	creator<BUFFER>::creator(renderer & Renderer) :
+		Renderer(Renderer)
+	{}
+
+	void creator<BUFFER>::setBuffer(buffer::name const & Name)
+	{
+		this->Buffer = Name;
+	}
+
+	void creator<BUFFER>::setFormat(texture::format const & Format)
+	{
+		this->InternalFormat = image_internal_cast(Format);
+	}
+
+	bool creator<BUFFER>::validate()
+	{
+		return true;
+	}
+
+	void object::bind
+	(
+		slot const & Slot,
+		target const & Target
+	)
+	{
+		glBindMultiTextureEXT(
+			GL_TEXTURE0 + GLenum(Slot), 
+			image_target_cast(Target),//Data.Target, 
+			this->Name);
+	}
+
+	objectImage::objectImage(creator<IMAGE> const & Creator) :
+		object(Creator.Renderer),
 		Data(Creator.Data)
 	{
 		glGenTextures(1, &Name);
@@ -543,49 +576,12 @@ namespace texture{
 		assert(glGetError() == GL_NO_ERROR);
 	}
 
-	object::~object()
+	objectImage::~objectImage()
 	{
 		glDeleteTextures(1, &Name);
 	}
 
-	void object::bind
-	(
-		slot const & Slot,
-		target const & Target
-	)
-	{
-		glBindMultiTextureEXT(
-			GL_TEXTURE0 + GLenum(Slot), 
-			image_target_cast(Target),//Data.Target, 
-			Name);
-	}
-
-	//GLuint object::GetName() const
-	//{
-	//	return Name;
-	//}
-
-	//GLenum object::GetTarget() const
-	//{
-	//	return Data.Target;
-	//}
-
-	//void* object::map()
-	//{
-	//	return glMapBuffer(GL_ARRAY_BUFFER);
-	//}
-
-	//void object::unmap()
-	//{
-	//	glUnmapBuffer(GL_ARRAY_BUFFER);
-	//}
-
-	//void object::flush()
-	//{
-	//	
-	//}
-
-	void object::set
+	void objectImage::set
 	(
 		level const & Level,
 		glm::uvec2 const & Position,
@@ -606,138 +602,37 @@ namespace texture{
 			Pointer);
 	}
 
-	void object::generateMipmaps()
+	void objectImage::generateMipmaps()
 	{
 		glGenerateTextureMipmapEXT(Name, Data.Target);
 	}
 
-/*
-namespace detail
-{
-	/////////////////////////////
-	// objectBuffer
-
 	objectBuffer::objectBuffer
 	(
-		creator<buffer> const & Creator
+		creator<BUFFER> const & Creator
 	) :
-		Data(Creator.Data)
+		object(Creator.Renderer)
 	{
-		// Crash with nVidia drivers 182.05
-		//glGenTextures(1, &Name);
-		//glTextureBufferEXT(
-		//	Name, 
-		//	GL_TEXTURE_BUFFER_EXT, 
-		//	Data.Format,
-		//	Data.Buffer);
+		assert(Creator.InternalFormat != GL_NONE);
 
-		//GLuint Previous = 0;
-		//glGetIntegerv(GL_TEXTURE_BUFFER_EXT, &Previous);
+		kueken::buffer::object const & Buffer = this->Renderer.map(Creator.Buffer);
 
-		//glGenTextures(1, &Name);
-		//glActiveTexture(GL_TEXTURE0 + 0);
+		glGenTextures(1, &this->Name);
 
-		//glBindTexture(
-		//	GL_TEXTURE_BUFFER_EXT, 
-		//	Name);
-
-		//glTexBuffer(
-		//	GL_TEXTURE_BUFFER, 
-		//	Data.Format, 
-		//	Data.Buffer);
-
-		glGenTextures(1, &Name);
 		glTextureBufferEXT(
-			Name, 
+			this->Name, 
 			GL_TEXTURE_BUFFER, 
-			Data.Format,
-			Data.Buffer);
+			Creator.InternalFormat, 
+			Buffer.GetName());
 
-		assert(glGetError() == GL_NO_ERROR);
+		this->Renderer.unmap(Creator.Buffer);
 	}
 
 	objectBuffer::~objectBuffer()
 	{
-		glDeleteTextures(1, &Name); 
+		glDeleteTextures(1, &Name);
 	}
 
-	void objectBuffer::bind(slot Slot)
-	{
-		Data.Variable.set(Slot);
-
-		glBindMultiTextureEXT(
-			GL_TEXTURE0 + GLenum(Slot),
-			GL_TEXTURE_BUFFER_EXT,
-			Name);
-	}
-
-	GLuint objectBuffer::getName() const
-	{
-		return Name;
-	}
-
-	/////////////////////////////
-	// objectImage
-
-	objectImage::objectImage
-	(
-		creator<image> const & Creator
-	) :
-		Data(Creator.Data)
-	{
-#		if KUEKEN_STATE_OBJECTS
-			Name = glGenLists(1);
-
-			glNewList(Name, GL_COMPILE);
-				run();
-			glEndList();
-#		endif//KUEKEN_STATE_OBJECTS	
-	}
-
-	objectImage::~objectImage()
-	{
-#		if KUEKEN_STATE_OBJECTS
-			glDeleteLists(Name, 1); 
-#		endif//KUEKEN_STATE_OBJECTS
-	}
-
-	void objectImage::bind(slot Slot)
-	{
-		assert(glGetError() == GL_NO_ERROR);
-
-		Data.Variable.set(Slot);
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		glActiveTexture(GL_TEXTURE0 + GLenum(Slot));
-
-		assert(glGetError() == GL_NO_ERROR);
-
-#		if KUEKEN_STATE_OBJECTS
-			glCallList(Name);
-#		else
-			run();
-#		endif//KUEKEN_STATE_OBJECTS
-
-		assert(glGetError() == GL_NO_ERROR);
-
-		//glActiveTexture(GL_TEXTURE0);
-	}
-
-	void objectImage::run()
-	{
-		kueken::manager& Manager = kueken::manager::instance();
-
-		//Manager.Image.getObject(Data.Image).bind(Data.Sampler);
-	}
-
-	GLuint objectImage::getName() const
-	{
-		return kueken::manager::instance().Image.getObject(Data.Image).GetName();
-	}
-
-}//namespace detail
-*/
 }//namespace texture
 }//namespace kueken
 

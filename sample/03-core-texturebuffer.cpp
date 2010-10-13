@@ -1,6 +1,6 @@
 //**********************************
-// Kueken sample 01
-// 05/01/2009
+// Kueken sample 03
+// 12/10/2010
 //**********************************
 // Christophe Riccio
 // christophe@g-truc.net
@@ -14,9 +14,9 @@
 
 namespace
 {
-	const char* SAMPLE_NAME = "Kueken sample 01";	
-	const char* VERTEX_SHADER_SOURCE = "./data/texture.vert";
-	const char* FRAGMENT_SHADER_SOURCE = "./data/texture.frag";
+	const char* SAMPLE_NAME = "Kueken sample 03";	
+	const char* VERTEX_SHADER_SOURCE = "./data/texture-buffer.vert";
+	const char* FRAGMENT_SHADER_SOURCE = "./data/texture-buffer.frag";
 	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
@@ -52,16 +52,19 @@ namespace
 	kueken::clear::name ClearScene(kueken::clear::name::null());
 	kueken::draw::name Draw(kueken::draw::name::null());
 	kueken::program::name Program(kueken::program::name::null());
-	kueken::texture::name Texture(kueken::texture::name::null());
+	kueken::texture::name TextureDiffuse(kueken::texture::name::null());
+	kueken::texture::name TextureTransform(kueken::texture::name::null());
 	kueken::layout::name Layout(kueken::layout::name::null());
 	kueken::sampler::name Sampler(kueken::sampler::name::null());
 	kueken::buffer::name ArrayBuffer(kueken::buffer::name::null());
 	kueken::buffer::name ElementBuffer(kueken::buffer::name::null());
+	kueken::buffer::name UniformBuffer(kueken::buffer::name::null());
+	kueken::buffer::name TextureBuffer(kueken::buffer::name::null());
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
 	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
-	kueken::program::semantic const SEMANTIC_MVP(1);
+	kueken::program::semantic const SEMANTIC_TRANSFORM(1);
 	kueken::program::semantic const SEMANTIC_POSITION(0);
 	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
 }//namespace
@@ -78,9 +81,9 @@ bool initBlend()
 bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
-	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
+	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 	ClearBackground = Renderer->create(Creator);
-	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
+	Creator.setColor(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
 	ClearScene = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -147,11 +150,11 @@ bool initTexture2D()
 				glm::uvec3(ImageFile[Level].dimensions(), 1), 
 				ImageFile[Level].data());
 		}
-		Texture = Renderer->create(Creator);
+		TextureDiffuse = Renderer->create(Creator);
 
-		kueken::texture::object & Object = Renderer->map(Texture);
+		kueken::texture::object & Object = Renderer->map(TextureDiffuse);
 		Object.generateMipmaps();
-		Renderer->unmap(Texture);
+		Renderer->unmap(TextureDiffuse);
 	}
 
 	{
@@ -169,14 +172,21 @@ bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
 	Creator.setVersion(kueken::program::CORE_400);
-	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
-	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SEMANTIC_DIFFUSE, "Diffuse");
-	Creator.addVariable(SEMANTIC_MVP, "MVP");
-	Creator.addDefinition("ATTR_POSITION", "0");
-	Creator.addDefinition("ATTR_COLOR", "3");
-	Creator.addDefinition("ATTR_TEXCOORD", "4");
-	Creator.addDefinition("FRAG_COLOR", "0");
+	Creator.addSource(
+		kueken::program::VERTEX, 
+		kueken::program::FILE,
+		VERTEX_SHADER_SOURCE);
+	Creator.addSource(
+		kueken::program::FRAGMENT, 
+		kueken::program::FILE,
+		FRAGMENT_SHADER_SOURCE);
+	Creator.addVariable(
+		SEMANTIC_DIFFUSE, 
+		"Diffuse");
+	Creator.addVariable(
+		SEMANTIC_TRANSFORM, 
+		"MVP");
+
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -203,6 +213,26 @@ bool initLayout()
 	Layout = Renderer->create(Creator);
 
 	return glf::checkError("initLayout");
+}
+
+bool initTextureBuffer()
+{
+	{
+		kueken::buffer::creator Creator(*Renderer);
+		Creator.setSize(sizeof(glm::mat4));
+		Creator.setData(0);
+		Creator.setUsage(kueken::buffer::STREAM_READ);
+		TextureBuffer = Renderer->create(Creator);
+	}
+
+	{
+		kueken::texture::creator<kueken::texture::BUFFER> Creator(*Renderer);
+		Creator.setBuffer(TextureBuffer);
+		Creator.setFormat(kueken::texture::RGBA32F);
+		TextureTransform = Renderer->create(Creator);
+	}
+
+	return glf::checkError("initTextureBuffer");
 }
 
 bool initArrayBuffer()
@@ -257,6 +287,8 @@ bool begin()
 	if(Validated)
 		Validated = initArrayBuffer();
 	if(Validated)
+		Validated = initTextureBuffer();
+	if(Validated)
 		Validated = initProgram();
 	if(Validated)
 		Validated = initLayout();
@@ -280,16 +312,26 @@ bool end()
 
 void display()
 {
-	glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Window.TranlationCurrent.y));
-	glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, Window.RotationCurrent.y, glm::vec3(1.f, 0.f, 0.f));
-	glm::mat4 View = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
-	glm::mat4 Model = glm::mat4(1.0f);
-	glm::mat4 MVP = Projection * View * Model;
+	{
+		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+		glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Window.TranlationCurrent.y));
+		glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, Window.RotationCurrent.y, glm::vec3(1.f, 0.f, 0.f));
+		glm::mat4 View = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
+		glm::mat4 Model = glm::mat4(1.0f);
+		glm::mat4 MVP = Projection * View * Model;
+
+		//kueken::buffer::object & Object = Renderer->map(UniformBuffer);
+		//Object.set(0, sizeof(glm::mat4), &MVP[0][0]);
+		//Renderer->unmap(UniformBuffer);
+
+		kueken::buffer::object & Object = Renderer->map(TextureBuffer);
+		Object.set(0, sizeof(glm::mat4), &MVP[0][0]);
+		Renderer->unmap(TextureBuffer);
+	}
 
 	kueken::program::object & Object = Renderer->map(Program);
 	Object.setSampler(SEMANTIC_DIFFUSE, 0);
-	Object.setUniform(SEMANTIC_MVP, MVP);
+	Object.setSampler(SEMANTIC_TRANSFORM, 1);
 	Renderer->unmap(Program);
 
 	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
@@ -305,8 +347,9 @@ void display()
 	
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	
-	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
+	Renderer->bind(0, kueken::texture::TEXTURE2D, TextureDiffuse);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
+	Renderer->bind(1, kueken::texture::TEXTURE_BUFFER, TextureTransform);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
@@ -328,3 +371,4 @@ int main(int argc, char* argv[])
 		return 0;
 	return 1;
 }
+
