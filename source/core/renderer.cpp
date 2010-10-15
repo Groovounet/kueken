@@ -591,7 +591,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Sampler.setCurrentObject(Slot, Name).bind(Target);
+		Manager.Sampler.setCurrentObject(Slot, Name).bind(Slot);
 	}
 
 	///////////////////////////

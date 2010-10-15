@@ -65,10 +65,11 @@ namespace program
 	typedef std::size_t count;
 	typedef int sampler;
 	typedef glm::uint32 block;
+	typedef glm::uint32 subroutine;
 
 namespace detail
 {
-	GLenum program_target_cast(kueken::program::target Target);
+	GLenum program_target_cast(kueken::program::target const & Target);
 
 	struct indirection
 	{
@@ -104,18 +105,26 @@ namespace detail
 			std::string const & Name, 
 			std::string const & Value);
 		void addSemantic(
-			std::string const & Name, 
-			semantic const & Location);
-		void addSource(
-			target const & Target, 
-			input const & Input, 
-			std::string const & Source);
+			semantic const & Location,
+			std::string const & Value);
 		void addVariable(
 			semantic const & Semantic, 
 			std::string const & Name);
 		void addBlock(
 			semantic const & Semantic, 
 			std::string const & Name);
+		void addSubroutine(
+			target const & Target,
+			semantic const & Semantic, 
+			std::string const & Name);
+		void addSubroutineLocation(
+			target const & Target,
+			semantic const & Semantic, 
+			std::string const & Name);
+		void addSource(
+			target const & Target, 
+			input const & Input, 
+			std::string const & Source);
 		void setFeedbackVariable(
 			std::vector<std::string> const & Names, 
 			buffer::mode const & Mode);
@@ -138,6 +147,10 @@ namespace detail
 		semantic UniformSemanticsMax;
 		std::vector<detail::indirection> BlockVariables;
 		semantic BlockSemanticsMax;
+		std::array<std::vector<detail::indirection>, TARGET_MAX> SubroutineVariables;
+		std::array<semantic, TARGET_MAX> SubroutineSemanticsMax;
+		std::array<std::vector<detail::indirection>, TARGET_MAX> SubroutineLocationVariables;
+		std::array<semantic, TARGET_MAX> SubroutineLocationSemanticsMax;
 		renderer & Renderer;
 		GLenum FeedbackBufferMode;
 		bool Quiet;
@@ -187,10 +200,26 @@ namespace detail
 			count const & Count, 
 			block const * Value);
 
+		// Subroutine
+		void setSubroutine(
+			target const & Target,
+			semantic const & Semantic, 
+			subroutine const & Value);
+
+		// Subroutine array
+		void setSubroutine(
+			target const & Target,
+			semantic const & Semantic, 
+			count const & Count, 
+			subroutine const * Value);
+
 	private:
 		//detail::data Data;
 		std::vector<GLuint> UniformIndirection;
 		std::vector<GLuint> BlockIndirection;
+		std::array<std::vector<GLuint>, TARGET_MAX> SubroutineIndirection;
+		std::array<std::vector<GLuint>, TARGET_MAX> SubroutineLocationIndirection;
+		std::array<std::vector<GLuint>, TARGET_MAX> SubroutineLocation;
 		GLuint Name;
 		std::string Log;
 	};
