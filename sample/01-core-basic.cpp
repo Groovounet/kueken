@@ -60,12 +60,12 @@ namespace
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
-	kueken::program::semantic const SEMANTIC_UNIF_DIFFUSE(0);
-	kueken::program::semantic const SEMANTIC_UNIF_MVP(1);
-	kueken::program::semantic const SEMANTIC_ATTR_POSITION(kueken::layout::POSITION);
-	kueken::program::semantic const SEMANTIC_ATTR_COLOR(kueken::layout::COLOR);
-	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(kueken::layout::TEXCOORD);
-	kueken::program::semantic const SEMANTIC_FRAG_COLOR(0);
+	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE(0);
+	kueken::program::semantic const UNIFORM_SEMANTIC_MVP(1);
+	kueken::program::semantic const ATTRIB_SEMANTIC_POSITION(0);
+	kueken::program::semantic const ATTRIB_SEMANTIC_COLOR(1);
+	kueken::program::semantic const ATTRIB_SEMANTIC_TEXCOORD(4);
+	kueken::program::semantic const FRAGMENT_SEMANTIC_COLOR(0);
 	
 }//namespace
 
@@ -174,12 +174,12 @@ bool initProgram()
 	Creator.setVersion(kueken::program::CORE_400);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
-	Creator.addVariable(SEMANTIC_UNIF_MVP, "MVP");
-	Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
-	Creator.addSemantic(SEMANTIC_ATTR_COLOR, "ATTR_COLOR");
-	Creator.addSemantic(SEMANTIC_ATTR_TEXCOORD, "ATTR_TEXCOORD");
-	Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
+	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse");
+	Creator.addVariable(UNIFORM_SEMANTIC_MVP, "MVP");
+	Creator.addSemantic(ATTRIB_SEMANTIC_POSITION, "ATTR_POSITION");
+	Creator.addSemantic(ATTRIB_SEMANTIC_COLOR, "ATTR_COLOR");
+	Creator.addSemantic(ATTRIB_SEMANTIC_TEXCOORD, "ATTR_TEXCOORD");
+	Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -191,14 +191,14 @@ bool initLayout()
 	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
-		kueken::layout::POSITION,
+		ATTRIB_SEMANTIC_POSITION,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		0, 
 		0);
 	Creator.setVertexArray(
 		0, 
-		kueken::layout::TEXCOORD,
+		ATTRIB_SEMANTIC_TEXCOORD,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
@@ -291,8 +291,8 @@ void display()
 	glm::mat4 MVP = Projection * View * Model;
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
-	Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
+	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, 0);
+	Object.setUniform(UNIFORM_SEMANTIC_MVP, MVP);
 	Renderer->unmap(Program);
 
 	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
@@ -310,17 +310,6 @@ void display()
 	
 	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-	//glSamplerParameteri(1, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glSamplerParameteri(1, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glSamplerParameteri(1, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glSamplerParameteri(1, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glSamplerParameteri(1, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	//glSamplerParameterfv(1, GL_TEXTURE_BORDER_COLOR, &glm::vec4(0.0f)[0]);
-	//glSamplerParameterf(1, GL_TEXTURE_MIN_LOD, -1000.f);
-	//glSamplerParameterf(1, GL_TEXTURE_MAX_LOD, 1000.f);
-	//glSamplerParameterf(1, GL_TEXTURE_LOD_BIAS, 0.0f);
-	//glSamplerParameteri(1, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-	//glSamplerParameteri(1, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);

@@ -61,10 +61,10 @@ namespace
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
-	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
-	kueken::program::semantic const SEMANTIC_TRANSFORM(1);
-	kueken::program::semantic const SEMANTIC_POSITION(0);
-	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
+	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE(0);
+	kueken::program::semantic const BLOCK_SEMANTIC_TRANSFORM(1);
+	kueken::program::semantic const ATTRIB_SEMANTIC_POSITION(0);
+	kueken::program::semantic const ATTRIB_SEMANTIC_TEXCOORD(4);
 }//namespace
 
 bool initBlend()
@@ -79,9 +79,9 @@ bool initBlend()
 bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
-	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
 	ClearBackground = Renderer->create(Creator);
-	Creator.setColor(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
+	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
 	ClearScene = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -179,10 +179,10 @@ bool initProgram()
 		kueken::program::FILE,
 		FRAGMENT_SHADER_SOURCE);
 	Creator.addVariable(
-		SEMANTIC_DIFFUSE, 
+		SAMPLER_SEMANTIC_DIFFUSE, 
 		"Diffuse");
 	Creator.addBlock(
-		SEMANTIC_TRANSFORM, 
+		BLOCK_SEMANTIC_TRANSFORM, 
 		"transform");
 
 	Creator.build();
@@ -196,14 +196,14 @@ bool initLayout()
 	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
-		kueken::layout::POSITION,
+		ATTRIB_SEMANTIC_POSITION,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		0, 
 		0);
 	Creator.setVertexArray(
 		0, 
-		kueken::layout::TEXCOORD,
+		ATTRIB_SEMANTIC_TEXCOORD,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
@@ -315,8 +315,8 @@ void display()
 	}
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SEMANTIC_DIFFUSE, 0);
-	Object.setBlock(SEMANTIC_TRANSFORM, 2);
+	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, 0);
+	Object.setBlock(BLOCK_SEMANTIC_TRANSFORM, 2);
 	Renderer->unmap(Program);
 
 	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);

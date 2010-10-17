@@ -16,12 +16,12 @@ namespace layout
 		VERTEX
 	};
 
-	enum semantic
-	{
-		POSITION		= 0,
-		COLOR			= 3,
-		TEXCOORD		= 4
-	};
+	//enum semantic
+	//{
+	//	POSITION		= 0,
+	//	COLOR			= 3,
+	//	TEXCOORD		= 4
+	//};
 
 	enum array
 	{
@@ -61,6 +61,7 @@ namespace layout
 	};
 
 	typedef std::size_t slot;
+	typedef std::size_t semantic;
 
 namespace detail{
 

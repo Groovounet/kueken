@@ -15,6 +15,6 @@ void main()
 	VertTexcoord = Texcoord;
 	mat4 InstanceMVP;
 	for(int i = 0; i < 4; ++i)
-		InstanceMVP[i] = texelFetchBuffer(MVP, i);
+		InstanceMVP[i] = texelFetch(MVP, i);
 	gl_Position = InstanceMVP * vec4(Position, 0.0, 1.0);
 }
