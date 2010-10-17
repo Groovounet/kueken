@@ -233,6 +233,142 @@ namespace glf
 		glDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC) glfGetProcAddress("glDebugMessageCallbackARB");
 		glGetDebugMessageLogARB = (PFNGLGETDEBUGMESSAGELOGARBPROC) glfGetProcAddress("glGetDebugMessageLogARB");
 
+		// Load GL_EXT_direct_state_access
+		glBindMultiTextureEXT = (PFNGLBINDMULTITEXTUREEXTPROC) glfGetProcAddress("glBindMultiTextureEXT");
+		glCheckNamedFramebufferStatusEXT = (PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC) glfGetProcAddress("glCheckNamedFramebufferStatusEXT");
+
+		glCompressedTextureImage1DEXT = (PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC) glfGetProcAddress("glCompressedTextureImage1DEXT");
+		glCompressedTextureImage2DEXT = (PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC) glfGetProcAddress("glCompressedTextureImage2DEXT");
+		glCompressedTextureImage3DEXT = (PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC) glfGetProcAddress("glCompressedTextureImage3DEXT");
+		glCompressedTextureSubImage1DEXT = (PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC) glfGetProcAddress("glCompressedTextureSubImage1DEXT");
+		glCompressedTextureSubImage2DEXT = (PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC) glfGetProcAddress("glCompressedTextureSubImage2DEXT");
+		glCompressedTextureSubImage3DEXT = (PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC) glfGetProcAddress("glCompressedTextureSubImage3DEXT");
+		glCopyTextureImage1DEXT = (PFNGLCOPYTEXTUREIMAGE1DEXTPROC) glfGetProcAddress("glCopyTextureImage1DEXT");
+		glCopyTextureImage2DEXT = (PFNGLCOPYTEXTUREIMAGE2DEXTPROC) glfGetProcAddress("glCopyTextureImage2DEXT");
+		glCopyTextureSubImage1DEXT = (PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC) glfGetProcAddress("glCopyTextureSubImage1DEXT");
+		glCopyTextureSubImage2DEXT = (PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC) glfGetProcAddress("glCopyTextureSubImage2DEXT");
+		glCopyTextureSubImage3DEXT = (PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC) glfGetProcAddress("glCopyTextureSubImage3DEXT");
+
+		glDisableVertexArrayAttribEXT = (PFNGLDISABLEVERTEXARRAYATTRIBEXTPROC) glfGetProcAddress("glDisableVertexArrayAttribEXT");
+		glEnableVertexArrayAttribEXT = (PFNGLENABLEVERTEXARRAYATTRIBEXTPROC) glfGetProcAddress("glEnableVertexArrayAttribEXT");
+		glFlushMappedNamedBufferRangeEXT = (PFNGLFLUSHMAPPEDNAMEDBUFFERRANGEEXTPROC) glfGetProcAddress("glFlushMappedNamedBufferRangeEXT");
+
+		glFramebufferDrawBufferEXT = (PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC) glfGetProcAddress("glFramebufferDrawBufferEXT");
+		glFramebufferDrawBuffersEXT = (PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC) glfGetProcAddress("glFramebufferDrawBuffersEXT");
+		glFramebufferReadBufferEXT = (PFNGLFRAMEBUFFERREADBUFFEREXTPROC) glfGetProcAddress("glFramebufferReadBufferEXT");
+		glGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC) glfGetProcAddress("glGenerateTextureMipmapEXT");
+
+		glGetCompressedTextureImageEXT = (PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC) glfGetProcAddress("glGetCompressedTextureImageEXT");
+		glGetDoubleIndexedvEXT = (PFNGLGETDOUBLEINDEXEDVEXTPROC) glfGetProcAddress("glGetDoubleIndexedvEXT");
+		glGetDoublei_vEXT = (PFNGLGETDOUBLEI_VEXTPROC) glfGetProcAddress("glGetDoublei_vEXT");
+		glGetFloatIndexedvEXT = (PFNGLGETFLOATINDEXEDVEXTPROC) glfGetProcAddress("glGetFloatIndexedvEXT");
+		glGetFloati_vEXT = (PFNGLGETFLOATI_VEXTPROC) glfGetProcAddress("glGetFloati_vEXT");
+		glGetFramebufferParameterivEXT = (PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC) glfGetProcAddress("glGetFramebufferParameterivEXT");
+
+		glGetNamedBufferParameterivEXT = (PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC) glfGetProcAddress("glGetNamedBufferParameterivEXT");
+		glGetNamedBufferPointervEXT = (PFNGLGETNAMEDBUFFERPOINTERVEXTPROC) glfGetProcAddress("glGetNamedBufferPointervEXT");
+		glGetNamedBufferSubDataEXT = (PFNGLGETNAMEDBUFFERSUBDATAEXTPROC) glfGetProcAddress("glGetNamedBufferSubDataEXT");
+		glGetNamedFramebufferAttachmentParameterivEXT = (PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC) glfGetProcAddress("glGetNamedFramebufferAttachmentParameterivEXT");
+
+		glGetNamedBufferParameterivEXT = (PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC) glfGetProcAddress("glGetNamedBufferParameterivEXT");
+		glGetNamedBufferPointervEXT = (PFNGLGETNAMEDBUFFERPOINTERVEXTPROC) glfGetProcAddress("glGetNamedBufferPointervEXT");
+		glGetNamedBufferSubDataEXT = (PFNGLGETNAMEDBUFFERSUBDATAEXTPROC) glfGetProcAddress("glGetNamedBufferSubDataEXT");
+		glGetNamedFramebufferAttachmentParameterivEXT = (PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC) glfGetProcAddress("glGetNamedFramebufferAttachmentParameterivEXT");
+		glGetNamedProgramStringEXT = (PFNGLGETNAMEDPROGRAMSTRINGEXTPROC) glfGetProcAddress("glGetNamedProgramStringEXT");
+		glGetNamedProgramivEXT = (PFNGLGETNAMEDPROGRAMIVEXTPROC) glfGetProcAddress("glGetNamedProgramivEXT");
+		glGetNamedRenderbufferParameterivEXT = (PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC) glfGetProcAddress("glGetNamedRenderbufferParameterivEXT");
+
+		glGetPointerIndexedvEXT = (PFNGLGETPOINTERINDEXEDVEXTPROC) glfGetProcAddress("glGetPointerIndexedvEXT");
+		glGetPointeri_vEXT = (PFNGLGETPOINTERI_VEXTPROC) glfGetProcAddress("glGetPointeri_vEXT");
+
+		glGetTextureImageEXT = (PFNGLGETTEXTUREIMAGEEXTPROC) glfGetProcAddress("glGetTextureImageEXT");
+		glGetTextureLevelParameterfvEXT = (PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC) glfGetProcAddress("glGetTextureLevelParameterfvEXT");
+		glGetTextureLevelParameterivEXT = (PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC) glfGetProcAddress("glGetTextureLevelParameterivEXT");
+		glGetTextureParameterIivEXT = (PFNGLGETTEXTUREPARAMETERIIVEXTPROC) glfGetProcAddress("glGetTextureParameterIivEXT");
+		glGetTextureParameterIuivEXT = (PFNGLGETTEXTUREPARAMETERIUIVEXTPROC) glfGetProcAddress("glGetTextureParameterIuivEXT");
+		glGetTextureParameterfvEXT = (PFNGLGETTEXTUREPARAMETERFVEXTPROC) glfGetProcAddress("glGetTextureParameterfvEXT");
+		glGetTextureParameterivEXT = (PFNGLGETTEXTUREPARAMETERIVEXTPROC) glfGetProcAddress("glGetTextureParameterivEXT");
+
+		glGetVertexArrayIntegeri_vEXT = (PFNGLGETVERTEXARRAYINTEGERI_VEXTPROC) glfGetProcAddress("glGetVertexArrayIntegeri_vEXT");
+		glGetVertexArrayIntegervEXT = (PFNGLGETVERTEXARRAYINTEGERVEXTPROC) glfGetProcAddress("glGetVertexArrayIntegervEXT");
+		glGetVertexArrayPointeri_vEXT = (PFNGLGETVERTEXARRAYPOINTERI_VEXTPROC) glfGetProcAddress("glGetVertexArrayPointeri_vEXT");
+		glGetVertexArrayPointervEXT = (PFNGLGETVERTEXARRAYPOINTERVEXTPROC) glfGetProcAddress("glGetVertexArrayPointervEXT");
+
+		glMapNamedBufferEXT = (PFNGLMAPNAMEDBUFFEREXTPROC) glfGetProcAddress("glMapNamedBufferEXT");
+		glMapNamedBufferRangeEXT = (PFNGLMAPNAMEDBUFFERRANGEEXTPROC) glfGetProcAddress("glMapNamedBufferRangeEXT");
+
+		glNamedBufferDataEXT = (PFNGLNAMEDBUFFERDATAEXTPROC) glfGetProcAddress("glNamedBufferDataEXT");
+		glNamedBufferSubDataEXT = (PFNGLNAMEDBUFFERSUBDATAEXTPROC) glfGetProcAddress("glNamedBufferSubDataEXT");
+		glNamedCopyBufferSubDataEXT = (PFNGLNAMEDCOPYBUFFERSUBDATAEXTPROC) glfGetProcAddress("glNamedCopyBufferSubDataEXT");
+		glNamedFramebufferRenderbufferEXT = (PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC) glfGetProcAddress("glNamedFramebufferRenderbufferEXT");
+		glNamedFramebufferTexture1DEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC) glfGetProcAddress("glNamedFramebufferTexture1DEXT");
+		glNamedFramebufferTexture2DEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC) glfGetProcAddress("glNamedFramebufferTexture2DEXT");
+		glNamedFramebufferTexture3DEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC) glfGetProcAddress("glNamedFramebufferTexture3DEXT");
+		glNamedFramebufferTextureEXT = (PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC) glfGetProcAddress("glNamedFramebufferTextureEXT");
+		glNamedFramebufferTextureFaceEXT = (PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC) glfGetProcAddress("glNamedFramebufferTextureFaceEXT");
+		glNamedFramebufferTextureLayerEXT = (PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC) glfGetProcAddress("glNamedFramebufferTextureLayerEXT");
+
+		glNamedProgramStringEXT = (PFNGLNAMEDPROGRAMSTRINGEXTPROC) glfGetProcAddress("glNamedProgramStringEXT");
+		glNamedRenderbufferStorageEXT = (PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC) glfGetProcAddress("glNamedRenderbufferStorageEXT");
+		glNamedRenderbufferStorageMultisampleCoverageEXT = (PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC) glfGetProcAddress("glNamedRenderbufferStorageMultisampleCoverageEXT");
+		glNamedRenderbufferStorageMultisampleEXT = (PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC) glfGetProcAddress("glNamedRenderbufferStorageMultisampleEXT");
+
+		glProgramUniform1fEXT = (PFNGLPROGRAMUNIFORM1FEXTPROC) glfGetProcAddress("glProgramUniform1fEXT");
+		glProgramUniform1fvEXT = (PFNGLPROGRAMUNIFORM1FVEXTPROC) glfGetProcAddress("glProgramUniform1fvEXT");
+		glProgramUniform1iEXT = (PFNGLPROGRAMUNIFORM1IEXTPROC) glfGetProcAddress("glProgramUniform1iEXT");
+		glProgramUniform1ivEXT = (PFNGLPROGRAMUNIFORM1IVEXTPROC) glfGetProcAddress("glProgramUniform1ivEXT");
+		glProgramUniform1uiEXT = (PFNGLPROGRAMUNIFORM1UIEXTPROC) glfGetProcAddress("glProgramUniform1uiEXT");
+		glProgramUniform1uivEXT = (PFNGLPROGRAMUNIFORM1UIVEXTPROC) glfGetProcAddress("glProgramUniform1uivEXT");
+		glProgramUniform2fEXT = (PFNGLPROGRAMUNIFORM2FEXTPROC) glfGetProcAddress("glProgramUniform2fEXT");
+		glProgramUniform2fvEXT = (PFNGLPROGRAMUNIFORM2FVEXTPROC) glfGetProcAddress("glProgramUniform2fvEXT");
+		glProgramUniform2iEXT = (PFNGLPROGRAMUNIFORM2IEXTPROC) glfGetProcAddress("glProgramUniform2iEXT");
+		glProgramUniform2ivEXT = (PFNGLPROGRAMUNIFORM2IVEXTPROC) glfGetProcAddress("glProgramUniform2ivEXT");
+		glProgramUniform2uiEXT = (PFNGLPROGRAMUNIFORM2UIEXTPROC) glfGetProcAddress("glProgramUniform2uiEXT");
+		glProgramUniform2uivEXT = (PFNGLPROGRAMUNIFORM2UIVEXTPROC) glfGetProcAddress("glProgramUniform2uivEXT");
+		glProgramUniform3fEXT = (PFNGLPROGRAMUNIFORM3FEXTPROC) glfGetProcAddress("glProgramUniform3fEXT");
+		glProgramUniform3fvEXT = (PFNGLPROGRAMUNIFORM3FVEXTPROC) glfGetProcAddress("glProgramUniform3fvEXT");
+		glProgramUniform3iEXT = (PFNGLPROGRAMUNIFORM3IEXTPROC) glfGetProcAddress("glProgramUniform3iEXT");
+		glProgramUniform3ivEXT = (PFNGLPROGRAMUNIFORM3IVEXTPROC) glfGetProcAddress("glProgramUniform3ivEXT");
+		glProgramUniform3uiEXT = (PFNGLPROGRAMUNIFORM3UIEXTPROC) glfGetProcAddress("glProgramUniform3uiEXT");
+		glProgramUniform3uivEXT = (PFNGLPROGRAMUNIFORM3UIVEXTPROC) glfGetProcAddress("glProgramUniform3uivEXT");
+		glProgramUniform4fEXT = (PFNGLPROGRAMUNIFORM4FEXTPROC) glfGetProcAddress("glProgramUniform4fEXT");
+		glProgramUniform4fvEXT = (PFNGLPROGRAMUNIFORM4FVEXTPROC) glfGetProcAddress("glProgramUniform4fvEXT");
+		glProgramUniform4iEXT = (PFNGLPROGRAMUNIFORM4IEXTPROC) glfGetProcAddress("glProgramUniform4iEXT");
+		glProgramUniform4ivEXT = (PFNGLPROGRAMUNIFORM4IVEXTPROC) glfGetProcAddress("glProgramUniform4ivEXT");
+		glProgramUniform4uiEXT = (PFNGLPROGRAMUNIFORM4UIEXTPROC) glfGetProcAddress("glProgramUniform4uiEXT");
+		glProgramUniform4uivEXT = (PFNGLPROGRAMUNIFORM4UIVEXTPROC) glfGetProcAddress("glProgramUniform4uivEXT");
+
+		glProgramUniformMatrix2fvEXT = (PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix2fvEXT");
+		glProgramUniformMatrix2x3fvEXT = (PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix2x3fvEXT");
+		glProgramUniformMatrix2x4fvEXT = (PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix2x4fvEXT");
+		glProgramUniformMatrix3fvEXT = (PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix3fvEXT");
+		glProgramUniformMatrix3x2fvEXT = (PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix3x2fvEXT");
+		glProgramUniformMatrix3x4fvEXT = (PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix3x4fvEXT");
+		glProgramUniformMatrix4fvEXT = (PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix4fvEXT");
+		glProgramUniformMatrix4x2fvEXT = (PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix4x2fvEXT");
+		glProgramUniformMatrix4x3fvEXT = (PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC) glfGetProcAddress("glProgramUniformMatrix4x3fvEXT");
+
+		glTextureBufferEXT = (PFNGLTEXTUREBUFFEREXTPROC) glfGetProcAddress("glTextureBufferEXT");
+		glTextureImage1DEXT = (PFNGLTEXTUREIMAGE1DEXTPROC) glfGetProcAddress("glTextureImage1DEXT");
+		glTextureImage2DEXT = (PFNGLTEXTUREIMAGE2DEXTPROC) glfGetProcAddress("glTextureImage2DEXT");
+		glTextureImage3DEXT = (PFNGLTEXTUREIMAGE3DEXTPROC) glfGetProcAddress("glTextureImage3DEXT");
+		glTextureParameterIivEXT = (PFNGLTEXTUREPARAMETERIIVEXTPROC) glfGetProcAddress("glTextureParameterIivEXT");
+		glTextureParameterIuivEXT = (PFNGLTEXTUREPARAMETERIUIVEXTPROC) glfGetProcAddress("glTextureParameterIuivEXT");
+		glTextureParameterfEXT = (PFNGLTEXTUREPARAMETERFEXTPROC) glfGetProcAddress("glTextureParameterfEXT");
+		glTextureParameterfvEXT = (PFNGLTEXTUREPARAMETERFVEXTPROC) glfGetProcAddress("glTextureParameterfvEXT");
+		glTextureParameteriEXT = (PFNGLTEXTUREPARAMETERIEXTPROC) glfGetProcAddress("glTextureParameteriEXT");
+		glTextureParameterivEXT = (PFNGLTEXTUREPARAMETERIVEXTPROC) glfGetProcAddress("glTextureParameterivEXT");
+		glTextureRenderbufferEXT = (PFNGLTEXTURERENDERBUFFEREXTPROC) glfGetProcAddress("glTextureRenderbufferEXT");
+		glTextureSubImage1DEXT = (PFNGLTEXTURESUBIMAGE1DEXTPROC) glfGetProcAddress("glTextureSubImage1DEXT");
+		glTextureSubImage2DEXT = (PFNGLTEXTURESUBIMAGE2DEXTPROC) glfGetProcAddress("glTextureSubImage2DEXT");
+		glTextureSubImage3DEXT = (PFNGLTEXTURESUBIMAGE3DEXTPROC) glfGetProcAddress("glTextureSubImage3DEXT");
+
+		glUnmapNamedBufferEXT = (PFNGLUNMAPNAMEDBUFFEREXTPROC) glfGetProcAddress("glUnmapNamedBufferEXT");
+
+		glVertexArrayVertexAttribIOffsetEXT = (PFNGLVERTEXARRAYVERTEXATTRIBIOFFSETEXTPROC) glfGetProcAddress("glVertexArrayVertexAttribIOffsetEXT");
+		glVertexArrayVertexAttribOffsetEXT = (PFNGLVERTEXARRAYVERTEXATTRIBOFFSETEXTPROC) glfGetProcAddress("glVertexArrayVertexAttribOffsetEXT");
+		glVertexArrayVertexOffsetEXT = (PFNGLVERTEXARRAYVERTEXOFFSETEXTPROC) glfGetProcAddress("glVertexArrayVertexOffsetEXT");
+
 #endif//WIN32
 	}
 
