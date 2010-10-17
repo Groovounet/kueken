@@ -4,7 +4,7 @@ namespace
 {
 	GLenum blend_equation_cast(kueken::blend::equation Equation)
 	{
-		static GLenum const Cast[kueken::blend::EQUATION_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_FUNC_ADD,				// ADD
 			GL_FUNC_SUBTRACT,			// SUB
@@ -22,7 +22,7 @@ namespace
 
 	GLenum blend_function_cast(kueken::blend::function Function)
 	{
-		static GLenum const Cast[kueken::blend::FUNCTION_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_ZERO,						// ZERO
 			GL_ONE,							// ONE

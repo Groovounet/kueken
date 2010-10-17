@@ -5,7 +5,7 @@ namespace
 {
 	//GLenum sampler_target_cast(kueken::sampler::target Target)
 	//{
-	//	static GLenum const CastSamplerTarget[kueken::sampler::TARGET_MAX] =
+	//	static GLenum const CastSamplerTarget[] =
 	//	{
 	//		GL_TEXTURE_1D,						// IMAGE_1D
 	//		GL_TEXTURE_2D,						// IMAGE_2D
@@ -26,7 +26,7 @@ namespace
 
 	GLenum sampler_min_cast(kueken::sampler::filter Filter)
 	{
-		static GLenum const Cast[kueken::sampler::FILTER_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_NEAREST,						// NEAREST
 			GL_LINEAR,						// BILINEAR
@@ -42,7 +42,7 @@ namespace
 
 	GLenum sampler_mag_cast(kueken::sampler::filter Filter)
 	{
-		static GLenum const Cast[kueken::sampler::FILTER_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_NEAREST,						// NEAREST
 			GL_LINEAR,						// BILINEAR
@@ -58,7 +58,7 @@ namespace
 
 	GLenum sampler_wrap_cast(kueken::sampler::wrap Wrap)
 	{
-		static GLenum const Cast[kueken::sampler::WRAP_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_CLAMP_TO_BORDER,				// CLAMP_TO_BORDER
 			GL_CLAMP_TO_EDGE,				// CLAMP_TO_EDGE
@@ -75,7 +75,7 @@ namespace
 
 	GLenum sampler_swizzle_cast(kueken::sampler::swizzle Swizzle)
 	{
-		static GLenum const Cast[kueken::sampler::SWIZZLE_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_ZERO,	//ZERO,
 			GL_ONE,		//ONE,
@@ -94,7 +94,7 @@ namespace
 
 	GLenum sampler_compare_cast(kueken::sampler::compare Compare)
 	{
-		static GLenum const Cast[kueken::sampler::COMPARE_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_NONE,	//NONE,
 			GL_LEQUAL,	//LEQUAL,

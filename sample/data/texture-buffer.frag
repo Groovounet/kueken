@@ -1,9 +1,14 @@
-#version 120
+#define ATTR_POSITION	0
+#define ATTR_COLOR		3
+#define ATTR_TEXCOORD	4
+#define FRAG_COLOR		0
 
 uniform sampler2D Diffuse;
-varying vec2 VertTexcoord;
+in vec2 VertTexcoord;
+
+layout(location = FRAG_COLOR, index = 0) out vec4 Color;
 
 void main()
 {
-	gl_FragColor = texture2D(Diffuse, VertTexcoord);
+	Color = texture2D(Diffuse, VertTexcoord);
 }

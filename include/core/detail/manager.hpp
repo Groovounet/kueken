@@ -15,7 +15,7 @@ namespace detail{
 		{}
 
 		NAME reserve(OBJECT * object);
-		void release(NAME const & Name);
+		void release(NAME & Name);
 		void clear();
 
 		bool isCurrent(std::size_t Slot, NAME const & Name) const;
@@ -100,7 +100,7 @@ namespace detail{
 	template <typename NAME, typename OBJECT>
 	inline void manager<NAME, OBJECT>::release
 	(
-		NAME const & Name
+		NAME & Name
 	)
 	{
 		// Check if the object we when to deleted isn't mapped
@@ -111,6 +111,7 @@ namespace detail{
 		Released.push_back(Created[Name()]);
 		Created[Name()] = NULL;
 		Deleted.push_back(Name);
+		Name = NAME::null();
 	}
 
 	template <typename NAME, typename OBJECT>

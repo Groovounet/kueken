@@ -4,7 +4,7 @@ namespace
 {
 	GLenum rasterizer_front_cast(kueken::rasterizer::front Front)
 	{
-		static GLenum const Cast[kueken::rasterizer::FRONT_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_CCW,		// CCW
 			GL_CW		// CW
@@ -19,7 +19,7 @@ namespace
 
 	GLenum rasterizer_cull_cast(kueken::rasterizer::cull Cull)
 	{
-		static GLenum const Cast[kueken::rasterizer::CULL_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_NONE,			// CULL_NONE
 			GL_FRONT,			// FRONT

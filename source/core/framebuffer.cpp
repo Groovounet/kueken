@@ -5,7 +5,7 @@ namespace
 {
 	GLenum framebuffer_format_cast(kueken::framebuffer::target Target)
 	{
-		static GLenum const Cast[kueken::framebuffer::TARGET_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_READ_FRAMEBUFFER,		// READ
 			GL_DRAW_FRAMEBUFFER,		// DRAW
@@ -21,7 +21,7 @@ namespace
 
 	GLenum framebuffer_attachment_cast(kueken::framebuffer::slot Slot)
 	{
-		static GLenum const Cast[kueken::framebuffer::SLOT_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_DEPTH_ATTACHMENT,	//DEPTH,
 			GL_COLOR_ATTACHMENT0,	//COLOR0,

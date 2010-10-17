@@ -75,8 +75,9 @@ namespace kueken
 		return manager::instance().Blit.reserve(Object);
 	}
 
-	void renderer::free(blit::name& Name)
+	void renderer::free(blit::name & Name)
 	{
+		assert(Name != blit::name::null());
 		manager::instance().Blit.release(Name);
 	}
 
@@ -85,6 +86,7 @@ namespace kueken
 		blit::name const & Name
 	)
 	{
+		assert(Name != blit::name::null());
 		manager::instance().Blit.getObject(Name).exec();
 	}
 	///////////////////////////
@@ -98,6 +100,7 @@ namespace kueken
 
 	void renderer::free(buffer::name & Name)
 	{
+		assert(Name != buffer::name::null());
 		manager::instance().Buffer.release(Name);
 	}
 
@@ -129,13 +132,15 @@ namespace kueken
 		return manager::instance().Buffer.getCurrentName(Slot);
 	}
 
-	buffer::object & renderer::map(buffer::name& Name)
+	buffer::object & renderer::map(buffer::name const & Name)
 	{
+		assert(Name != buffer::name::null());
 		return *manager::instance().Buffer.mapObject(Name);
 	}
 
-	void renderer::unmap(buffer::name& Name)
+	void renderer::unmap(buffer::name const & Name)
 	{
+		assert(Name != buffer::name::null());
 		manager::instance().Buffer.unmapObject(Name);
 	}
 
@@ -154,9 +159,10 @@ namespace kueken
 
 	void renderer::free
 	(
-		clear::name& Name
+		clear::name & Name
 	)
 	{
+		assert(Name != clear::name::null());
 		manager::instance().Clear.release(Name);
 	}
 
@@ -165,6 +171,7 @@ namespace kueken
 		clear::name const & Name
 	)
 	{
+		assert(Name != clear::name::null());
 		manager::instance().Clear.getObject(Name).exec();
 	}
 
@@ -194,9 +201,10 @@ namespace kueken
 
 	void renderer::free
 	(
-		draw::name& Name
+		draw::name & Name
 	)
 	{
+		assert(Name != draw::name::null());
 		manager::instance().Draw.release(Name);
 	}
 
@@ -205,17 +213,20 @@ namespace kueken
 		draw::name const & Name
 	)
 	{
+		assert(Name != draw::name::null());
 		draw::object & Object = manager::instance().Draw.getObject(Name);
 		Object.exec();
 	}
 
-	draw::object & renderer::map(draw::name& Name)
+	draw::object & renderer::map(draw::name const & Name)
 	{
+		assert(Name != draw::name::null());
 		return *manager::instance().Draw.mapObject(Name);
 	}
 
-	void renderer::unmap(draw::name& Name)
+	void renderer::unmap(draw::name const & Name)
 	{
+		assert(Name != draw::name::null());
 		manager::instance().Draw.unmapObject(Name);
 	}
 
@@ -224,11 +235,21 @@ namespace kueken
 
 	texture::name renderer::create
 	(
-		texture::creator const & Creator
+		texture::creator<texture::IMAGE> const & Creator
 	)
 	{
 		//return manager::instance().Image.create(Creator);
-		texture::object * Object = new texture::object(Creator);
+		texture::object * Object = new texture::objectImage(Creator);
+		return manager::instance().Texture.reserve(Object);
+	}
+
+	texture::name renderer::create
+	(
+		texture::creator<texture::BUFFER> const & Creator
+	)
+	{
+		//return manager::instance().Image.create(Creator);
+		texture::object * Object = new texture::objectBuffer(Creator);
 		return manager::instance().Texture.reserve(Object);
 	}
 
@@ -237,6 +258,7 @@ namespace kueken
 		texture::name & Name
 	)
 	{
+		assert(Name != texture::name::null());
 		manager::instance().Texture.release(Name);
 	}
 
@@ -258,13 +280,15 @@ namespace kueken
 		Manager.Texture.setCurrentObject(Slot, Name).bind(Slot, Target);
 	}
 
-	texture::object & renderer::map(texture::name & Name)
+	texture::object & renderer::map(texture::name const & Name)
 	{
+		assert(Name != texture::name::null());
 		return *manager::instance().Texture.mapObject(Name);
 	}
 
-	void renderer::unmap(texture::name & Name)
+	void renderer::unmap(texture::name const & Name)
 	{
+		assert(Name != texture::name::null());
 		manager::instance().Texture.unmapObject(Name);
 	}
 
@@ -286,6 +310,7 @@ namespace kueken
 		layout::name & Name
 	)
 	{
+		assert(Name != layout::name::null());
 		manager::instance().Layout.release(Name);
 	}
 
@@ -317,8 +342,9 @@ namespace kueken
 		//return manager::instance().Program.create(Creator);
 	}
 
-	void renderer::free(program::name& Name)
+	void renderer::free(program::name & Name)
 	{
+		assert(Name != program::name::null());
 		manager::instance().Program.release(Name);
 	}
 
@@ -329,7 +355,7 @@ namespace kueken
 		program::name const & Name
 	)
 	{
-		manager& Manager = manager::instance();
+		manager & Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
 		if(Manager.Program.isCurrent(0, Name))
@@ -339,13 +365,15 @@ namespace kueken
 		Manager.Program.setCurrentObject(0, Name).bind();
 	}
 
-	program::object & renderer::map(program::name& Name)
+	program::object & renderer::map(program::name const & Name)
 	{
+		assert(Name != program::name::null());
 		return *manager::instance().Program.mapObject(Name);
 	}
 
-	void renderer::unmap(program::name& Name)
+	void renderer::unmap(program::name const & Name)
 	{
+		assert(Name != program::name::null());
 		manager::instance().Program.unmapObject(Name);
 	}
 
@@ -358,26 +386,30 @@ namespace kueken
 		return manager::instance().Query.reserve(Object);
 	}
 
-	void renderer::free(query::name& Name)
+	void renderer::free(query::name & Name)
 	{
+		assert(Name != query::name::null());
 		manager::instance().Query.release(Name);
 	}
 
 	void renderer::begin(query::name const & Name, query::use const & Use)
 	{
-		manager& Manager = manager::instance();
+		assert(Name != query::name::null());
+		manager & Manager = manager::instance();
 		Manager.Query.getObject(Name).begin(Use);
 	}
 
 	void renderer::end(query::name const & Name, query::use const & Use)
 	{
-		manager& Manager = manager::instance();
+		assert(Name != query::name::null());
+		manager & Manager = manager::instance();
 		Manager.Query.getObject(Name).end(Use);
 	}
 
 	glm::uint64 renderer::get(query::name const & Name)
 	{
-		manager& Manager = manager::instance();
+		assert(Name != query::name::null());
+		manager & Manager = manager::instance();
 		return Manager.Query.getObject(Name).get();
 	}
 
@@ -419,9 +451,10 @@ namespace kueken
 
 	void renderer::free
 	(
-		rasterizer::name& Name
+		rasterizer::name & Name
 	)
 	{
+		assert(Name != rasterizer::name::null());
 		manager::instance().Rasterizer.release(Name);
 	}
 
@@ -431,7 +464,7 @@ namespace kueken
 		rasterizer::name const & Name
 	)
 	{
-		manager& Manager = manager::instance();
+		manager & Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
 		if(Manager.Rasterizer.isCurrent(0, Name))
@@ -450,8 +483,9 @@ namespace kueken
 		return manager::instance().ReadPixels.reserve(Object);
 	}
 
-	void renderer::free(readpixels::name& Name)
+	void renderer::free(readpixels::name & Name)
 	{
+		assert(Name != readpixels::name::null());
 		manager::instance().ReadPixels.release(Name);
 	}
 
@@ -472,6 +506,7 @@ namespace kueken
 
 	void renderer::free(renderbuffer::name& Name)
 	{
+		assert(Name != renderbuffer::name::null());
 		manager::instance().Renderbuffer.release(Name);
 	}
 
@@ -500,6 +535,7 @@ namespace kueken
 
 	void renderer::free(framebuffer::name & Name)
 	{
+		assert(Name != framebuffer::name::null());
 		manager::instance().Framebuffer.release(Name);
 	}
 
@@ -537,6 +573,7 @@ namespace kueken
 		sampler::name & Name
 	)
 	{
+		assert(Name != sampler::name::null());
 		manager::instance().Sampler.release(Name);
 	}
 
@@ -554,7 +591,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Sampler.setCurrentObject(Slot, Name).bind(Target);
+		Manager.Sampler.setCurrentObject(Slot, Name).bind(Slot);
 	}
 
 	///////////////////////////
@@ -572,9 +609,10 @@ namespace kueken
 
 	void renderer::free
 	(
-		test::name& Name
+		test::name & Name
 	)
 	{
+		assert(Name != test::name::null());
 		manager::instance().Test.release(Name);
 	}
 

@@ -5,7 +5,7 @@ namespace
 {
 	GLenum program_buffer_mode_cast(kueken::buffer::mode Mode)
 	{
-		static GLenum const Cast[kueken::buffer::MODE_MAX] = 
+		static GLenum const Cast[] = 
 		{
 			GL_INTERLEAVED_ATTRIBS,		//INTERLEAVED,
 			GL_SEPARATE_ATTRIBS			//SEPARATED,
@@ -60,17 +60,21 @@ namespace kueken{
 namespace program{
 namespace detail
 {
-	GLenum program_target_cast(kueken::program::target Target)
+	GLenum program_target_cast(kueken::program::target const & Target)
 	{
-		static GLenum const Cast[kueken::program::TARGET_MAX] = 
+		static GLenum const Cast[] = 
 		{
+			GL_NONE,					//UNIFIED
 			GL_VERTEX_SHADER,			//VERTEX,
 			GL_TESS_CONTROL_SHADER,		//CONTROL,
 			GL_TESS_EVALUATION_SHADER,	//EVALUATION,
 			GL_GEOMETRY_SHADER,			//PRIMITIVE,
-			GL_FRAGMENT_SHADER,			//FRAGMENT
-			GL_NONE,					//LIBRARY
+			GL_FRAGMENT_SHADER			//FRAGMENT
 		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::program::TARGET_MAX,
+			"Cast array size mismatch");
 
 		return Cast[Target];
 	}
@@ -102,7 +106,9 @@ namespace detail
 		FeedbackBufferMode(0),
 		Quiet(false),
 		Built(false)
-	{}	
+	{
+		memset(&SubroutineSemanticsMax[0], 0, sizeof(semantic) * SubroutineSemanticsMax.size());
+	}	
 
 	void creator::setVersion(version const & Version)
 	{
@@ -170,15 +176,73 @@ namespace detail
 	void creator::addDefinition(std::string const & Name)
 	{
 		this->update();
-
 		this->Definitions += std::string("#define ") + Name + std::string("\n");
 	}
 
 	void creator::addDefinition(std::string const & Name, std::string const & Value)
 	{
 		this->update();
-
 		this->Definitions += std::string("#define ") + Name + std::string(" ") + Value + std::string("\n");
+	}
+
+	void creator::addSemantic
+	(
+		semantic const & Location,
+		std::string const & Value
+	)
+	{
+		this->update();
+		this->Semantics += (boost::format("#define %s %d\n") % Value.c_str() % Location).str();
+	}
+
+	void creator::addVariable
+	(
+		semantic const & Semantic, 
+		std::string const & Name
+	)
+	{
+		this->update();
+		this->UniformVariables.push_back(
+			detail::indirection(Semantic, Name));
+		this->UniformSemanticsMax = glm::max(this->UniformSemanticsMax, Semantic);
+	}
+
+	void creator::addBlock
+	(
+		semantic const & Semantic, 
+		std::string const & Name
+	)
+	{
+		this->update();
+		this->BlockVariables.push_back(
+			detail::indirection(Semantic, Name));
+		this->BlockSemanticsMax = glm::max(this->BlockSemanticsMax, Semantic);
+	}
+	
+	void creator::addSubroutine
+	(
+		target const & Target,
+		semantic const & Semantic, 
+		std::string const & Name
+	)
+	{
+		this->update();
+		this->SubroutineVariables[Target].push_back(
+			detail::indirection(Semantic, Name));
+		this->SubroutineSemanticsMax[Target] = glm::max(this->SubroutineSemanticsMax[Target], Semantic);
+	}
+
+	void creator::addSubroutineLocation
+	(
+		target const & Target,
+		semantic const & Semantic, 
+		std::string const & Name
+	)
+	{
+		this->update();
+		this->SubroutineLocationVariables[Target].push_back(
+			detail::indirection(Semantic, Name));
+		this->SubroutineLocationSemanticsMax[Target] = glm::max(this->SubroutineLocationSemanticsMax[Target], Semantic);
 	}
 
 	void creator::addSource
@@ -205,28 +269,6 @@ namespace detail
 			}
 			break;
 		}
-	}
-
-	void creator::addVariable
-	(
-		semantic const & Semantic, 
-		std::string const & Name
-	)
-	{
-		this->UniformVariables.push_back(
-			detail::indirection(Semantic, Name));
-		this->UniformSemanticsMax = glm::max(this->UniformSemanticsMax, Semantic);
-	}
-
-	void creator::addBlock
-	(
-		semantic const & Semantic, 
-		std::string const & Name
-	)
-	{
-		this->BlockVariables.push_back(
-			detail::indirection(Semantic, Name));
-		this->BlockSemanticsMax = glm::max(this->BlockSemanticsMax, Semantic);
 	}
 
 	void creator::setFeedbackVariable
@@ -309,6 +351,12 @@ namespace detail
 				SourcesBuilt[i] += std::string("\n");
 			}
 
+			if(!Semantics.empty())
+			{
+				SourcesBuilt[i] += Semantics;
+				SourcesBuilt[i] += std::string("\n");
+			}
+
 			SourcesBuilt[i] += Sources[i];
 		}
 
@@ -330,33 +378,37 @@ namespace detail
 		bool Success = true;
 		
 		// Compile a shader
-		GLuint VertexShaderName = 0;
-		GLuint FragmentShaderName = 0;
 		if(Success)
 		{
-			std::string VertexSource = Creator.SourcesBuilt[VERTEX];
-			std::string FragmentSource = Creator.SourcesBuilt[FRAGMENT];
-
-			char const * VertexSourcePtr = VertexSource.c_str();
-			char const * FragmentSourcePtr = FragmentSource.c_str();
-
-			VertexShaderName = glCreateShader(GL_VERTEX_SHADER);
-			FragmentShaderName = glCreateShader(GL_FRAGMENT_SHADER);
-
-			glShaderSource(VertexShaderName, 1, &VertexSourcePtr, NULL);
-			glShaderSource(FragmentShaderName, 1, &FragmentSourcePtr, NULL);
-
-			glCompileShader(VertexShaderName);
-			glCompileShader(FragmentShaderName);
-
-			Success = Success && checkShader(VertexShaderName, VertexSourcePtr);
-			Success = Success && checkShader(FragmentShaderName, FragmentSourcePtr);
+			std::array<GLuint, TARGET_MAX> Shader = {0, 0, 0, 0, 0, 0};
+			std::array<std::string, TARGET_MAX> Source;
 
 			this->Name = glCreateProgram();
-			glAttachShader(this->Name, VertexShaderName);
-			glAttachShader(this->Name, FragmentShaderName);
-			glDeleteShader(VertexShaderName);
-			glDeleteShader(FragmentShaderName);
+			for(std::size_t Stage = 0; Stage < Shader.size(); ++Stage)
+			{
+				if(Creator.SourcesBuilt[Stage].empty())
+					continue;
+				Source[Stage] = Creator.SourcesBuilt[Stage];
+				char const * SourcePtr = Source[Stage].c_str();
+				Shader[Stage] = glCreateShader(detail::program_target_cast(kueken::program::target(Stage)));
+				glShaderSource(Shader[Stage], 1, &SourcePtr, NULL);
+				glCompileShader(Shader[Stage]);
+			}
+
+			for(std::size_t Stage = 0; Stage < Shader.size(); ++Stage)
+			{
+				if(Shader[Stage] == 0)
+					continue;
+				Success = Success && checkShader(Shader[Stage], Source[Stage].c_str());
+			}
+
+			for(std::size_t Stage = 0; Stage < Shader.size(); ++Stage)
+			{
+				if(Shader[Stage] == 0)
+					continue;
+				glAttachShader(this->Name, Shader[Stage]);
+				glDeleteShader(Shader[Stage]);
+			}
 
 			if(!Creator.FeedbackVariables.empty())
 			{
@@ -394,7 +446,22 @@ namespace detail
 			for(std::size_t i = 0; i < Creator.BlockVariables.size(); ++i)
 			{
 				GLuint Location = glGetUniformBlockIndex(this->Name, Creator.BlockVariables[i].Name.c_str());
-				this->BlockIndirection[Creator.UniformVariables[i].Semantic] = Location;
+				this->BlockIndirection[Creator.BlockVariables[i].Semantic] = Location;
+			}
+
+			for(std::size_t TargetIndex = 0; TargetIndex < TARGET_MAX; ++TargetIndex)
+			{
+				if(Creator.SubroutineSemanticsMax[TargetIndex] == 0)
+					continue;
+
+				this->SubroutineIndirection[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1);
+				for(std::size_t i = 0; i < Creator.SubroutineVariables[TargetIndex].size(); ++i)
+				{
+					GLuint Location = glGetSubroutineUniformLocation(this->Name, TargetIndex, Creator.SubroutineVariables[TargetIndex][i].Name.c_str());
+					this->SubroutineIndirection[TargetIndex][Creator.SubroutineVariables[TargetIndex][i].Semantic] = Location;
+				}
+
+				this->SubroutineLocation[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1, 0);
 			}
 		}
 	}
@@ -408,6 +475,15 @@ namespace detail
 	void object::bind()
 	{
 		glUseProgram(Name);
+		for(std::size_t Target = 0; Target < TARGET_MAX; ++Target)
+		{
+			if(this->SubroutineLocationIndirection[Target].empty())
+				continue;
+			glUniformSubroutinesuiv(
+				detail::program_target_cast(kueken::program::target(Target)), 
+				this->SubroutineLocationIndirection[Target].size(), 
+				&this->SubroutineLocationIndirection[Target][0]);
+		}
 	}
 
 	template <>
@@ -547,6 +623,43 @@ namespace detail
 				this->BlockIndirection[Semantic] + Index, 
 				GLuint(Value + Index));
 		}
+	}
+
+	void object::setSubroutine
+	(
+		target const & Target,
+		semantic const & Semantic, 
+		subroutine const & Value
+	)
+	{
+		assert(Semantic <= SubroutineIndirection[Target].size());
+
+		GLuint Location = SubroutineLocationIndirection[Target][Semantic];
+		SubroutineIndirection[Target][Location] = Value;
+
+		glUniformSubroutinesuiv(
+			detail::program_target_cast(Target), 
+			SubroutineIndirection[Target].size(), 
+			&SubroutineIndirection[Target][0]);
+	}
+
+	void object::setSubroutine
+	(
+		target const & Target,
+		semantic const & Semantic, 
+		count const & Count,
+		subroutine const * Value
+	)
+	{
+		assert(Semantic + Count <= SubroutineIndirection[Target].size());
+
+		for(count i = 0; i < Count; ++i)
+			SubroutineIndirection[Target][Semantic + i] = Value[i];
+
+		glUniformSubroutinesuiv(
+			detail::program_target_cast(Target), 
+			SubroutineIndirection[Target].size(), 
+			&SubroutineIndirection[Target][0]);
 	}
 
 }//namespace program

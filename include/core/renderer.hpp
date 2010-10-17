@@ -31,8 +31,8 @@ namespace kueken
 		draw::name create(draw::creator<draw::ELEMENT> const & Creator);
 		void free(draw::name & Name);
 		void exec(draw::name const & Name);
-		draw::object & map(draw::name& Name);
-		void unmap(draw::name& Name);
+		draw::object & map(draw::name const & Name);
+		void unmap(draw::name const & Name);
 
 		buffer::name create(buffer::creator const & Creator);
 		void free(buffer::name & Name);
@@ -41,8 +41,8 @@ namespace kueken
 			buffer::target const & Target, 
 			buffer::name const & Name);
 		buffer::name getBinding(buffer::slot const & Slot) const;
-		buffer::object & map(buffer::name & Name);
-		void unmap(buffer::name & Name);
+		buffer::object & map(buffer::name const & Name);
+		void unmap(buffer::name const & Name);
 
 		layout::name create(layout::creator const & Creator);
 		void free(layout::name & Name);
@@ -57,8 +57,8 @@ namespace kueken
 			program::slot const & Slot, 
 			program::target const & Target, 
 			program::name const & Name);
-		program::object & map(program::name & Name);
-		void unmap(program::name& Name);
+		program::object & map(program::name const & Name);
+		void unmap(program::name const & Name);
 
 		query::name create(query::creator const & Creator);
 		void free(query::name & Name);
@@ -105,14 +105,15 @@ namespace kueken
 			framebuffer::target const & Target,
 			framebuffer::name const & Name);
 
-		texture::name create(texture::creator const & Creator);
+		texture::name create(texture::creator<texture::IMAGE> const & Creator);
+		texture::name create(texture::creator<texture::BUFFER> const & Creator);
 		void free(texture::name & Name);
 		void bind(
 			texture::slot const & Slot, 
 			texture::target const & Target,
 			texture::name const & Name);
-		texture::object & map(texture::name & Name);
-		void unmap(texture::name & Name);
+		texture::object & map(texture::name const & Name);
+		void unmap(texture::name const & Name);
 
 		//query::name create(query::creator const & Creator);
 		//void free(query::name& Name);

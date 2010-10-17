@@ -4,7 +4,7 @@ namespace
 {
 	GLenum test_function_cast(kueken::test::function Function)
 	{
-		static GLenum const Cast[kueken::test::FUNCTION_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_NEVER,						// NEVER
 			GL_LESS,						// LESS
@@ -25,7 +25,7 @@ namespace
 
 	GLenum test_action_cast(kueken::test::action Action)
 	{
-		static GLenum const Cast[kueken::test::ACTION_MAX] =
+		static GLenum const Cast[] =
 		{
 			GL_KEEP,					// KEEP
 			GL_ZERO,					// ZERO
