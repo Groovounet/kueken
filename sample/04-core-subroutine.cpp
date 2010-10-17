@@ -1,6 +1,6 @@
 //**********************************
-// Kueken sample 01
-// 05/01/2009
+// Kueken sample 04
+// 17/10/2010 - 17/10/2010
 //**********************************
 // Christophe Riccio
 // christophe@g-truc.net
@@ -15,8 +15,8 @@
 namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 01";	
-	const char* VERTEX_SHADER_SOURCE = "./data/texture.vert";
-	const char* FRAGMENT_SHADER_SOURCE = "./data/texture.frag";
+	const char* VERTEX_SHADER_SOURCE = "./data/subroutine.vert";
+	const char* FRAGMENT_SHADER_SOURCE = "./data/subroutine.frag";
 	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
@@ -310,17 +310,17 @@ void display()
 	
 	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-	//glSamplerParameteri(1, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glSamplerParameteri(1, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glSamplerParameteri(1, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glSamplerParameteri(1, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glSamplerParameteri(1, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	//glSamplerParameterfv(1, GL_TEXTURE_BORDER_COLOR, &glm::vec4(0.0f)[0]);
-	//glSamplerParameterf(1, GL_TEXTURE_MIN_LOD, -1000.f);
-	//glSamplerParameterf(1, GL_TEXTURE_MAX_LOD, 1000.f);
-	//glSamplerParameterf(1, GL_TEXTURE_LOD_BIAS, 0.0f);
-	//glSamplerParameteri(1, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-	//glSamplerParameteri(1, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glSamplerParameteri(1, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glSamplerParameteri(1, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glSamplerParameteri(1, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glSamplerParameteri(1, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glSamplerParameteri(1, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glSamplerParameterfv(1, GL_TEXTURE_BORDER_COLOR, &glm::vec4(0.0f)[0]);
+	glSamplerParameterf(1, GL_TEXTURE_MIN_LOD, -1000.f);
+	glSamplerParameterf(1, GL_TEXTURE_MAX_LOD, 1000.f);
+	glSamplerParameterf(1, GL_TEXTURE_LOD_BIAS, 0.0f);
+	glSamplerParameteri(1, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+	glSamplerParameteri(1, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);

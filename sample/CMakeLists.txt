@@ -24,4 +24,7 @@ set(GL_SHADER_GTC uniform-buffer.vert uniform-buffer.frag)
 glCreateSampleGTC(02-core-uniformbuffer)
 set(GL_SHADER_GTC texture-buffer.vert texture-buffer.frag)
 glCreateSampleGTC(03-core-texturebuffer)
+set(GL_SHADER_GTC subroutine.vert subroutine.frag)
+glCreateSampleGTC(04-core-subroutine)
+
 
