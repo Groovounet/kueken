@@ -25,3 +25,6 @@ glCreateSampleGTC(02-core-uniformbuffer)
 set(GL_SHADER_GTC texture-buffer.vert texture-buffer.frag)
 glCreateSampleGTC(03-core-texturebuffer)
 
+
+set(GL_SHADER_GTC multisampling.vert multisampling.frag)
+glCreateSampleGTC(05-core-multisample)
