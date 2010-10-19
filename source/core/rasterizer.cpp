@@ -34,6 +34,21 @@ namespace
 		return Cast[Cull];
 	}
 
+	GLenum rasterizer_provoking_vertex_cast(kueken::rasterizer::provoking Mode)
+	{
+		static GLenum const Cast[] = 
+		{
+			GL_FIRST_VERTEX_CONVENTION,		// FIRST_VERTEX
+			GL_LAST_VERTEX_CONVENTION 		// LAST_VERTEX
+		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::rasterizer::PROMOKING_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Mode];
+	}
+
 }//namespace
 
 namespace kueken{
@@ -62,7 +77,8 @@ namespace detail{
 		LineSize(1),
 		LineSmooth(false),
 
-		Discard(false)
+		Discard(false),
+		ProvokeMode(GL_LAST_VERTEX_CONVENTION)
 	{}
 
 }//namespace detail
@@ -106,6 +122,11 @@ namespace detail{
 	{
 		Data.ScissorEnabled = Enabled;
 		Data.Scissor = Rect;
+	}
+
+	void creator<POLYGON>::setProvokingVertex(provoking const & Mode)
+	{
+		Data.ProvokeMode = Mode;
 	}
 
 	void creator<POLYGON>::setOffset(float Factor, float Units)
@@ -157,6 +178,11 @@ namespace detail{
 	void creator<LINE>::setSmooth(bool Enable)
 	{
 		Data.LineSmooth = Enable;
+	}
+
+	void creator<LINE>::setProvokingVertex(provoking const & Mode)
+	{
+		Data.ProvokeMode = Mode;
 	}
 
 	bool creator<LINE>::validate()
@@ -390,6 +416,10 @@ namespace detail{
 			glEnable(GL_RASTERIZER_DISCARD);
 		else
 			glDisable(GL_RASTERIZER_DISCARD);
+
+		assert(glGetError() == GL_NO_ERROR);
+
+		glProvokingVertex(Data.ProvokeMode);
 
 		assert(glGetError() == GL_NO_ERROR);
 	}
