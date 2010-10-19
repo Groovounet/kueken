@@ -28,3 +28,6 @@ set(GL_SHADER_GTC subroutine.vert subroutine.frag)
 glCreateSampleGTC(04-core-subroutine)
 
 
+
+set(GL_SHADER_GTC multisampling.vert multisampling.frag)
+glCreateSampleGTC(05-core-multisample)

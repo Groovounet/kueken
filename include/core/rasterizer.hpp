@@ -24,6 +24,13 @@ namespace rasterizer
 		DISCARD
 	};
 
+	enum provoking
+	{
+		FIRST_VERTEX,
+		LAST_VERTEX,
+		PROMOKING_MAX
+	};
+
 namespace detail{
 
 	struct data
@@ -54,6 +61,7 @@ namespace detail{
 		float LineSize;
 		bool LineSmooth;
 		bool Discard;
+		GLenum ProvokeMode;
 	};
 
 }//namespace detail
@@ -92,6 +100,7 @@ namespace detail{
 
 		void setFrontFace(front Front);
 		void setCullface(cull Cull);
+		void setProvokingVertex(provoking const & Mode);
 		void setOffset(float Factor, float Units);
 
 		virtual bool validate();
@@ -114,6 +123,7 @@ namespace detail{
 
 		void setSize(float Size);
 		void setSmooth(bool Enable);
+		void setProvokingVertex(provoking const & Mode);
 
 		virtual bool validate();
 
