@@ -400,6 +400,7 @@ namespace detail
 				if(Shader[Stage] == 0)
 					continue;
 				Success = Success && checkShader(Shader[Stage], Source[Stage].c_str());
+				assert(Success);
 			}
 
 			for(std::size_t Stage = 0; Stage < Shader.size(); ++Stage)
@@ -430,6 +431,7 @@ namespace detail
 			glLinkProgram(this->Name);
 
 			Success = checkProgram(this->Name);
+			assert(Success);
 		}
 
 		// Load variables
@@ -464,6 +466,8 @@ namespace detail
 				this->SubroutineLocation[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1, 0);
 			}
 		}
+
+		assert(Success);
 	}
 
 	object::~object()
