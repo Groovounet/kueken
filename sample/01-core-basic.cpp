@@ -152,9 +152,9 @@ bool initTexture2D()
 		}
 		Texture = Renderer->create(Creator);
 
-		kueken::texture::object & Object = Renderer->map(Texture);
-		Object.generateMipmaps();
-		Renderer->unmap(Texture);
+		//kueken::texture::object & Object = Renderer->map(Texture);
+		//Object.generateMipmaps();
+		//Renderer->unmap(Texture);
 	}
 
 	{
@@ -310,17 +310,6 @@ void display()
 	
 	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-	glSamplerParameteri(1, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glSamplerParameteri(1, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glSamplerParameteri(1, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(1, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(1, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glSamplerParameterfv(1, GL_TEXTURE_BORDER_COLOR, &glm::vec4(0.0f)[0]);
-	glSamplerParameterf(1, GL_TEXTURE_MIN_LOD, -1000.f);
-	glSamplerParameterf(1, GL_TEXTURE_MAX_LOD, 1000.f);
-	glSamplerParameterf(1, GL_TEXTURE_LOD_BIAS, 0.0f);
-	glSamplerParameteri(1, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-	glSamplerParameteri(1, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
