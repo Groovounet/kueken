@@ -71,10 +71,11 @@ namespace
 	kueken::texture::name TextureRendertarget(kueken::texture::name::null());
 	kueken::texture::name TextureDiffuse(kueken::texture::name::null());
 
-	kueken::program::semantic const SEMANTIC_DIFFUSE(0);
-	kueken::program::semantic const SEMANTIC_MVP(1);
-	kueken::program::semantic const SEMANTIC_POSITION(0);
-	kueken::program::semantic const SEMANTIC_TEXCOORD(4);
+	kueken::program::semantic const SEMANTIC_UNIF_DIFFUSE(0);
+	kueken::program::semantic const SEMANTIC_UNIF_MVP(1);
+	kueken::program::semantic const SEMANTIC_ATTR_POSITION(0);
+	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(1);
+	kueken::program::semantic const SEMANTIC_FRAG_COLOR(0);
 }
 
 void display()
@@ -88,15 +89,13 @@ void display()
 		Renderer->bind(kueken::framebuffer::EXEC, RendertargetMultisample);
 		Renderer->exec(Clear);
 
-		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-		
-		glm::mat4 ViewTranslateZ = glm::translate(glm::mat4(1.0f), 0.0f, 0.0f, -tranlationCurrent.y);
-		glm::mat4 ViewRotateX = glm::rotate(ViewTranslateZ, rotationCurrent.y,-1.f, 0.f, 0.f);
-		glm::mat4 ViewRotateY = glm::rotate(ViewRotateX, rotationCurrent.x, 0.f, 1.f, 0.f);
-		glm::mat4 View = ViewRotateY;
+		glm::mat4 Projection = glm::perspective(45.0f, float(Window.Size.x) / float(Window.Size.y), 0.1f, 100.0f);
+		glm::mat4 ViewTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Window.TranlationCurrent.y));
+		glm::mat4 ViewRotateX = glm::rotate(ViewTranslate, Window.RotationCurrent.y, glm::vec3(1.f, 0.f, 0.f));
+		glm::mat4 View = glm::rotate(ViewRotateX, Window.RotationCurrent.x, glm::vec3(0.f, 1.f, 0.f));
 
-		glm::mat4 ModelA = glm::translate(0.0f, 0.0f, 0.1f);
-		glm::mat4 ModelB = glm::translate(0.0f, 0.0f,-0.5f);
+		glm::mat4 ModelA = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.1f));
+		glm::mat4 ModelB = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f,-0.5f));
 
 		glm::mat4 MVP[2];
 		MVP[0] = Projection * View * ModelA;
@@ -104,7 +103,7 @@ void display()
 
 		kueken::program::object & Object = Renderer->map(Program);
 		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
-		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
+		Object.setUniform(SEMANTIC_UNIF_MVP, 2, MVP);
 		Renderer->unmap(Program);
 
 		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
@@ -165,8 +164,8 @@ bool initBlit()
 {
 	{
 		kueken::blit::creator Creator(*Renderer);
-		Creator.setRectSrc(glm::ivec4(0, 0, windowSize));
-		Creator.setRectDst(glm::ivec4(0, 0, windowSize));
+		Creator.setRectSrc(glm::ivec4(0, 0, Window.Size));
+		Creator.setRectDst(glm::ivec4(0, 0, Window.Size));
 		Creator.setMask(true, false, false);
 		Creator.setFilter(kueken::blit::NEAREST);
 		Blit = Renderer->create(Creator);
@@ -214,27 +213,27 @@ bool initTexture2D()
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
 		Creator.setFormat(kueken::texture::RGBA8);
-		Creator.setImage(0, glm::uvec3(windowSize, glm::uint(1)), 0);
+		Creator.setImage(0, glm::uvec3(Window.Size, glm::uint(1)), 0);
 		TextureRendertarget = Renderer->create(Creator);
 	}
 
 	{
-		gli::image ImageFile = gli::import_as(TEXTURE_DIFFUSE);
+		gli::texture2D Texture = gli::load(TEXTURE_DIFFUSE);
 
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
-		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
+		for(kueken::texture::level Level = 0; Level < Texture.levels(); ++Level)
 		{
 			Creator.setImage(
 				Level, 
-				ImageFile[Level].dimensions(),
-				ImageFile[Level].data());
+				glm::uvec3(Texture[Level].dimensions(), 1),
+				Texture[Level].data());
 		}
 
 		TextureDiffuse = Renderer->create(Creator);
-		kueken::texture::object * TextureDiffuseObject = Renderer->map(TextureDiffuse);
-		TextureDiffuseObject->generateMipmaps();
+		kueken::texture::object & TextureDiffuseObject = Renderer->map(TextureDiffuse);
+		TextureDiffuseObject.generateMipmaps();
 		Renderer->unmap(TextureDiffuse);
 	}
 
@@ -256,16 +255,16 @@ bool initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(glm::ivec4(0, 0, windowSize));
-		Creator.setScissor(false, glm::ivec4(windowSize >> 2, windowSize >> 1));
+		Creator.setViewport(glm::ivec4(0, 0, Window.Size));
+		Creator.setScissor(false, glm::ivec4(Window.Size >> 2, Window.Size >> 1));
 		Creator.setMultisample(true);
 		RasterizerMultisample = Renderer->create(Creator);
 	}
 
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(glm::ivec4(0, 0, windowSize));
-		Creator.setScissor(false, glm::ivec4(windowSize >> 2, windowSize >> 1));
+		Creator.setViewport(glm::ivec4(0, 0, Window.Size));
+		Creator.setScissor(false, glm::ivec4(Window.Size >> 2, Window.Size >> 1));
 		Creator.setMultisample(false);
 		RasterizerSplash = Renderer->create(Creator);
 	}
@@ -297,6 +296,7 @@ bool initSampler()
 bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
+	Creator.setVersion(kueken::program::CORE_400);
 	Creator.addSource(
 		kueken::program::VERTEX, 
 		kueken::program::FILE,
@@ -305,8 +305,11 @@ bool initProgram()
 		kueken::program::FRAGMENT, 
 		kueken::program::FILE,
 		FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(UNIFORM_SEMANTIC_DIFFUSE, "Diffuse");
-	Creator.addVariable(UNIFORM_SEMANTIC_MVP, "MVP");
+	Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
+	Creator.addVariable(SEMANTIC_UNIF_MVP, "MVP");
+	Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
+	Creator.addSemantic(SEMANTIC_ATTR_TEXCOORD, "ATTR_TEXCOORD");
+	Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -356,13 +359,13 @@ bool initRendertarget()
 	{
 		kueken::renderbuffer::creator RenderbufferDepthCreator(*Renderer);
 		RenderbufferDepthCreator.setFormat(kueken::renderbuffer::DEPTH24);
-		RenderbufferDepthCreator.setSize(glm::uvec2(windowSize));
+		RenderbufferDepthCreator.setSize(glm::uvec2(Window.Size));
 		RenderbufferDepthCreator.setSamples(4);
 		kueken::renderbuffer::name RenderbufferDepth = Renderer->create(RenderbufferDepthCreator);
 
 		kueken::renderbuffer::creator RenderbufferColor0Creator(*Renderer);
 		RenderbufferColor0Creator.setFormat(kueken::renderbuffer::RGBA);
-		RenderbufferColor0Creator.setSize(glm::uvec2(windowSize));
+		RenderbufferColor0Creator.setSize(glm::uvec2(Window.Size));
 		RenderbufferColor0Creator.setSamples(4);
 		kueken::renderbuffer::name RenderbufferColor0 = Renderer->create(RenderbufferColor0Creator);
 
@@ -391,7 +394,6 @@ bool begin()
 
 	Renderer.reset(new kueken::renderer);
 
-	bool Validated = true;
 	if(Validated)
 		Validated = initBlend();
 	if(Validated)
@@ -409,14 +411,12 @@ bool begin()
 	if(Validated)
 		Validated = initArrayBuffer();
 	if(Validated)
-		Validated = initAssembler();
-	if(Validated)
 		Validated = initSampler();
 	if(Validated)
 		Validated = initTexture2D();
 	if(Validated)
 		Validated = initTest();
-	if(Result)
+	if(Validated)
 		Validated = initDraw();
 
 	Validated = Validated || glf::checkError("Begin");

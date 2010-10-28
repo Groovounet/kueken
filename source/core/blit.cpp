@@ -44,6 +44,10 @@ namespace detail{
 
 }//namespace detail
 
+	creator::creator(renderer & Renderer) :
+		Renderer(Renderer)
+	{}
+
 	void creator::setRectSrc(glm::ivec4 const & SrcRect)
 	{
 		Data.SrcRect = SrcRect;
@@ -81,10 +85,10 @@ namespace detail{
 
 	void object::exec()
 	{
-		//glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, Read);
-		//glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, Draw);
+		//glBindFramebuffer(GL_READ_FRAMEBUFFER, Read);
+		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, Draw);
 
-		glBlitFramebufferEXT(
+		glBlitFramebuffer(
 			Data.SrcRect.x, Data.SrcRect.y, Data.SrcRect.z, Data.SrcRect.w, 
 			Data.DstRect.x, Data.DstRect.y, Data.DstRect.z, Data.DstRect.w, 
 			Data.Mask, Data.Filter);

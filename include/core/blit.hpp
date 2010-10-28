@@ -46,6 +46,7 @@ namespace detail
 
 	private:
 		detail::data Data;
+		renderer & Renderer;
 	};
 
 	class object
