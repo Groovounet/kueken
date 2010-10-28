@@ -1,16 +1,12 @@
-#version 400
-#extension GL_EXT_bindable_uniform : enable
-#extension GL_EXT_gpu_shader4 : enable
+uniform mat4 MVP;
 
-bindable uniform mat4 MVP[2];
-
-attribute vec2 Position;
-attribute vec2 Texcoord;
+layout(location = ATTR_POSITION) in vec2 Position;
+layout(location = ATTR_TEXCOORD) in vec2 Texcoord;
 
 out vec2 VertTexcoord;
 
 void main()
 {	
 	VertTexcoord = Texcoord;
-	gl_Position = MVP[gl_InstanceID] * vec4(Position, 0.0, 1.0);
+	gl_Position = MVP * vec4(Position, 0.0, 1.0);
 }

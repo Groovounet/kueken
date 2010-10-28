@@ -115,12 +115,8 @@ void display()
 	}
 
 	{
-		glm::mat4 Projection = glm::perspective(45.0f, float(Window.Size.x) / float(Window.Size.y), 0.1f, 100.0f);
-		glm::mat4 MVP = glm::mat4(1.0f);
-
 		kueken::program::object & Object = Renderer->map(ProgramOutput);
 		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
-		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 		Renderer->unmap(ProgramOutput);
 
 		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerOutput);
@@ -182,7 +178,6 @@ bool initDraw()
 	Creator.setCount(ElementCount);
 	Creator.setInstances(1);
 	Creator.setBaseVertex(0);
-	Creator.setInstances(1);
 	Draw = Renderer->create(Creator);
 
 	return glf::checkError("initDraw");
@@ -204,7 +199,7 @@ bool initTexture2D()
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
-		Creator.setLevel(2, 10);
+		Creator.setLevel(0, 10);
 		for(kueken::texture::level Level = 0; Level < Texture.levels(); ++Level)
 		{
 			Creator.setImage(
@@ -303,7 +298,6 @@ bool initProgram()
 			kueken::program::FILE,
 			FRAG_SHADER_SOURCE1);
 		Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
-		Creator.addVariable(SEMANTIC_UNIF_MVP, "MVP");
 		Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
 		Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
 		Creator.build();

@@ -441,6 +441,7 @@ namespace detail
 			for(std::size_t i = 0; i < Creator.UniformVariables.size(); ++i)
 			{
 				GLuint Location = glGetUniformLocation(this->Name, Creator.UniformVariables[i].Name.c_str());
+				assert(Location != GLuint(-1));
 				this->UniformIndirection[Creator.UniformVariables[i].Semantic] = Location;
 			}
 
@@ -448,6 +449,7 @@ namespace detail
 			for(std::size_t i = 0; i < Creator.BlockVariables.size(); ++i)
 			{
 				GLuint Location = glGetUniformBlockIndex(this->Name, Creator.BlockVariables[i].Name.c_str());
+				assert(Location != GLuint(-1));
 				this->BlockIndirection[Creator.BlockVariables[i].Semantic] = Location;
 			}
 
@@ -460,6 +462,7 @@ namespace detail
 				for(std::size_t i = 0; i < Creator.SubroutineVariables[TargetIndex].size(); ++i)
 				{
 					GLuint Location = glGetSubroutineUniformLocation(this->Name, TargetIndex, Creator.SubroutineVariables[TargetIndex][i].Name.c_str());
+					assert(Location != GLuint(-1));
 					this->SubroutineIndirection[TargetIndex][Creator.SubroutineVariables[TargetIndex][i].Semantic] = Location;
 				}
 
@@ -986,6 +989,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= SubroutineIndirection[Target].size());
+		assert(Semantic <= SubroutineLocationIndirection[Target].size());
 
 		GLuint Location = SubroutineLocationIndirection[Target][Semantic];
 		SubroutineIndirection[Target][Location] = Value;

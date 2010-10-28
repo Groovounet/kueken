@@ -189,7 +189,6 @@ bool initProgram()
 	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_LQ, "diffuseLQ");
 	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_HQ, "diffuseHQ");
 	Creator.addSubroutineLocation(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "diffuse");
-
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -266,6 +265,8 @@ bool begin()
 	if(Validated)
 		Validated = initRasterizer();
 	if(Validated)
+		Validated = initTexture2D();
+	if(Validated)
 		Validated = initFramebuffer();
 	if(Validated)
 		Validated = initArrayBuffer();
@@ -273,8 +274,6 @@ bool begin()
 		Validated = initProgram();
 	if(Validated)
 		Validated = initLayout();
-	if(Validated)
-		Validated = initTexture2D();
 	if(Validated)
 		Validated = initTest();
 	if(Validated)

@@ -198,7 +198,6 @@ namespace kueken
 		return manager::instance().Draw.reserve(Object);
 	}
 
-
 	void renderer::free
 	(
 		draw::name & Name

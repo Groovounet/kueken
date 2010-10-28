@@ -1,7 +1,8 @@
-#version 400
-
 uniform sampler2D Diffuse;
+
 in vec2 VertTexcoord;
+
+layout(location = FRAG_COLOR, index = 0) out vec4 Color;
 
 vec3 saturate(vec3 Color, float Saturation)
 {
@@ -29,8 +30,8 @@ vec3 ContrastSaturationBrightness(vec3 color, float brt, float sat, float con)
 /*
 void main()
 {
-	vec3 Color = ContrastSaturationBrightness(texture2D(Diffuse, VertTexcoord).bgr, 1.0, 1.0, 1.0);
-	gl_FragColor = vec4(Color, 0.7);
+	vec3 TempColor = ContrastSaturationBrightness(texture2D(Diffuse, VertTexcoord).bgr, 1.0, 1.0, 1.0);
+	Color = vec4(TempColor, 0.7);
 }
 */
 const float Offset = 0.0001;
@@ -39,9 +40,9 @@ const float Max = Offset * 2.0;
 
 void main(void)
 {
-	vec4 color = vec4(0.0);
+	vec4 TempColor = vec4(0.0);
 	for(float j = Min; j < Max; j += Offset) 
 	for(float i = Min; i < Max; i += Offset) 
-		color += 1.0 / 16.0 * texture2D(Diffuse, VertTexcoord + vec2(i, j));
-	gl_FragColor = color;
+		TempColor += 1.0 / 16.0 * texture2D(Diffuse, VertTexcoord + vec2(i, j));
+	Color = TempColor;
 }
