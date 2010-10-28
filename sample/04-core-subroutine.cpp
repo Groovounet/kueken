@@ -14,7 +14,7 @@
 
 namespace
 {
-	const char* SAMPLE_NAME = "Kueken sample 01";	
+	const char* SAMPLE_NAME = "Kueken sample 04";	
 	const char* VERTEX_SHADER_SOURCE = "./data/subroutine.vert";
 	const char* FRAGMENT_SHADER_SOURCE = "./data/subroutine.frag";
 	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
@@ -60,12 +60,17 @@ namespace
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
-	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE(0);
+	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE_DXT1(0);
+	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE_RGB8(1);
 	kueken::program::semantic const UNIFORM_SEMANTIC_MVP(1);
 	kueken::program::semantic const ATTRIB_SEMANTIC_POSITION(0);
 	kueken::program::semantic const ATTRIB_SEMANTIC_COLOR(1);
 	kueken::program::semantic const ATTRIB_SEMANTIC_TEXCOORD(4);
 	kueken::program::semantic const FRAGMENT_SEMANTIC_COLOR(0);
+
+	kueken::program::semantic const SUBROUTINE_SEMANTIC_DIFFUSE_LQ(0);
+	kueken::program::semantic const SUBROUTINE_SEMANTIC_DIFFUSE_HQ(1);
+	kueken::program::semantic const ROUTINE_SEMANTIC_DIFFUSE(0);
 	
 }//namespace
 
@@ -174,12 +179,17 @@ bool initProgram()
 	Creator.setVersion(kueken::program::CORE_400);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse");
+	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE_DXT1, "DiffuseDXT1");
+	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE_RGB8, "DiffuseRGB8");
 	Creator.addVariable(UNIFORM_SEMANTIC_MVP, "MVP");
 	Creator.addSemantic(ATTRIB_SEMANTIC_POSITION, "ATTR_POSITION");
 	Creator.addSemantic(ATTRIB_SEMANTIC_COLOR, "ATTR_COLOR");
 	Creator.addSemantic(ATTRIB_SEMANTIC_TEXCOORD, "ATTR_TEXCOORD");
 	Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
+	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_LQ, "diffuseLQ");
+	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_HQ, "diffuseHQ");
+	Creator.addSubroutineLocation(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "diffuse");
+
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -291,8 +301,10 @@ void display()
 	glm::mat4 MVP = Projection * View * Model;
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, 0);
+	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE_DXT1, 0);
+	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE_RGB8, 1);
 	Object.setUniform(UNIFORM_SEMANTIC_MVP, MVP);
+	Object.setSubroutine(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, SUBROUTINE_SEMANTIC_DIFFUSE_LQ);
 	Renderer->unmap(Program);
 
 	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
@@ -309,18 +321,9 @@ void display()
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
 	
 	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
+	Renderer->bind(1, kueken::texture::TEXTURE2D, Texture);
 	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-	glSamplerParameteri(1, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glSamplerParameteri(1, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glSamplerParameteri(1, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(1, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(1, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glSamplerParameterfv(1, GL_TEXTURE_BORDER_COLOR, &glm::vec4(0.0f)[0]);
-	glSamplerParameterf(1, GL_TEXTURE_MIN_LOD, -1000.f);
-	glSamplerParameterf(1, GL_TEXTURE_MAX_LOD, 1000.f);
-	glSamplerParameterf(1, GL_TEXTURE_LOD_BIAS, 0.0f);
-	glSamplerParameteri(1, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-	glSamplerParameteri(1, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	Renderer->bind(1, kueken::sampler::SAMPLER, Sampler);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);

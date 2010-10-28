@@ -1,11 +1,3 @@
-#version 400 core
-
-// Declare all the semantics
-#define ATTR_POSITION	0
-#define ATTR_COLOR		3
-#define ATTR_TEXCOORD	4
-#define FRAG_COLOR		0
-
 uniform mat4 MVP;
 uniform float Displacement;
 
