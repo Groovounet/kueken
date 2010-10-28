@@ -1,6 +1,6 @@
 //**********************************
-// Kueken sample 05
-// 18/10/2010
+// Kueken sample 06
+// 18/10/2010 - 28/10/2010
 //**********************************
 // Christophe Riccio
 // christophe@g-truc.net
@@ -14,9 +14,9 @@
 
 namespace
 {
-	const char* SAMPLE_NAME = "Kueken sample 05";	
-	const char* VERTEX_SHADER_SOURCE = "../data/multisampling.vert";
-	const char* FRAGMENT_SHADER_SOURCE = "../data/multisampling.frag";
+	const char* SAMPLE_NAME = "Kueken sample 06";	
+	const char* VERTEX_SHADER_SOURCE = "./data/multisampling.vert";
+	const char* FRAGMENT_SHADER_SOURCE = "./data/multisampling.frag";
 	const char* TEXTURE_DIFFUSE = "../data/küken256.tga";
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);

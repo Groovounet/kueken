@@ -76,8 +76,8 @@ namespace
 
 	kueken::program::semantic const SEMANTIC_UNIF_DIFFUSE(0);
 	kueken::program::semantic const SEMANTIC_UNIF_MVP(1);
-	kueken::program::semantic const SEMANTIC_ATTR_POSITION(kueken::layout::POSITION);
-	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(kueken::layout::TEXCOORD);
+	kueken::program::semantic const SEMANTIC_ATTR_POSITION(0);
+	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(1);
 	kueken::program::semantic const SEMANTIC_FRAG_COLOR(0);
 }
 
@@ -318,14 +318,14 @@ bool initLayout()
 	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
-		kueken::layout::POSITION,
+		SEMANTIC_ATTR_POSITION,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		0, 
 		0);
 	Creator.setVertexArray(
 		0, 
-		kueken::layout::TEXCOORD,
+		SEMANTIC_ATTR_TEXCOORD,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
