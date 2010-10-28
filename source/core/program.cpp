@@ -494,6 +494,91 @@ namespace detail
 	void object::setUniform
 	(
 		semantic const & Semantic, 
+		float const & Value
+	)
+	{
+		glProgramUniform1fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			&Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		float const * Value
+	)
+	{
+		glProgramUniform1fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		int const & Value
+	)
+	{
+		glProgramUniform1iEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		int const * Value
+	)
+	{
+		glProgramUniform1ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			GLsizei(Count), 
+			Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::uint const & Value
+	)
+	{
+		glProgramUniform1uiEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::uint const * Value
+	)
+	{
+		glProgramUniform1uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			GLsizei(Count), 
+			Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
 		glm::vec2 const & Value
 	)
 	{
@@ -502,6 +587,79 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::vec2 const * Value
+	)
+	{
+		glProgramUniform2fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::ivec2 const & Value
+	)
+	{
+		glProgramUniform2ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::ivec2 const * Value
+	)
+	{
+		glProgramUniform2ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::uvec2 const & Value
+	)
+	{
+		glProgramUniform2uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::uvec2 const * Value
+	)
+	{
+		glProgramUniform2uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
 	}
 
 	template <>
@@ -522,6 +680,79 @@ namespace detail
 	void object::setUniform
 	(
 		semantic const & Semantic, 
+		count const & Count,
+		glm::vec3 const * Value
+	)
+	{
+		glProgramUniform3fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::ivec3 const & Value
+	)
+	{
+		glProgramUniform3ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::ivec3 const * Value
+	)
+	{
+		glProgramUniform3ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::uvec3 const & Value
+	)
+	{
+		glProgramUniform3uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::uvec3 const * Value
+	)
+	{
+		glProgramUniform3uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
 		glm::vec4 const & Value
 	)
 	{
@@ -530,6 +761,79 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::vec4 const * Value
+	)
+	{
+		glProgramUniform4fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::ivec4 const & Value
+	)
+	{
+		glProgramUniform4ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::ivec4 const * Value
+	)
+	{
+		glProgramUniform4ivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::uvec4 const & Value
+	)
+	{
+		glProgramUniform4uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::uvec4 const * Value
+	)
+	{
+		glProgramUniform4uivEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
 	}
 
 	template <>
@@ -550,6 +854,21 @@ namespace detail
 	void object::setUniform
 	(
 		semantic const & Semantic, 
+		count const & Count, 
+		glm::mat2 const * Value
+	)
+	{
+		glProgramUniformMatrix2fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, GL_FALSE, 
+			&Value[0][0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
 		glm::mat3 const & Value
 	)
 	{
@@ -558,6 +877,21 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
 			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count, 
+		glm::mat3 const * Value
+	)
+	{
+		glProgramUniformMatrix3fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, GL_FALSE, 
+			&Value[0][0][0]);
 	}
 
 	template <>
@@ -573,6 +907,21 @@ namespace detail
 			1, 
 			GL_FALSE, 
 			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count, 
+		glm::mat4 const * Value
+	)
+	{
+		glProgramUniformMatrix4fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, GL_FALSE, 
+			&Value[0][0][0]);
 	}
 
 	void object::setSampler

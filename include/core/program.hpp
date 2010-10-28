@@ -173,10 +173,18 @@ namespace detail
 
 		void bind();
 
+		// Uniform
 		template <typename genType>
 		void setUniform(
 			semantic const & Semantic, 
 			genType const & Value);
+		
+		// Uniform array
+		template <typename genType>
+		void setUniform(
+			semantic const & Semantic, 
+			count const & Count, 
+			genType const * Value);
 		
 		// Sampler
 		void setSampler(
