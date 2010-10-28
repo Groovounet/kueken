@@ -29,5 +29,6 @@ glCreateSampleGTC(04-core-subroutine)
 
 
 
-set(GL_SHADER_GTC multisampling.vert multisampling.frag)
-glCreateSampleGTC(05-core-multisample)
+set(GL_SHADER_GTC texture.vert texture.frag framebuffer.vert framebuffer.frag)
+glCreateSampleGTC(05-core-framebuffer)
+#glCreateSampleGTC(05-core-multisample)

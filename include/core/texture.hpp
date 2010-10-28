@@ -281,6 +281,15 @@ namespace detail
 	typedef std::size_t slot;
 	typedef std::size_t level;
 
+	struct info
+	{
+		//GL_MAX_RECTANGLE_TEXTURE_SIZE // 1024
+		//GL_MAX_TEXTURE_IMAGE_UNITS // 16
+		//GL_MAX_TEXTURE_BUFFER_SIZE // 65536
+		//GL_MAX_TEXTURE_LOD_BIAS // 2.0
+		//GL_MAX_TEXTURE_SIZE // 1024
+	};
+
 	enum type
 	{
 		IMAGE,

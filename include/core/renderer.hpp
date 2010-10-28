@@ -115,6 +115,15 @@ namespace kueken
 		texture::object & map(texture::name const & Name);
 		void unmap(texture::name const & Name);
 
+		template <typename OBJECT>
+		void info() const{assert(0);}
+
+		template <>
+		texture::info info<texture::object>() const
+		{
+			return texture::info();
+		}
+
 		//query::name create(query::creator const & Creator);
 		//void free(query::name& Name);
 		//void begin(query::name const & Name);

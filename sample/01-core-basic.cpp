@@ -152,9 +152,9 @@ bool initTexture2D()
 		}
 		Texture = Renderer->create(Creator);
 
-		kueken::texture::object & Object = Renderer->map(Texture);
-		Object.generateMipmaps();
-		Renderer->unmap(Texture);
+		//kueken::texture::object & Object = Renderer->map(Texture);
+		//Object.generateMipmaps();
+		//Renderer->unmap(Texture);
 	}
 
 	{

@@ -80,12 +80,12 @@ namespace
 void display()
 {
 	Renderer->bind(0, kueken::program::UNIFIED, Program);
-	Renderer->bind(Test);
-	Renderer->bind(Blend);
+	Renderer->bind(kueken::test::TEST, Test);
+	Renderer->bind(kueken::blend::BLEND, Blend);
 
 	{
-		Renderer->bind(RasterizerMultisample);
-		Renderer->bind(RendertargetMultisample, kueken::framebuffer::EXEC);
+		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerMultisample);
+		Renderer->bind(kueken::framebuffer::EXEC, RendertargetMultisample);
 		Renderer->exec(Clear);
 
 		glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
@@ -111,8 +111,8 @@ void display()
 		Renderer->bind(0, kueken::texture::TEXTURE2D, TextureDiffuse);
 		Renderer->exec(DrawMesh);
 
-		Renderer->bind(RendertargetMultisample, kueken::framebuffer::READ);
-		Renderer->bind(RendertargetResolver, kueken::framebuffer::DRAW);
+		Renderer->bind(kueken::framebuffer::READ, RendertargetMultisample);
+		Renderer->bind(kueken::framebuffer::DRAW, RendertargetResolver);
 		Renderer->exec(Blit);
 	}
 
@@ -127,8 +127,8 @@ void display()
 		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 		Renderer->unmap(Program);
 
-		Renderer->bind(RasterizerSplash);
-		Renderer->bind(RendertargetFramebuffer, kueken::framebuffer::EXEC);
+		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerSplash);
+		Renderer->bind(kueken::framebuffer::EXEC, RendertargetFramebuffer);
 		Renderer->exec(Clear);
 
 		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerSplash);

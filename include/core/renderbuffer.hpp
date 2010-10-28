@@ -11,6 +11,11 @@ namespace kueken
 namespace kueken{
 namespace renderbuffer
 {
+	struct info
+	{
+		// GL_MAX_RENDERBUFFER_SIZE // ???
+	};
+
 	enum format
 	{
 		DEPTH24,
