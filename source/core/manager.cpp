@@ -12,7 +12,7 @@ namespace kueken
 	manager::manager() :
 		Blend(1),
 		Blit(0),
-		Buffer(8),
+		Buffer(buffer::TARGET_MAX),
 		Clear(0),
 		Draw(0),
 		Layout(1),
@@ -22,9 +22,9 @@ namespace kueken
 		ReadPixels(0),
 		Renderbuffer(0),
 		Framebuffer(1),
-		Sampler(8),
+		Sampler(sampler::SLOT_MAX),
 		Test(1),
-		Texture(8)
+		Texture(texture::SLOT_MAX)
 	{}
 
 	manager & manager::instance()

@@ -3,6 +3,7 @@
 
 #include "detail/detail.hpp"
 #include "buffer.hpp"
+#include "sampler.hpp"
 
 namespace kueken
 {
@@ -64,7 +65,7 @@ namespace program
 	typedef std::size_t semantic;
 	typedef std::size_t count;
 	typedef int sampler;
-	typedef glm::uint32 block;
+	typedef buffer::target block;
 	typedef glm::uint32 subroutine;
 
 namespace detail
@@ -189,13 +190,13 @@ namespace detail
 		// Sampler
 		void setSampler(
 			semantic const & Semantic, 
-			sampler const & Value);
+			sampler::slot const & Value);
 
 		// Sampler array
 		void setSampler(
 			semantic const & Semantic, 
 			count const & Count, 
-			sampler const * Value);
+			sampler::slot const * Value);
 
 		// Block
 		void setBlock(

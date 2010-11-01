@@ -930,7 +930,7 @@ namespace detail
 	void object::setSampler
 	(
 		semantic const & Semantic, 
-		sampler const & Value
+		sampler::slot const & Value
 	)
 	{
 		glProgramUniform1iEXT(
@@ -943,14 +943,14 @@ namespace detail
 	(
 		semantic const & Semantic, 
 		count const & Count,
-		sampler const * Value
+		sampler::slot const * Value
 	)
 	{
 		glProgramUniform1ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			GLsizei(Count), 
-			Value);
+			(GLint*)Value);
 	}
 
 	void object::setBlock
@@ -959,10 +959,12 @@ namespace detail
 		block const & Value
 	)
 	{
+		assert(Value >= buffer::UNIFORM && Value <= buffer::UNIFORM_MAX);
+
 		glUniformBlockBinding(
 			this->Name, 
 			this->BlockIndirection[Semantic], 
-			Value);
+			Value - buffer::UNIFORM);
 	}
 
 	void object::setBlock
@@ -972,12 +974,14 @@ namespace detail
 		block const * Value
 	)
 	{
+		assert(Value[0] >= buffer::UNIFORM && Value[0] + Count <= buffer::UNIFORM_MAX);
+
 		for(count Index = 0; Index < Count; ++Index)
 		{
 			glUniformBlockBinding(
 				this->Name, 
 				this->BlockIndirection[Semantic] + Index, 
-				GLuint(Value + Index));
+				GLuint(Value - buffer::UNIFORM + Index));
 		}
 	}
 

@@ -105,9 +105,8 @@ namespace kueken
 
 	void renderer::bind
 	(
-		buffer::slot const & Slot,
-		buffer::target const & Target,
-		buffer::name const & Name
+		buffer::name const & Name,
+		buffer::target const & Target
 	)
 	{
 		manager & Manager = manager::instance();
@@ -123,7 +122,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Buffer.setCurrentObject(Target, Name).bind(Slot, Target);
+		Manager.Buffer.setCurrentObject(Target, Name).bind(Target);
 	}
 
 	buffer::name renderer::getBinding(buffer::slot const & Slot) const
@@ -212,6 +211,7 @@ namespace kueken
 	)
 	{
 		assert(Name != draw::name::null());
+		assert(!manager::instance().Layout.isCurrent(0, layout::name::null()));
 		draw::object & Object = manager::instance().Draw.getObject(Name);
 		Object.exec();
 	}

@@ -36,19 +36,10 @@ namespace detail{
 
 	enum target
 	{
-		ARRAY,
-		ELEMENT,
-		UNIFORM,
 		TEXTURE,
 		PIXEL_PACK,
 		PIXEL_UNPACK,
-		FEEDBACK,
 		INDIRECT,
-		TARGET_MAX
-	};
-/*
-	enum target
-	{
 		ELEMENT,
 		ARRAY,
 		ARRAY0 = ARRAY,
@@ -59,6 +50,15 @@ namespace detail{
 		ARRAY5,
 		ARRAY6,
 		ARRAY7,
+		ARRAY8,
+		ARRAY9,
+		ARRAY10,
+		ARRAY11,
+		ARRAY12,
+		ARRAY13,
+		ARRAY14,
+		ARRAY15,
+		ARRAY_MAX = ARRAY15,
 		UNIFORM,
 		UNIFORM0 = UNIFORM,
 		UNIFORM1,
@@ -68,15 +68,7 @@ namespace detail{
 		UNIFORM5,
 		UNIFORM6,
 		UNIFORM7,
-		TEXTURE,
-		TEXTURE0 = TEXTURE,
-		TEXTURE1,
-		TEXTURE2,
-		TEXTURE3,
-		TEXTURE4,
-		TEXTURE5,
-		TEXTURE6,
-		TEXTURE7,
+		UNIFORM_MAX = UNIFORM7,
 		FEEDBACK,
 		FEEDBACK0 = FEEDBACK,
 		FEEDBACK1,
@@ -86,12 +78,10 @@ namespace detail{
 		FEEDBACK5,
 		FEEDBACK6,
 		FEEDBACK7,
-		INDIRECT,
-		PIXEL_PACK,
-        PIXEL_UNPACK,
+		FEEDBACK_MAX = FEEDBACK7,
 		TARGET_MAX
 	};
-*/
+
 	typedef std::size_t slot;
 
 	enum usage
@@ -130,7 +120,7 @@ namespace detail{
 		object(creator const & Creator);
 		~object();
 
-		void bind(slot const & Slot, target const & Target);
+		void bind(target const & Target);
 		//void* map();
 		//void unmap();
 		//void flush();

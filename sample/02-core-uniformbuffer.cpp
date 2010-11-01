@@ -315,8 +315,8 @@ void display()
 	}
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, 0);
-	Object.setBlock(BLOCK_SEMANTIC_TRANSFORM, 2);
+	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, kueken::sampler::SLOT0);
+	Object.setBlock(BLOCK_SEMANTIC_TRANSFORM, kueken::buffer::UNIFORM0);
 	Renderer->unmap(Program);
 
 	Renderer->bind(Framebuffer, kueken::framebuffer::EXEC);
@@ -332,13 +332,13 @@ void display()
 	
 	Renderer->bind(Program, kueken::program::UNIFIED);
 	
-	Renderer->bind(Texture, 0);
-	Renderer->bind(Sampler, 0);
+	Renderer->bind(Texture, kueken::texture::SLOT0);
+	Renderer->bind(Sampler, kueken::sampler::SLOT0);
 
-	Renderer->bind(2, kueken::buffer::UNIFORM, UniformBuffer);
+	Renderer->bind(UniformBuffer, kueken::buffer::UNIFORM0);
 
-	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
-	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
+	Renderer->bind(ElementBuffer, kueken::buffer::ELEMENT);
+	Renderer->bind(ArrayBuffer, kueken::buffer::ARRAY);
 	Renderer->bind(Layout);
 
 	Renderer->exec(Draw);

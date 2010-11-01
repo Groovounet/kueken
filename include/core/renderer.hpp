@@ -24,9 +24,8 @@ namespace kueken
 		buffer::name create(buffer::creator const & Creator);
 		void free(buffer::name & Name);
 		void bind(
-			buffer::slot const & Slot, 
-			buffer::target const & Target, 
-			buffer::name const & Name);
+			buffer::name const & Name,
+			buffer::target const & Target);
 		buffer::name getBinding(buffer::slot const & Slot) const;
 		buffer::object & map(buffer::name const & Name);
 		void unmap(buffer::name const & Name);

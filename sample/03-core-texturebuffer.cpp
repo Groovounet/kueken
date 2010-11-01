@@ -320,18 +320,14 @@ void display()
 		glm::mat4 Model = glm::mat4(1.0f);
 		glm::mat4 MVP = Projection * View * Model;
 
-		//kueken::buffer::object & Object = Renderer->map(UniformBuffer);
-		//Object.set(0, sizeof(glm::mat4), &MVP[0][0]);
-		//Renderer->unmap(UniformBuffer);
-
 		kueken::buffer::object & Object = Renderer->map(TextureBuffer);
 		Object.set(0, sizeof(glm::mat4), &MVP[0][0]);
 		Renderer->unmap(TextureBuffer);
 	}
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, 0);
-	Object.setSampler(SAMPLER_SEMANTIC_MVP, 1);
+	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, kueken::sampler::SLOT0);
+	Object.setSampler(SAMPLER_SEMANTIC_MVP, kueken::sampler::SLOT1);
 	Renderer->unmap(Program);
 
 	Renderer->bind(Framebuffer, kueken::framebuffer::EXEC);
@@ -347,12 +343,12 @@ void display()
 	
 	Renderer->bind(Program, kueken::program::UNIFIED);
 	
-	Renderer->bind(Sampler, 0);
-	Renderer->bind(TextureDiffuse, 0);
-	Renderer->bind(TextureTransform, 1);
+	Renderer->bind(Sampler, kueken::sampler::SLOT0);
+	Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
+	Renderer->bind(TextureTransform, kueken::texture::SLOT1);
 
-	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
-	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
+	Renderer->bind(ElementBuffer, kueken::buffer::ELEMENT);
+	Renderer->bind(ArrayBuffer, kueken::buffer::ARRAY);
 	Renderer->bind(Layout);
 
 	Renderer->exec(Draw);

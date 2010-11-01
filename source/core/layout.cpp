@@ -156,9 +156,8 @@ namespace layout
 
 			buffer::name const & Buffer = this->Renderer.getBinding(buffer::slot(SlotIndex));
 			this->Renderer.bind(
-				0,
-				kueken::buffer::ARRAY,
-				Buffer);
+				Buffer,
+				kueken::buffer::ARRAY);
 
 			for
 			(

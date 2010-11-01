@@ -19,7 +19,7 @@ namespace
 	const char* FRAG_SHADER_SOURCE0 = "./data/texture.frag";
 	const char* VERT_SHADER_SOURCE1 = "./data/framebuffer.vert";
 	const char* FRAG_SHADER_SOURCE1 = "./data/framebuffer.frag";
-	const char* TEXTURE_DIFFUSE = "./data/kueken256.tga";
+	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_FRAMEBUFFER_X(640);
 	int const SAMPLE_FRAMEBUFFER_Y(480);
 	int const SAMPLE_OFFSCREEN_X(640);
@@ -95,7 +95,7 @@ void display()
 		glm::mat4 MVP = Projection * View * Model;
 
 		kueken::program::object & Object = Renderer->map(ProgramOffscreen);
-		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
+		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
 		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 		Renderer->unmap(ProgramOffscreen);
 
@@ -104,11 +104,11 @@ void display()
 		Renderer->exec(Clear);
 
 		Renderer->bind(ProgramOffscreen, kueken::program::UNIFIED);
-		Renderer->bind(SamplerOffscreen, 0);
-		Renderer->bind(TextureDiffuse, 0);
+		Renderer->bind(SamplerOffscreen, kueken::sampler::SLOT0);
+		Renderer->bind(TextureDiffuse, kueken::texture::SLOT0);
 
-		Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
-		Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
+		Renderer->bind(ElementBuffer, kueken::buffer::ELEMENT);
+		Renderer->bind(ArrayBuffer, kueken::buffer::ARRAY);
 		Renderer->bind(Layout);
 
 		Renderer->exec(Draw);
@@ -116,7 +116,7 @@ void display()
 
 	{
 		kueken::program::object & Object = Renderer->map(ProgramOutput);
-		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
+		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
 		Renderer->unmap(ProgramOutput);
 
 		Renderer->bind(RasterizerOutput);
@@ -124,11 +124,11 @@ void display()
 		Renderer->exec(Clear);
 
 		Renderer->bind(ProgramOutput, kueken::program::UNIFIED);
-		Renderer->bind(SamplerOutput, 0);
-		Renderer->bind(TextureColorbuffer, 0);
+		Renderer->bind(SamplerOutput, kueken::sampler::SLOT0);
+		Renderer->bind(TextureColorbuffer, kueken::texture::SLOT0);
 
-		Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
-		Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
+		Renderer->bind(ElementBuffer, kueken::buffer::ELEMENT);
+		Renderer->bind(ArrayBuffer, kueken::buffer::ARRAY);
 		Renderer->bind(Layout);
 
 		Renderer->exec(Draw);
@@ -162,8 +162,8 @@ bool initBlend()
 bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
-	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
-	Creator.setDepth(1.0f);
+	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
+	//Creator.setDepth(1.0f);
 	Clear = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -197,9 +197,9 @@ bool initTexture2D()
 		gli::texture2D Texture = gli::load(TEXTURE_DIFFUSE);
 
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
-		Creator.setFormat(kueken::texture::RGB8);
+		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
-		Creator.setLevel(0, 10);
+		Creator.setLevel(0, Texture.levels());
 		for(kueken::texture::level Level = 0; Level < Texture.levels(); ++Level)
 		{
 			Creator.setImage(
@@ -208,12 +208,7 @@ bool initTexture2D()
 				Texture[Level].data());
 		}
 		TextureDiffuse = Renderer->create(Creator);
-
-		kueken::texture::object & Object = Renderer->map(TextureDiffuse);
-		Object.generateMipmaps();
-		Renderer->unmap(TextureDiffuse);
 	}
-
 
 	return glf::checkError("initTexture2D");
 }
@@ -221,7 +216,7 @@ bool initTexture2D()
 bool initTest()
 {
 	kueken::test::creator Creator(*Renderer);
-	Creator.setDepthEnable(true);
+	Creator.setDepthEnable(false);
 	Creator.setDepthFunc(kueken::test::LEQUAL);
 	Test = Renderer->create(Creator);
 

@@ -264,7 +264,7 @@ namespace detail
 	};
 
 }//namespace detail
-/*
+
 	enum slot
 	{
 		SLOT0,
@@ -275,10 +275,17 @@ namespace detail
 		SLOT5,
 		SLOT6,
 		SLOT7,
+		SLOT8,
+		SLOT9,
+		SLOT10,
+		SLOT11,
+		SLOT12,
+		SLOT13,
+		SLOT14,
+		SLOT15,
 		SLOT_MAX
 	};
-*/
-	typedef std::size_t slot;
+
 	typedef std::size_t level;
 
 	struct info
