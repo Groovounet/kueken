@@ -319,27 +319,27 @@ void display()
 	Object.setBlock(BLOCK_SEMANTIC_TRANSFORM, 2);
 	Renderer->unmap(Program);
 
-	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
+	Renderer->bind(Framebuffer, kueken::framebuffer::EXEC);
 
-	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerBackground);
+	Renderer->bind(RasterizerBackground);
 	Renderer->exec(ClearBackground);
 
-	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerScene);
+	Renderer->bind(RasterizerScene);
 	Renderer->exec(ClearScene);
 
-	Renderer->bind(kueken::test::TEST, Test);
-	Renderer->bind(kueken::blend::BLEND, Blend);
+	Renderer->bind(Test);
+	Renderer->bind(Blend);
 	
-	Renderer->bind(0, kueken::program::UNIFIED, Program);
+	Renderer->bind(Program, kueken::program::UNIFIED);
 	
-	Renderer->bind(0, kueken::texture::TEXTURE2D, Texture);
-	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
+	Renderer->bind(Texture, 0);
+	Renderer->bind(Sampler, 0);
 
 	Renderer->bind(2, kueken::buffer::UNIFORM, UniformBuffer);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-	Renderer->bind(0, kueken::layout::VERTEX, Layout);
+	Renderer->bind(Layout);
 
 	Renderer->exec(Draw);
 

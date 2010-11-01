@@ -52,7 +52,6 @@ namespace kueken
 
 	void renderer::bind
 	(
-		blend::target const & Target, 
 		blend::name const & Name
 	)
 	{
@@ -230,6 +229,51 @@ namespace kueken
 	}
 
 	///////////////////////////
+	// framebuffer
+
+	template <>
+	framebuffer::name renderer::create
+	(
+		framebuffer::creator<framebuffer::FRAMEBUFFER> const & Creator
+	)
+	{
+		framebuffer::object * Object = new framebuffer::object(Creator);
+		return manager::instance().Framebuffer.reserve(Object);
+	}
+
+	template <>
+	framebuffer::name renderer::create
+	(
+		framebuffer::creator<framebuffer::CUSTOM> const & Creator
+	)
+	{
+		framebuffer::object * Object = new framebuffer::object(Creator);
+		return manager::instance().Framebuffer.reserve(Object);
+	}
+
+	void renderer::free(framebuffer::name & Name)
+	{
+		assert(Name != framebuffer::name::null());
+		manager::instance().Framebuffer.release(Name);
+	}
+
+	void renderer::bind
+	(
+		framebuffer::name const & Name,
+		framebuffer::target const & Target
+	)
+	{
+		manager& Manager = manager::instance();
+
+#if KUEKEN_REDUCE_CHANGES
+		if(Manager.Framebuffer.isCurrent(0, Name))
+			return;
+#endif//KUEKEN_REDUCE_CHANGES
+
+		Manager.Framebuffer.setCurrentObject(0, Name).bind(Target);
+	}
+
+	///////////////////////////
 	// texture
 
 	texture::name renderer::create
@@ -263,10 +307,8 @@ namespace kueken
 
 	void renderer::bind
 	(
-
-		texture::slot const & Slot,
-		texture::target const & Target,
-		texture::name const & Name		
+		texture::name const & Name,
+		texture::slot const & Slot
 	)
 	{
 		manager & Manager = manager::instance();
@@ -276,7 +318,7 @@ namespace kueken
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Texture.setCurrentObject(Slot, Name).bind(Slot, Target);
+		Manager.Texture.setCurrentObject(Slot, Name).bind(Slot);
 	}
 
 	texture::object & renderer::map(texture::name const & Name)
@@ -315,20 +357,17 @@ namespace kueken
 
 	void renderer::bind
 	(
-
-		layout::slot const & Slot,
-		layout::target const & Target,
 		layout::name const & Name		
 	)
 	{
 		manager & Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
-		if(Manager.Layout.isCurrent(Slot, Name))
+		if(Manager.Layout.isCurrent(0, Name))
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Layout.setCurrentObject(Slot, Name).bind();
+		Manager.Layout.setCurrentObject(0, Name).bind();
 	}
 
 	///////////////////////////
@@ -349,19 +388,18 @@ namespace kueken
 
 	void renderer::bind
 	(
-		program::slot const & Slot,
-		program::target const & Target,
-		program::name const & Name
+		program::name const & Name,
+		program::target const & Target
 	)
 	{
 		manager & Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
-		if(Manager.Program.isCurrent(0, Name))
+		if(Manager.Program.isCurrent(Target, Name))
 			return;
 #endif//KUEKEN_REDUCE_CHANGES
 
-		Manager.Program.setCurrentObject(0, Name).bind();
+		Manager.Program.setCurrentObject(Target, Name).bind();
 	}
 
 	program::object & renderer::map(program::name const & Name)
@@ -459,7 +497,6 @@ namespace kueken
 
 	void renderer::bind
 	(
-		rasterizer::target const & Target, 
 		rasterizer::name const & Name
 	)
 	{
@@ -510,51 +547,6 @@ namespace kueken
 	}
 
 	///////////////////////////
-	// framebuffer
-
-	template <>
-	framebuffer::name renderer::create
-	(
-		framebuffer::creator<framebuffer::FRAMEBUFFER> const & Creator
-	)
-	{
-		framebuffer::object * Object = new framebuffer::object(Creator);
-		return manager::instance().Framebuffer.reserve(Object);
-	}
-
-	template <>
-	framebuffer::name renderer::create
-	(
-		framebuffer::creator<framebuffer::CUSTOM> const & Creator
-	)
-	{
-		framebuffer::object * Object = new framebuffer::object(Creator);
-		return manager::instance().Framebuffer.reserve(Object);
-	}
-
-	void renderer::free(framebuffer::name & Name)
-	{
-		assert(Name != framebuffer::name::null());
-		manager::instance().Framebuffer.release(Name);
-	}
-
-	void renderer::bind
-	(
-		framebuffer::target const & Target,
-		framebuffer::name const & Name
-	)
-	{
-		manager& Manager = manager::instance();
-
-#if KUEKEN_REDUCE_CHANGES
-		if(Manager.Framebuffer.isCurrent(0, Name))
-			return;
-#endif//KUEKEN_REDUCE_CHANGES
-
-		Manager.Framebuffer.setCurrentObject(0, Name).bind(Target);
-	}
-
-	///////////////////////////
 	// sampler
 
 	sampler::name renderer::create
@@ -578,9 +570,8 @@ namespace kueken
 
 	void renderer::bind
 	(
-		sampler::slot const & Slot,
-		sampler::target const & Target,
-		sampler::name const & Name
+		sampler::name const & Name,
+		sampler::slot const & Slot
 	)
 	{
 		manager & Manager = manager::instance();
@@ -617,7 +608,6 @@ namespace kueken
 
 	void renderer::bind
 	(
-		test::target const & Target, 
 		test::name const & Name
 	)
 	{

@@ -15,13 +15,21 @@ namespace kueken
 
 		blend::name create(blend::creator const & Creator);
 		void free(blend::name & Name);
-		void bind(
-			blend::target const & Target, 
-			blend::name const & Name);
+		void bind(blend::name const & Name);
 
 		blit::name create(blit::creator const & Creator);
 		void free(blit::name & Name);
 		void exec(blit::name const & Name);
+
+		buffer::name create(buffer::creator const & Creator);
+		void free(buffer::name & Name);
+		void bind(
+			buffer::slot const & Slot, 
+			buffer::target const & Target, 
+			buffer::name const & Name);
+		buffer::name getBinding(buffer::slot const & Slot) const;
+		buffer::object & map(buffer::name const & Name);
+		void unmap(buffer::name const & Name);
 
 		clear::name create(clear::creator const & Creator);
 		void free(clear::name & Name);
@@ -34,29 +42,23 @@ namespace kueken
 		draw::object & map(draw::name const & Name);
 		void unmap(draw::name const & Name);
 
-		buffer::name create(buffer::creator const & Creator);
-		void free(buffer::name & Name);
+		template <framebuffer::type Type>
+		framebuffer::name create(framebuffer::creator<Type> const & Creator);
+		void free(framebuffer::name& Name);		
 		void bind(
-			buffer::slot const & Slot, 
-			buffer::target const & Target, 
-			buffer::name const & Name);
-		buffer::name getBinding(buffer::slot const & Slot) const;
-		buffer::object & map(buffer::name const & Name);
-		void unmap(buffer::name const & Name);
+			framebuffer::name const & Name,
+			framebuffer::target const & Target);
 
 		layout::name create(layout::creator const & Creator);
 		void free(layout::name & Name);
 		void bind(
-			layout::slot const & Slot, 
-			layout::target const & Target,
 			layout::name const & Name);
 
 		program::name create(program::creator const & Creator);
 		void free(program::name& Name);
 		void bind(
-			program::slot const & Slot, 
-			program::target const & Target, 
-			program::name const & Name);
+			program::name const & Name, 
+			program::target const & Target);
 		program::object & map(program::name const & Name);
 		void unmap(program::name const & Name);
 
@@ -70,20 +72,17 @@ namespace kueken
 		rasterizer::name create(rasterizer::creator<Type> const & Creator);
 		void free(rasterizer::name & Name);
 		void bind(
-			rasterizer::target const & Target, 
 			rasterizer::name const & Name);
 
 		sampler::name create(sampler::creator const & Creator);
 		void free(sampler::name & Name);
 		void bind(
-			sampler::slot const & Slot, 
-			sampler::target const & Target, 
-			sampler::name const & Name);
+			sampler::name const & Name,
+			sampler::slot const & Slot);
 
 		test::name create(test::creator const & Creator);
 		void free(test::name & Name);
 		void bind(
-			test::target const & Target,
 			test::name const & Name);
 
 		//template <texture::type Type>
@@ -98,20 +97,12 @@ namespace kueken
 		renderbuffer::name create(renderbuffer::creator const & Creator);
 		void free(renderbuffer::name & Name);		
 
-		template <framebuffer::type Type>
-		framebuffer::name create(framebuffer::creator<Type> const & Creator);
-		void free(framebuffer::name& Name);		
-		void bind(
-			framebuffer::target const & Target,
-			framebuffer::name const & Name);
-
 		texture::name create(texture::creator<texture::IMAGE> const & Creator);
 		texture::name create(texture::creator<texture::BUFFER> const & Creator);
 		void free(texture::name & Name);
 		void bind(
-			texture::slot const & Slot, 
-			texture::target const & Target,
-			texture::name const & Name);
+			texture::name const & Name,
+			texture::slot const & Slot);
 		texture::object & map(texture::name const & Name);
 		void unmap(texture::name const & Name);
 

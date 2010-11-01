@@ -334,26 +334,26 @@ void display()
 	Object.setSampler(SAMPLER_SEMANTIC_MVP, 1);
 	Renderer->unmap(Program);
 
-	Renderer->bind(kueken::framebuffer::EXEC, Framebuffer);
+	Renderer->bind(Framebuffer, kueken::framebuffer::EXEC);
 
-	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerBackground);
+	Renderer->bind(RasterizerBackground);
 	Renderer->exec(ClearBackground);
 
-	Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerScene);
+	Renderer->bind(RasterizerScene);
 	Renderer->exec(ClearScene);
 
-	Renderer->bind(kueken::test::TEST, Test);
-	Renderer->bind(kueken::blend::BLEND, Blend);
+	Renderer->bind(Test);
+	Renderer->bind(Blend);
 	
-	Renderer->bind(0, kueken::program::UNIFIED, Program);
+	Renderer->bind(Program, kueken::program::UNIFIED);
 	
-	Renderer->bind(0, kueken::texture::TEXTURE2D, TextureDiffuse);
-	Renderer->bind(0, kueken::sampler::SAMPLER, Sampler);
-	Renderer->bind(1, kueken::texture::TEXTURE_BUFFER, TextureTransform);
+	Renderer->bind(Sampler, 0);
+	Renderer->bind(TextureDiffuse, 0);
+	Renderer->bind(TextureTransform, 1);
 
 	Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 	Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-	Renderer->bind(0, kueken::layout::VERTEX, Layout);
+	Renderer->bind(Layout);
 
 	Renderer->exec(Draw);
 

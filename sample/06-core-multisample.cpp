@@ -49,8 +49,6 @@ namespace
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
 	kueken::blit::name Blit(kueken::blit::name::null());
-	kueken::rasterizer::name RasterizerMultisample(kueken::rasterizer::name::null());
-	kueken::rasterizer::name RasterizerSplash(kueken::rasterizer::name::null());
 	kueken::clear::name ClearOffscreen(kueken::clear::name::null());
 	kueken::clear::name ClearOutput(kueken::clear::name::null());
 	kueken::draw::name Draw(kueken::draw::name::null());
@@ -67,11 +65,14 @@ namespace
 	kueken::buffer::name ElementBuffer(kueken::buffer::name::null());
 	kueken::buffer::name UniformBuffer(kueken::buffer::name::null());
 
-	kueken::framebuffer::name RendertargetFramebuffer(kueken::framebuffer::name::null());
-	kueken::framebuffer::name RendertargetResolver(kueken::framebuffer::name::null());
-	kueken::framebuffer::name RendertargetMultisample(kueken::framebuffer::name::null());
+	kueken::framebuffer::name FramebufferOffscreen(kueken::framebuffer::name::null());
+	kueken::framebuffer::name FramebufferResolve(kueken::framebuffer::name::null());
+	kueken::framebuffer::name FramebufferOutput(kueken::framebuffer::name::null());
 
-	kueken::texture::name TextureRendertarget(kueken::texture::name::null());
+	kueken::rasterizer::name RasterizerOffscreen(kueken::rasterizer::name::null());
+	kueken::rasterizer::name RasterizerOutput(kueken::rasterizer::name::null());
+
+	kueken::texture::name TextureColorbuffer(kueken::texture::name::null());
 	kueken::texture::name TextureDiffuse(kueken::texture::name::null());
 
 	kueken::program::semantic const SEMANTIC_UNIF_DIFFUSE(0);
@@ -83,8 +84,8 @@ namespace
 
 void display()
 {
-	Renderer->bind(kueken::test::TEST, Test);
-	Renderer->bind(kueken::blend::BLEND, Blend);
+	Renderer->bind(Test);
+	Renderer->bind(Blend);
 
 	{
 		glm::mat4 Projection = glm::perspective(45.0f, float(Window.Size.x) / float(Window.Size.y), 0.1f, 100.0f);
@@ -100,24 +101,24 @@ void display()
 		Renderer->unmap(ProgramOffscreen);
 		glf::checkError("Render 1");
 
-		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerMultisample);
-		Renderer->bind(kueken::framebuffer::EXEC, RendertargetMultisample);
+		Renderer->bind(RasterizerOffscreen);
+		Renderer->bind(FramebufferOffscreen, kueken::framebuffer::EXEC);
 		Renderer->exec(ClearOffscreen);
 
-		Renderer->bind(0, kueken::program::UNIFIED, ProgramOffscreen);
-		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerDiffuse);
-		Renderer->bind(0, kueken::texture::TEXTURE2D, TextureDiffuse);
+		Renderer->bind(ProgramOffscreen, kueken::program::UNIFIED);
+		Renderer->bind(SamplerDiffuse, 0);
+		Renderer->bind(TextureDiffuse, 0);
 
 		Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 		Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-		Renderer->bind(0, kueken::layout::VERTEX, Layout);
+		Renderer->bind(Layout);
 		glf::checkError("Render 2");
 
 		Renderer->exec(Draw);
 		glf::checkError("Render 3");
 
-		Renderer->bind(kueken::framebuffer::READ, RendertargetMultisample);
-		Renderer->bind(kueken::framebuffer::DRAW, RendertargetResolver);
+		Renderer->bind(FramebufferOffscreen, kueken::framebuffer::READ);
+		Renderer->bind(FramebufferResolve, kueken::framebuffer::DRAW);
 		Renderer->exec(Blit);
 		glf::checkError("Render 4");
 	}
@@ -128,18 +129,18 @@ void display()
 		Renderer->unmap(ProgramOutput);
 
 		glf::checkError("Render 6");
-		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerOutput);
-		Renderer->bind(kueken::framebuffer::EXEC, FramebufferOutput);
-		Renderer->exec(Clear);
+		Renderer->bind(RasterizerOutput);
+		Renderer->bind(FramebufferOutput, kueken::framebuffer::EXEC);
+		Renderer->exec(ClearOutput);
 
 		glf::checkError("Render 9");
-		Renderer->bind(0, kueken::program::UNIFIED, ProgramOutput);
-		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerOutput);
-		Renderer->bind(0, kueken::texture::RECT, TextureColorbuffer);
+		Renderer->bind(ProgramOutput, kueken::program::UNIFIED);
+		Renderer->bind(SamplerSplash, 0);
+		Renderer->bind(TextureColorbuffer, 0);
 
 		Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 		Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-		Renderer->bind(0, kueken::layout::VERTEX, Layout);
+		Renderer->bind(Layout);
 
 		Renderer->exec(Draw);
 	}
@@ -222,7 +223,7 @@ bool initTexture2D()
 		Creator.setTarget(kueken::texture::TEXTURE2D);
 		Creator.setFormat(kueken::texture::RGBA8);
 		Creator.setImage(0, glm::uvec3(Window.Size, glm::uint(1)), 0);
-		TextureRendertarget = Renderer->create(Creator);
+		TextureColorbuffer = Renderer->create(Creator);
 	}
 
 	{
@@ -266,7 +267,7 @@ bool initRasterizer()
 		Creator.setViewport(glm::ivec4(0, 0, Window.Size));
 		Creator.setScissor(false, glm::ivec4(Window.Size >> 2, Window.Size >> 1));
 		Creator.setMultisample(true);
-		RasterizerMultisample = Renderer->create(Creator);
+		RasterizerOffscreen = Renderer->create(Creator);
 	}
 
 	{
@@ -274,7 +275,7 @@ bool initRasterizer()
 		Creator.setViewport(glm::ivec4(0, 0, Window.Size));
 		Creator.setScissor(false, glm::ivec4(Window.Size >> 2, Window.Size >> 1));
 		Creator.setMultisample(false);
-		RasterizerSplash = Renderer->create(Creator);
+		RasterizerOutput = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initRasterizer");
@@ -380,17 +381,11 @@ bool initFramebuffer()
 {
 	{
 		kueken::framebuffer::creator<kueken::framebuffer::CUSTOM> Creator(*Renderer);
-		Creator.setTexture(kueken::framebuffer::COLOR0, TextureRendertarget, 0);
-		RendertargetResolver = Renderer->create(Creator);
+		Creator.setTexture(kueken::framebuffer::COLOR0, TextureColorbuffer, 0);
+		FramebufferResolve = Renderer->create(Creator);
 	}
 
 	{
-		kueken::renderbuffer::creator RenderbufferDepthCreator(*Renderer);
-		RenderbufferDepthCreator.setFormat(kueken::renderbuffer::DEPTH24);
-		RenderbufferDepthCreator.setSize(glm::uvec2(Window.Size));
-		RenderbufferDepthCreator.setSamples(4);
-		kueken::renderbuffer::name RenderbufferDepth = Renderer->create(RenderbufferDepthCreator);
-
 		kueken::renderbuffer::creator RenderbufferColor0Creator(*Renderer);
 		RenderbufferColor0Creator.setFormat(kueken::renderbuffer::RGBA);
 		RenderbufferColor0Creator.setSize(glm::uvec2(Window.Size));
@@ -398,14 +393,13 @@ bool initFramebuffer()
 		kueken::renderbuffer::name RenderbufferColor0 = Renderer->create(RenderbufferColor0Creator);
 
 		kueken::framebuffer::creator<kueken::framebuffer::CUSTOM> RendertargetCreator(*Renderer);
-		RendertargetCreator.setRenderbuffer(kueken::framebuffer::DEPTH, RenderbufferDepth);
 		RendertargetCreator.setRenderbuffer(kueken::framebuffer::COLOR0, RenderbufferColor0);
-		RendertargetMultisample = Renderer->create(RendertargetCreator);
+		FramebufferOffscreen = Renderer->create(RendertargetCreator);
 	}
 
 	{
 		kueken::framebuffer::creator<kueken::framebuffer::FRAMEBUFFER> Creator(*Renderer);
-		RendertargetFramebuffer = Renderer->create(Creator);
+		FramebufferOutput = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initRendertarget");

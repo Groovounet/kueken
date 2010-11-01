@@ -19,11 +19,11 @@ namespace
 	const char* FRAG_SHADER_SOURCE0 = "./data/texture.frag";
 	const char* VERT_SHADER_SOURCE1 = "./data/framebuffer.vert";
 	const char* FRAG_SHADER_SOURCE1 = "./data/framebuffer.frag";
-	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
+	const char* TEXTURE_DIFFUSE = "./data/kueken256.tga";
 	int const SAMPLE_FRAMEBUFFER_X(640);
 	int const SAMPLE_FRAMEBUFFER_Y(480);
-	int const SAMPLE_OFFSCREEN_X(256);
-	int const SAMPLE_OFFSCREEN_Y(256);
+	int const SAMPLE_OFFSCREEN_X(640);
+	int const SAMPLE_OFFSCREEN_Y(480);
 	int const SAMPLE_MAJOR_VERSION(4);
 	int const SAMPLE_MINOR_VERSION(0);
 
@@ -83,8 +83,8 @@ namespace
 
 void display()
 {
-	Renderer->bind(kueken::test::TEST, Test);
-	Renderer->bind(kueken::blend::BLEND, Blend);
+	Renderer->bind(Test);
+	Renderer->bind(Blend);
 
 	{
 		glm::mat4 Projection = glm::perspective(45.0f, float(Window.Size.x) / float(Window.Size.y), 0.1f, 100.0f);
@@ -99,17 +99,17 @@ void display()
 		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 		Renderer->unmap(ProgramOffscreen);
 
-		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerOutput);
-		Renderer->bind(kueken::framebuffer::EXEC, FramebufferOffscreen);
+		Renderer->bind(RasterizerOffscreen);
+		Renderer->bind(FramebufferOffscreen, kueken::framebuffer::EXEC);
 		Renderer->exec(Clear);
 
-		Renderer->bind(0, kueken::program::UNIFIED, ProgramOffscreen);
-		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerOffscreen);
-		Renderer->bind(0, kueken::texture::TEXTURE2D, TextureDiffuse);
+		Renderer->bind(ProgramOffscreen, kueken::program::UNIFIED);
+		Renderer->bind(SamplerOffscreen, 0);
+		Renderer->bind(TextureDiffuse, 0);
 
 		Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 		Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-		Renderer->bind(0, kueken::layout::VERTEX, Layout);
+		Renderer->bind(Layout);
 
 		Renderer->exec(Draw);
 	}
@@ -119,17 +119,17 @@ void display()
 		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, 0);
 		Renderer->unmap(ProgramOutput);
 
-		Renderer->bind(kueken::rasterizer::RASTERIZER, RasterizerOutput);
-		Renderer->bind(kueken::framebuffer::EXEC, FramebufferOutput);
+		Renderer->bind(RasterizerOutput);
+		Renderer->bind(FramebufferOutput, kueken::framebuffer::EXEC);
 		Renderer->exec(Clear);
 
-		Renderer->bind(0, kueken::program::UNIFIED, ProgramOutput);
-		Renderer->bind(0, kueken::sampler::SAMPLER, SamplerOutput);
-		Renderer->bind(0, kueken::texture::RECT, TextureColorbuffer);
+		Renderer->bind(ProgramOutput, kueken::program::UNIFIED);
+		Renderer->bind(SamplerOutput, 0);
+		Renderer->bind(TextureColorbuffer, 0);
 
 		Renderer->bind(0, kueken::buffer::ELEMENT, ElementBuffer);
 		Renderer->bind(1, kueken::buffer::ARRAY, ArrayBuffer);
-		Renderer->bind(0, kueken::layout::VERTEX, Layout);
+		Renderer->bind(Layout);
 
 		Renderer->exec(Draw);
 	}
@@ -197,7 +197,7 @@ bool initTexture2D()
 		gli::texture2D Texture = gli::load(TEXTURE_DIFFUSE);
 
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
-		Creator.setFormat(kueken::texture::RGBA_DXT5);
+		Creator.setFormat(kueken::texture::RGB8);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
 		Creator.setLevel(0, 10);
 		for(kueken::texture::level Level = 0; Level < Texture.levels(); ++Level)
@@ -208,6 +208,10 @@ bool initTexture2D()
 				Texture[Level].data());
 		}
 		TextureDiffuse = Renderer->create(Creator);
+
+		kueken::texture::object & Object = Renderer->map(TextureDiffuse);
+		Object.generateMipmaps();
+		Renderer->unmap(TextureDiffuse);
 	}
 
 
@@ -259,6 +263,7 @@ bool initSampler()
 		Creator.setWrap(kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE);
 		Creator.setAnisotropy(1.f);
 		SamplerOutput = Renderer->create(Creator);
+		SamplerOutput = SamplerOffscreen;
 	}
 
 	return glf::checkError("initSampler");
