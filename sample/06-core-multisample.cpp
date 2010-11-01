@@ -77,12 +77,11 @@ namespace
 	kueken::texture::name TextureColorbuffer(kueken::texture::name::null());
 	kueken::texture::name TextureDiffuse(kueken::texture::name::null());
 
-	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE(0);
-	kueken::program::semantic const UNIFORM_SEMANTIC_MVP(1);
-	kueken::program::semantic const ATTRIB_SEMANTIC_POSITION(0);
-	kueken::program::semantic const ATTRIB_SEMANTIC_COLOR(1);
-	kueken::program::semantic const ATTRIB_SEMANTIC_TEXCOORD(4);
-	kueken::program::semantic const FRAGMENT_SEMANTIC_COLOR(0);
+	kueken::program::semantic const SEMANTIC_UNIF_DIFFUSE(0);
+	kueken::program::semantic const SEMANTIC_UNIF_MVP(1);
+	kueken::program::semantic const SEMANTIC_ATTR_POSITION(0);
+	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(1);
+	kueken::program::semantic const SEMANTIC_FRAG_COLOR(0);
 }
 
 void display()
@@ -99,8 +98,8 @@ void display()
 		glm::mat4 MVP = Projection * View * Model;
 
 		kueken::program::object & Object = Renderer->map(ProgramOffscreen);
-		Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, kueken::sampler::SLOT0);
-		Object.setUniform(UNIFORM_SEMANTIC_MVP, MVP);
+		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
+		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 		Renderer->unmap(ProgramOffscreen);
 		glf::checkError("Render 1");
 
@@ -128,7 +127,7 @@ void display()
 
 	{
 		kueken::program::object & Object = Renderer->map(ProgramOutput);
-		Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE, kueken::sampler::SLOT0);
+		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
 		Renderer->unmap(ProgramOutput);
 
 		glf::checkError("Render 6");
@@ -210,11 +209,7 @@ bool initDraw()
 	Creator.setCount(ElementCount);
 	Creator.setInstances(1);
 	Creator.setBaseVertex(0);
-
-	{
-		Creator.setInstances(1);
-		Draw = Renderer->create(Creator);
-	}
+	Draw = Renderer->create(Creator);
 
 	return glf::checkError("initDraw");
 }
@@ -223,7 +218,7 @@ bool initTexture2D()
 {
 	{
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
-		Creator.setTarget(kueken::texture::TEXTURE2D);
+		Creator.setTarget(kueken::texture::RECT);
 		Creator.setFormat(kueken::texture::RGBA8);
 		Creator.setImage(0, glm::uvec3(Window.Size, glm::uint(1)), 0);
 		TextureColorbuffer = Renderer->create(Creator);
@@ -266,6 +261,7 @@ bool initRasterizer()
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
 		Creator.setViewport(glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
+		Creator.setMultisample(true);
 		RasterizerOffscreen = Renderer->create(Creator);
 	}
 
@@ -313,11 +309,11 @@ bool initProgram()
 			kueken::program::FRAGMENT, 
 			kueken::program::FILE,
 			FRAG_SHADER_SOURCE0);
-		Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse");
-		Creator.addVariable(UNIFORM_SEMANTIC_MVP, "MVP");
-		Creator.addSemantic(ATTRIB_SEMANTIC_POSITION, "ATTR_POSITION");
-		Creator.addSemantic(ATTRIB_SEMANTIC_TEXCOORD, "ATTR_TEXCOORD");
-		Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
+		Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
+		Creator.addVariable(SEMANTIC_UNIF_MVP, "MVP");
+		Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
+		Creator.addSemantic(SEMANTIC_ATTR_TEXCOORD, "ATTR_TEXCOORD");
+		Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
 		Creator.build();
 		ProgramOffscreen = Renderer->create(Creator);
 	}
@@ -333,9 +329,9 @@ bool initProgram()
 			kueken::program::FRAGMENT, 
 			kueken::program::FILE,
 			FRAG_SHADER_SOURCE1);
-		Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse");
-		Creator.addSemantic(ATTRIB_SEMANTIC_POSITION, "ATTR_POSITION");
-		Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
+		Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
+		Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
+		Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
 		Creator.build();
 		ProgramOutput = Renderer->create(Creator);
 	}
@@ -343,30 +339,19 @@ bool initProgram()
 	return glf::checkError("initProgram");
 }
 
-bool initUniformBuffer()
-{
-	kueken::buffer::creator Creator(*Renderer);
-	Creator.setSize(sizeof(glm::mat4) * 2);
-	Creator.setData(0);
-	Creator.setUsage(kueken::buffer::STREAM_READ);
-	UniformBuffer = Renderer->create(Creator);
-
-	return glf::checkError("initUniformBuffer");
-}
-
 bool initLayout()
 {
 	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
-		ATTRIB_SEMANTIC_POSITION,
+		SEMANTIC_ATTR_POSITION,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		0, 
 		0);
 	Creator.setVertexArray(
 		0, 
-		ATTRIB_SEMANTIC_TEXCOORD,
+		SEMANTIC_ATTR_TEXCOORD,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
@@ -448,8 +433,6 @@ bool begin()
 		Validated = initTexture2D();
 	if(Validated)
 		Validated = initFramebuffer();
-	if(Validated)
-		Validated = initUniformBuffer();
 	if(Validated)
 		Validated = initProgram();
 	if(Validated)
