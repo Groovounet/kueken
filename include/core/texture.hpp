@@ -360,18 +360,20 @@ namespace detail
 		friend class framebuffer::object;
 
 	public:
-		object(renderer & Renderer) :
+		object
+		(
+			renderer & Renderer
+		) :
 			Renderer(Renderer)
 		{}
+
 		virtual ~object(){}
 
-		virtual void bind(
-			slot const & Slot,
-			target const & Target);
+		virtual void bind(slot const & Slot) = 0;
 
 		virtual void generateMipmaps(){};
 
-		GLenum Name;
+		GLuint Name;
 		renderer & Renderer;
 	};
 
@@ -382,6 +384,8 @@ namespace detail
 	public:
 		objectImage(creator<IMAGE> const & Creator);
 		virtual ~objectImage();
+
+		virtual void bind(slot const & Slot);
 
 		//void* map();
 		//void unmap();
@@ -408,6 +412,8 @@ namespace detail
 		objectBuffer(creator<BUFFER> const & Creator);
 		virtual ~objectBuffer();
 
+		virtual void bind(slot const & Slot);
+	
 	private:
 	};
 

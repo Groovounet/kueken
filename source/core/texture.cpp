@@ -480,18 +480,6 @@ namespace texture
 		return true;
 	}
 
-	void object::bind
-	(
-		slot const & Slot,
-		target const & Target
-	)
-	{
-		glBindMultiTextureEXT(
-			GL_TEXTURE0 + GLenum(Slot), 
-			image_target_cast(Target),//Data.Target, 
-			this->Name);
-	}
-
 	objectImage::objectImage(creator<IMAGE> const & Creator) :
 		object(Creator.Renderer),
 		Data(Creator.Data)
@@ -502,7 +490,7 @@ namespace texture
 			Name, 
 			Data.Target, 
 			GL_TEXTURE_MIN_FILTER, 
-			GL_NEAREST);
+			Data.Mipmaps.size() > 0 ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
 
 		glTextureParameteriEXT(
 			Name, 
@@ -581,6 +569,17 @@ namespace texture
 		glDeleteTextures(1, &Name);
 	}
 
+	void objectImage::bind
+	(
+		slot const & Slot
+	)
+	{
+		glBindMultiTextureEXT(
+			GL_TEXTURE0 + GLenum(Slot), 
+			this->Data.Target, 
+			this->Name);
+	}
+
 	void objectImage::set
 	(
 		level const & Level,
@@ -631,6 +630,17 @@ namespace texture
 	objectBuffer::~objectBuffer()
 	{
 		glDeleteTextures(1, &Name);
+	}
+
+	void objectBuffer::bind
+	(
+		slot const & Slot
+	)
+	{
+		glBindMultiTextureEXT(
+			GL_TEXTURE0 + GLenum(Slot), 
+			GL_TEXTURE_BUFFER, 
+			this->Name);
 	}
 
 }//namespace texture
