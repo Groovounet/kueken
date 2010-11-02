@@ -459,14 +459,24 @@ namespace detail
 					continue;
 
 				this->SubroutineIndirection[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1);
-				for(std::size_t i = 0; i < Creator.SubroutineVariables[TargetIndex].size(); ++i)
+
+				std::vector<detail::indirection> const & Indirections = Creator.SubroutineVariables[TargetIndex];
+				for(std::vector<detail::indirection>::size_type i = 0; i < Indirections.size(); ++i)
 				{
-					GLuint Location = glGetSubroutineUniformLocation(this->Name, TargetIndex, Creator.SubroutineVariables[TargetIndex][i].Name.c_str());
-					assert(Location != GLuint(-1));
-					this->SubroutineIndirection[TargetIndex][Creator.SubroutineVariables[TargetIndex][i].Semantic] = Location;
+					GLuint Index = glGetSubroutineIndex(this->Name, TargetIndex, Indirections[i].Name.c_str());
+					assert(Index != GLuint(-1));
+					this->SubroutineIndirection[TargetIndex][Indirections[i].Semantic] = Index;
 				}
 
 				this->SubroutineLocation[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1, 0);
+
+				std::vector<detail::indirection> const & IndirectionLocations = Creator.SubroutineLocationVariables[TargetIndex];
+				for(std::vector<detail::indirection>::size_type i = 0; i < IndirectionLocations.size(); ++i)
+				{
+					GLuint Location = glGetSubroutineUniformLocation(this->Name, TargetIndex, IndirectionLocations[i].Name.c_str());
+					assert(Location != GLuint(-1));
+					this->SubroutineLocationIndirection[TargetIndex][IndirectionLocations[i].Semantic] = Location;
+				}
 			}
 		}
 

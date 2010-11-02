@@ -188,7 +188,7 @@ bool initProgram()
 	Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
 	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_LQ, "diffuseLQ");
 	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_HQ, "diffuseHQ");
-	Creator.addSubroutineLocation(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "diffuse");
+	Creator.addSubroutineLocation(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "Diffuse");
 	Creator.build();
 	Program = Renderer->create(Creator);
 
