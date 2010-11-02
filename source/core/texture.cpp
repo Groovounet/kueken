@@ -490,7 +490,7 @@ namespace texture
 			Name, 
 			Data.Target, 
 			GL_TEXTURE_MIN_FILTER, 
-			Data.Mipmaps.size() > 0 ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
+			Data.Mipmaps.size() > 1 ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
 
 		glTextureParameteriEXT(
 			Name, 
