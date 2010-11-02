@@ -462,6 +462,7 @@ namespace glf
 			}
 			fprintf(stdout, "OpenGL Error(%s): %s\n", ErrorString.c_str(), Title);
 		}
+
 		return Error == GL_NO_ERROR;
 	}
 
@@ -768,12 +769,15 @@ namespace glf
 		glutInitWindowSize(Size.x, Size.y);
 		glutInitWindowPosition(64, 64);
 		glutInit(&argc, argv);
-		glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
-		glutInitContextVersion(Major, Minor);
-		if(glf::version(Major, Minor) >= 320)
+		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);// | GLUT_MULTISAMPLE);
+		if(glf::version(Major, Minor) >= 300)
 		{
-			glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
-			glutInitContextProfile(GLUT_CORE_PROFILE);
+			glutInitContextVersion(Major, Minor);
+			if(glf::version(Major, Minor) >= 320)
+			{
+				glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
+				glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE); //GLUT_COMPATIBILITY_PROFILE GLUT_CORE_PROFILE
+			}
 		}
 
 		glutCreateWindow(argv[0]);
@@ -781,6 +785,7 @@ namespace glf
 		glGetError();
 		glf::init();
 
+		if(glf::version(Major, Minor) >= 300)
 		{
 			GLuint Name = 0;
 			glGenVertexArrays(1, &Name);
