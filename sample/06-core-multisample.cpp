@@ -191,10 +191,10 @@ bool initClear()
 	kueken::clear::creator Creator(*Renderer);
 	Creator.setDepth(1.0f);
 
-	Creator.setColor(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
 	ClearOffscreen = Renderer->create(Creator);
 
-	Creator.setColor(glm::vec4(0.0f, 0.5f, 1.0f, 1.0f));
+	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
 	ClearOutput = Renderer->create(Creator);
 
 	return glf::checkError("initClear");

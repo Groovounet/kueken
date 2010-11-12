@@ -50,7 +50,6 @@ namespace
 	std::unique_ptr<kueken::renderer> Renderer(nullptr);
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
-	kueken::clear::name Clear(kueken::clear::name::null());
 	kueken::draw::name Draw(kueken::draw::name::null());
 
 	kueken::sampler::name SamplerOutput(kueken::sampler::name::null());
@@ -66,10 +65,14 @@ namespace
 	kueken::program::name ProgramOffscreen(kueken::program::name::null());
 	kueken::rasterizer::name RasterizerOffscreen(kueken::rasterizer::name::null());
 	kueken::framebuffer::name FramebufferOffscreen(kueken::framebuffer::name::null());
-	
+	kueken::clear::name ClearOffscreen(kueken::clear::name::null());
+
 	kueken::program::name ProgramOutput(kueken::program::name::null());
 	kueken::rasterizer::name RasterizerOutput(kueken::rasterizer::name::null());
 	kueken::framebuffer::name FramebufferOutput(kueken::framebuffer::name::null());
+	kueken::clear::name ClearOutput(kueken::clear::name::null());
+
+	kueken::rasterizer::name RasterizerClear(kueken::rasterizer::name::null());
 
 	kueken::texture::name TextureColorbuffer(kueken::texture::name::null());
 	kueken::texture::name TextureDiffuse(kueken::texture::name::null());
@@ -101,7 +104,7 @@ void display()
 
 		Renderer->bind(RasterizerOffscreen);
 		Renderer->bind(FramebufferOffscreen, kueken::framebuffer::EXEC);
-		Renderer->exec(Clear);
+		Renderer->exec(ClearOffscreen);
 
 		Renderer->bind(ProgramOffscreen, kueken::program::UNIFIED);
 		Renderer->bind(SamplerOffscreen, kueken::sampler::SLOT0);
@@ -119,10 +122,12 @@ void display()
 		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
 		Renderer->unmap(ProgramOutput);
 
-		Renderer->bind(RasterizerOutput);
 		Renderer->bind(FramebufferOutput, kueken::framebuffer::EXEC);
-		Renderer->exec(Clear);
 
+		Renderer->bind(RasterizerClear);
+		Renderer->exec(ClearOutput);
+
+		Renderer->bind(RasterizerOutput);
 		Renderer->bind(ProgramOutput, kueken::program::UNIFIED);
 		Renderer->bind(SamplerOutput, kueken::sampler::SLOT0);
 		Renderer->bind(TextureColorbuffer, kueken::texture::SLOT0);
@@ -162,9 +167,12 @@ bool initBlend()
 bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
+
 	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
-	//Creator.setDepth(1.0f);
-	Clear = Renderer->create(Creator);
+	ClearOutput = Renderer->create(Creator);
+
+	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
+	ClearOffscreen = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
 }
@@ -233,10 +241,18 @@ bool initRasterizer()
 	}
 
 	{
+		int const Border(8);
+		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
+		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
+		Creator.setViewport(glm::ivec4(Border, Border, SAMPLE_FRAMEBUFFER_X - Border * 2, SAMPLE_FRAMEBUFFER_Y - Border * 2));
+		RasterizerOutput = Renderer->create(Creator);
+	}
+
+	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
 		Creator.setViewport(glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
-		RasterizerOutput = Renderer->create(Creator);
+		RasterizerClear = Renderer->create(Creator);
 	}
 
 	return glf::checkError("initRasterizer");
@@ -246,7 +262,7 @@ bool initSampler()
 {
 	{
 		kueken::sampler::creator Creator(*Renderer);
-		Creator.setFilter(kueken::sampler::TRILINEAR);
+		//Creator.setFilter(kueken::sampler::TRILINEAR);
 		Creator.setWrap(kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE);
 		Creator.setAnisotropy(16.f);
 		SamplerOffscreen = Renderer->create(Creator);
@@ -254,7 +270,7 @@ bool initSampler()
 
 	{
 		kueken::sampler::creator Creator(*Renderer);
-		Creator.setFilter(kueken::sampler::NEAREST);
+		//Creator.setFilter(kueken::sampler::NEAREST);
 		Creator.setWrap(kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE);
 		Creator.setAnisotropy(1.f);
 		SamplerOutput = Renderer->create(Creator);
