@@ -1,0 +1,31 @@
+set(TESTS_NAME kueken-tests)
+add_group_target_GTC(${TESTS_NAME})
+
+function(glCreateTestGTC NAME)
+	set(TEST_NAME kueken-test-${NAME})
+	set(SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
+
+	foreach(FILE ${GL_SHADER_GTC})
+ 		set(SHADER_PATH ${SHADER_PATH} ${SHADER_DIR}/${FILE})
+	endforeach(FILE)
+
+	source_group("Shader Files" FILES ${SHADER_PATH})
+	add_executable(${TEST_NAME} ${NAME}.cpp ${SHADER_PATH})
+	target_link_libraries(${TEST_NAME} ${KUEKEN_CORE_NAME} ${GLF_LIBRARY_BINARY_FILE})
+	
+	add_dependencies(${TEST_NAME} ${KUEKEN_CORE_NAME})
+	add_dependencies(${TEST_NAME} ${KUEKEN_TEST_DATA})
+	add_dependencies(${TESTS_NAME} ${TEST_NAME})
+endfunction(glCreateTestGTC)
+
+set(GL_SHADER_GTC texture.vert texture.frag)
+glCreateTestGTC(01-core-basic)
+set(GL_SHADER_GTC uniform-buffer.vert uniform-buffer.frag)
+glCreateTestGTC(02-core-uniformbuffer)
+set(GL_SHADER_GTC texture-buffer.vert texture-buffer.frag)
+glCreateTestGTC(03-core-texturebuffer)
+set(GL_SHADER_GTC subroutine.vert subroutine.frag)
+glCreateTestGTC(04-core-subroutine)
+set(GL_SHADER_GTC texture.vert texture.frag framebuffer.vert framebuffer.frag)
+glCreateTestGTC(05-core-framebuffer)
+glCreateTestGTC(06-core-multisample)

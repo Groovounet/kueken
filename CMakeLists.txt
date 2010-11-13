@@ -17,21 +17,6 @@ macro(add_parallel_build_GTC Count)
 	endif(MSVC)
 endmacro(add_parallel_build_GTC)
 
-macro(add_sample_target_GTC SampleName GroupName DataName SourceFiles)
-
-	add_executable(${SampleName} ${SourceFiles})
-	target_link_libraries(${SampleName} ${GLF_LIBRARY_BINARY_FILE})
-
-	source_group("Shader Files" FILES "*.vert" "*.cont" "*.eval" "*.geom" "*.frag")
-
-	add_dependencies(${SampleName} ${KUEKEN_CORE_NAME})
-	add_dependencies(${GroupName} ${SampleName})
-	
-	copy_data_GTC(${DataName} "${CMAKE_CURRENT_SOURCE_DIR}/../data" "${CMAKE_CURRENT_BINARY_DIR}/../data")
-	copy_binary_GTC(${SampleName})	
-	
-endmacro(add_sample_target_GTC)
-
 ##########################
 # Project
 
@@ -136,9 +121,9 @@ include_directories("${GLI_DIRECTORY}")
 ################################
 # Add custom target to copy all data
 
-set(KUEKEN_SAMPLE_DATA DATA_COPY)
+set(KUEKEN_TEST_DATA DATA_COPY)
 add_custom_target(
-	${KUEKEN_SAMPLE_DATA}
+	${KUEKEN_TEST_DATA}
 	COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/sample/data ${CMAKE_CURRENT_BINARY_DIR}/sample/data)
 
 ###########
@@ -151,5 +136,5 @@ set(KUEKEN_FX_NAME kueken-fx)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 add_subdirectory(source)
-add_subdirectory(sample)
+add_subdirectory(test)
 
