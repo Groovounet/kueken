@@ -23,7 +23,7 @@ namespace layout
 	//	TEXCOORD		= 4
 	//};
 
-	enum array
+	enum format
 	{
 		F16VEC1,
 		F16VEC2,
@@ -33,6 +33,10 @@ namespace layout
 		F32VEC2,
 		F32VEC3,
 		F32VEC4,
+		F64VEC1,
+		F64VEC2,
+		F64VEC3,
+		F64VEC4,
 		I8VEC1,
 		I8VEC2,
 		I8VEC3,
@@ -57,7 +61,14 @@ namespace layout
 		U32VEC2,
 		U32VEC3,
 		U32VEC4,
-		ARRAY_MAX
+		FORMAT_MAX
+	};
+
+	enum interpreter
+	{
+		FLOAT,
+		INTEGER,
+		DOUBLE
 	};
 
 	typedef std::size_t slot;
@@ -69,6 +80,7 @@ namespace detail{
 	{
 		slot Slot;
 		semantic Semantic;
+		interpreter Interpreter;
 		GLint Size;
 		GLenum Type;
 		GLsizei Stride;
@@ -90,7 +102,8 @@ namespace detail{
 		void setVertexArray(
 			slot const & Slot,
 			semantic const & Semantic,
-			array const & Format, 
+			interpreter const & Interpreter,
+			format const & Format, 
 			std::size_t const & Stride,
 			std::size_t const & Offset,
 			std::size_t const & Divisor);

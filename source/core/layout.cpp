@@ -7,7 +7,7 @@ namespace
 {
 	std::size_t layout_componant_cast
 	(
-		kueken::layout::array Array
+		kueken::layout::format Array
 	)
 	{
 		static std::size_t const Cast[] =
@@ -20,6 +20,10 @@ namespace
 			2, //F32VEC2,
 			3, //F32VEC3,
 			4, //F32VEC4,
+			1, //F64VEC1,
+			2, //F64VEC2,
+			3, //F64VEC3,
+			4, //F64VEC4,
 			1, //I8VEC1,
 			2, //I8VEC2,
 			3, //I8VEC3,
@@ -47,7 +51,7 @@ namespace
 		};
 
 		static_assert(
-			sizeof(Cast) / sizeof(std::size_t) == kueken::layout::ARRAY_MAX,
+			sizeof(Cast) / sizeof(std::size_t) == kueken::layout::FORMAT_MAX,
 			"Cast array size mismatch");
 
 		return Cast[Array];
@@ -55,7 +59,7 @@ namespace
 
 	GLenum layout_type_cast
 	(
-		kueken::layout::array Array
+		kueken::layout::format Array
 	)
 	{
 		static GLenum const Cast[] =
@@ -68,6 +72,10 @@ namespace
 			GL_FLOAT,			//F32VEC2,
 			GL_FLOAT,			//F32VEC3,
 			GL_FLOAT,			//F32VEC4,
+			GL_DOUBLE,			//F64VEC1,
+			GL_DOUBLE,			//F64VEC2,
+			GL_DOUBLE,			//F64VEC3,
+			GL_DOUBLE,			//F64VEC4,
 			GL_BYTE,			//I8VEC1,
 			GL_BYTE,			//I8VEC2,
 			GL_BYTE,			//I8VEC3,
@@ -95,7 +103,7 @@ namespace
 		};
 
 		static_assert(
-			sizeof(Cast) / sizeof(GLenum) == kueken::layout::ARRAY_MAX,
+			sizeof(Cast) / sizeof(GLenum) == kueken::layout::FORMAT_MAX,
 			"Cast array size mismatch");
 
 		return Cast[Array];
@@ -114,7 +122,8 @@ namespace layout
 	(
 		slot const & Slot,
 		semantic const & Semantic,
-		array const & Format, 
+		interpreter const & Interpreter,
+		format const & Format, 
 		std::size_t const & Stride,
 		std::size_t const & Offset,
 		std::size_t const & Divisor
@@ -123,6 +132,7 @@ namespace layout
 		detail::vertexArray VertexArray;
 		VertexArray.Slot = Slot;
 		VertexArray.Semantic = Semantic;
+		VertexArray.Interpreter = Interpreter;
 		VertexArray.Size = layout_componant_cast(Format);
 		VertexArray.Type = layout_type_cast(Format);
 		VertexArray.Stride = Stride;
@@ -168,14 +178,32 @@ namespace layout
 			{
 				detail::vertexArray const & VertexArray = SemanticsData[SemanticIndex];
 
-				glVertexAttribPointer(
-					VertexArray.Semantic, 
-					VertexArray.Size,
-					VertexArray.Type,
-					GL_FALSE, 
-					VertexArray.Stride,
-					VertexArray.Offset);
-				
+				switch(VertexArray.Interpreter)
+				{
+				case FLOAT:
+					glVertexAttribPointer(
+						VertexArray.Semantic, 
+						VertexArray.Size,
+						VertexArray.Type,
+						GL_FALSE, 
+						VertexArray.Stride,
+						VertexArray.Offset);
+				case INTEGER:
+					glVertexAttribIPointer(
+						VertexArray.Semantic, 
+						VertexArray.Size,
+						VertexArray.Type,
+						VertexArray.Stride,
+						VertexArray.Offset);
+				case DOUBLE:
+					glVertexAttribLPointer(
+						VertexArray.Semantic, 
+						VertexArray.Size,
+						VertexArray.Type,
+						VertexArray.Stride,
+						VertexArray.Offset);
+				};
+
 				glVertexAttribDivisor(
 					VertexArray.Semantic, 
 					VertexArray.Divisor);

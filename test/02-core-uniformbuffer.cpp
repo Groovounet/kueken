@@ -197,6 +197,7 @@ bool initLayout()
 	Creator.setVertexArray(
 		0, 
 		ATTRIB_SEMANTIC_POSITION,
+		kueken::layout::FLOAT,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		0, 
@@ -204,6 +205,7 @@ bool initLayout()
 	Creator.setVertexArray(
 		0, 
 		ATTRIB_SEMANTIC_TEXCOORD,
+		kueken::layout::FLOAT,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
