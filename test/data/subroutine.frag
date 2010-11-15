@@ -1,7 +1,7 @@
 layout(location = FRAG_COLOR, index = 0) out vec4 Color;
 
-uniform sampler2D DiffuseDXT1;
 uniform sampler2D DiffuseRGB8;
+uniform sampler2D DiffuseBGR8;
 
 in vert
 {
@@ -11,15 +11,15 @@ in vert
 subroutine vec4 diffuse();
 
 subroutine(diffuse)
-vec4 diffuseLQ()
+vec4 diffuseRGB8()
 {
-	return texture(DiffuseDXT1, Vert.Texcoord);
+	return texture(DiffuseRGB8, Vert.Texcoord);
 }
 
 subroutine(diffuse)
-vec4 diffuseHQ()
+vec4 diffuseBGR8()
 {
-	return texture(DiffuseRGB8, Vert.Texcoord);
+	return texture(DiffuseBGR8, Vert.Texcoord) * vec4(1.0, 0.5, 0.0, 1.0);
 }
 
 subroutine uniform diffuse Diffuse;

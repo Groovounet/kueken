@@ -219,7 +219,6 @@ namespace detail
 		// Subroutine array
 		void setSubroutine(
 			target const & Target,
-			subroutine const & Subroutine, 
 			count const & Count, 
 			function const * Value);
 
@@ -229,6 +228,7 @@ namespace detail
 		std::vector<GLuint> BlockIndirection;
 		std::array<std::vector<GLuint>, TARGET_MAX> FunctionIndirection;
 		std::array<std::vector<subroutine>, TARGET_MAX> RoutineIndirection;
+		std::array<std::vector<GLuint>, TARGET_MAX> Subroutines;
 		GLuint Name;
 		std::string Log;
 	};

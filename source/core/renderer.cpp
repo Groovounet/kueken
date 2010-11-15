@@ -395,8 +395,9 @@ namespace kueken
 		manager & Manager = manager::instance();
 
 #if KUEKEN_REDUCE_CHANGES
-		if(Manager.Program.isCurrent(Target, Name))
-			return;
+		// Subroutines need to be updated
+		//if(Manager.Program.isCurrent(Target, Name))
+		//	return;
 #endif//KUEKEN_REDUCE_CHANGES
 
 		Manager.Program.setCurrentObject(Target, Name).bind();

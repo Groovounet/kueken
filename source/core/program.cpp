@@ -223,27 +223,27 @@ namespace detail
 	void creator::addFunction
 	(
 		target const & Target,
-		semantic const & Semantic, 
+		function const & Function, 
 		std::string const & Name
 	)
 	{
 		this->update();
 		this->FunctionVariables[Target].push_back(
-			detail::indirection(Semantic, Name));
-		this->FunctionSemanticsMax[Target] = glm::max(this->FunctionSemanticsMax[Target], Semantic);
+			detail::indirection(Function, Name));
+		this->FunctionSemanticsMax[Target] = glm::max(this->FunctionSemanticsMax[Target], Function);
 	}
 
-	void creator::addRoutine
+	void creator::addSubroutine
 	(
 		target const & Target,
-		semantic const & Semantic, 
+		subroutine const & Subroutine, 
 		std::string const & Name
 	)
 	{
 		this->update();
 		this->RoutineVariables[Target].push_back(
-			detail::indirection(Semantic, Name));
-		this->RoutineSemanticsMax[Target] = glm::max(this->RoutineSemanticsMax[Target], Semantic);
+			detail::indirection(Subroutine, Name));
+		this->RoutineSemanticsMax[Target] = glm::max(this->RoutineSemanticsMax[Target], Subroutine);
 	}
 
 	void creator::addSource
@@ -441,7 +441,8 @@ namespace detail
 			this->UniformIndirection.resize(Creator.UniformSemanticsMax + 1);
 			for(std::size_t i = 0; i < Creator.UniformVariables.size(); ++i)
 			{
-				GLuint Location = glGetUniformLocation(this->Name, Creator.UniformVariables[i].Name.c_str());
+				std::string const & VariableName = Creator.UniformVariables[i].Name;
+				GLuint Location = glGetUniformLocation(this->Name, VariableName.c_str());
 				assert(Location != GLuint(-1));
 				this->UniformIndirection[Creator.UniformVariables[i].Semantic] = Location;
 			}
@@ -464,12 +465,13 @@ namespace detail
 				std::vector<detail::indirection> const & FunctionIndirections = Creator.FunctionVariables[TargetIndex];
 				for(std::vector<detail::indirection>::size_type i = 0; i < FunctionIndirections.size(); ++i)
 				{
+					semantic Semantic = FunctionIndirections[i].Semantic;
 					GLuint Index = glGetSubroutineIndex(
 						this->Name, 
 						detail::program_target_cast(program::target(TargetIndex)), 
 						FunctionIndirections[i].Name.c_str());
 					assert(Index != GLuint(-1));
-					this->FunctionIndirection[TargetIndex][FunctionIndirections[i].Semantic] = Index;
+					this->FunctionIndirection[TargetIndex][Semantic] = Index;
 				}
 
 				this->RoutineIndirection[TargetIndex].resize(Creator.RoutineSemanticsMax[TargetIndex] + 1, 0);
@@ -477,13 +479,16 @@ namespace detail
 				std::vector<detail::indirection> const & RoutineIndirections = Creator.RoutineVariables[TargetIndex];
 				for(std::vector<detail::indirection>::size_type i = 0; i < RoutineIndirections.size(); ++i)
 				{
+					semantic Semantic = RoutineIndirections[i].Semantic;
 					GLuint Location = glGetSubroutineUniformLocation(
 						this->Name, 
 						detail::program_target_cast(program::target(TargetIndex)), 
 						RoutineIndirections[i].Name.c_str());
 					assert(Location != GLuint(-1));
-					this->RoutineIndirection[TargetIndex][RoutineIndirections[i].Semantic] = Location;
+					this->RoutineIndirection[TargetIndex][Semantic] = Location;
 				}
+
+				this->Subroutines[TargetIndex].resize(this->RoutineIndirection[TargetIndex].size());
 			}
 		}
 
@@ -501,12 +506,12 @@ namespace detail
 		glUseProgram(Name);
 		for(std::size_t Target = 0; Target < TARGET_MAX; ++Target)
 		{
-			if(this->RoutineIndirection[Target].empty())
+			if(this->Subroutines[Target].empty())
 				continue;
 			glUniformSubroutinesuiv(
 				detail::program_target_cast(kueken::program::target(Target)), 
-				this->RoutineIndirection[Target].size(), 
-				&this->RoutineIndirection[Target][0]);
+				this->Subroutines[Target].size(), 
+				&this->Subroutines[Target][0]);
 		}
 	}
 
@@ -517,6 +522,8 @@ namespace detail
 		float const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -532,6 +539,8 @@ namespace detail
 		float const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -546,6 +555,8 @@ namespace detail
 		int const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1iEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -560,6 +571,8 @@ namespace detail
 		int const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -574,6 +587,8 @@ namespace detail
 		glm::uint const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1uiEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -588,6 +603,8 @@ namespace detail
 		glm::uint const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -602,6 +619,8 @@ namespace detail
 		glm::vec2 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform2fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -617,6 +636,8 @@ namespace detail
 		glm::vec2 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform2fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -631,6 +652,8 @@ namespace detail
 		glm::ivec2 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform2ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -646,6 +669,8 @@ namespace detail
 		glm::ivec2 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform2ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -660,6 +685,8 @@ namespace detail
 		glm::uvec2 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform2uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -675,6 +702,8 @@ namespace detail
 		glm::uvec2 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform2uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -689,6 +718,8 @@ namespace detail
 		glm::vec3 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform3fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -704,6 +735,8 @@ namespace detail
 		glm::vec3 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform3fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -718,6 +751,8 @@ namespace detail
 		glm::ivec3 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform3ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -733,6 +768,8 @@ namespace detail
 		glm::ivec3 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform3ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -747,6 +784,8 @@ namespace detail
 		glm::uvec3 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform3uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -762,6 +801,8 @@ namespace detail
 		glm::uvec3 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform3uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -776,6 +817,8 @@ namespace detail
 		glm::vec4 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform4fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -791,6 +834,8 @@ namespace detail
 		glm::vec4 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform4fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -805,6 +850,8 @@ namespace detail
 		glm::ivec4 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform4ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -820,6 +867,8 @@ namespace detail
 		glm::ivec4 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform4ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -834,6 +883,8 @@ namespace detail
 		glm::uvec4 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform4uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -849,6 +900,8 @@ namespace detail
 		glm::uvec4 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform4uivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -863,6 +916,8 @@ namespace detail
 		glm::mat2 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniformMatrix2fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -878,6 +933,8 @@ namespace detail
 		glm::mat2 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniformMatrix2fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -892,6 +949,8 @@ namespace detail
 		glm::mat3 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniformMatrix3fv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -907,6 +966,8 @@ namespace detail
 		glm::mat3 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniformMatrix3fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -921,6 +982,8 @@ namespace detail
 		glm::mat4 const & Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniformMatrix4fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -937,6 +1000,8 @@ namespace detail
 		glm::mat4 const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniformMatrix4fvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -950,10 +1015,10 @@ namespace detail
 		sampler::slot const & Value
 	)
 	{
-		glProgramUniform1iEXT(
-			this->Name, 
-			this->UniformIndirection[Semantic], 
-			Value);
+		assert(Semantic <= this->UniformIndirection.size());
+
+		GLuint Location = this->UniformIndirection[Semantic];
+		glProgramUniform1iEXT(this->Name, Location, Value);
 	}
 
 	void object::setSampler
@@ -963,6 +1028,8 @@ namespace detail
 		sampler::slot const * Value
 	)
 	{
+		assert(Semantic <= this->UniformIndirection.size());
+
 		glProgramUniform1ivEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
@@ -1009,35 +1076,39 @@ namespace detail
 		function const & Function
 	)
 	{
-		assert(Semantic <= this->FunctionIndirection[Target].size());
-		assert(Semantic <= this->RoutineIndirection[Target].size());
+		assert(Function <= this->FunctionIndirection[Target].size());
+		assert(Subroutine <= this->RoutineIndirection[Target].size());
 
-		GLuint Location = this->FunctionIndirection[Target][Semantic];
-		this->RoutineIndirection[Target][Location] = Value;
+		GLuint Index = this->FunctionIndirection[Target][Function];
+		GLuint Location = this->RoutineIndirection[Target][Subroutine];
+		this->Subroutines[Target][Location] = Index;
 
-		glUniformSubroutinesuiv(
-			detail::program_target_cast(Target), 
-			this->RoutineIndirection[Target].size(), 
-			&this->RoutineIndirection[Target][0]);
+		//glUniformSubroutinesuiv(
+		//	detail::program_target_cast(Target), 
+		//	this->Subroutines[Target].size(), 
+		//	&this->Subroutines[Target][0]);
 	}
 
 	void object::setSubroutine
 	(
 		target const & Target,
-		subroutine const & Subroutine, 
 		count const & Count,
 		function const * Functions
 	)
 	{
-		assert(Semantic + Count <= this->RoutineIndirection[Target].size());
+		assert(Count <= this->RoutineIndirection[Target].size());
 
 		for(count i = 0; i < Count; ++i)
-			this->RoutineIndirection[Target][Semantic + i] = Value[i];
+		{
+			GLuint Index = this->FunctionIndirection[Target][*(Functions + i)];
+			GLuint Location = this->RoutineIndirection[Target][i];
+			this->Subroutines[Target][i] = Index;
+		}
 
-		glUniformSubroutinesuiv(
-			detail::program_target_cast(Target), 
-			this->RoutineIndirection[Target].size(), 
-			&this->RoutineIndirection[Target][0]);
+		//glUniformSubroutinesuiv(
+		//	detail::program_target_cast(Target), 
+		//	this->Subroutines[Target].size(), 
+		//	&this->Subroutines[Target][0]);
 	}
 
 }//namespace program

@@ -52,7 +52,8 @@ namespace
 	kueken::clear::name ClearScene(kueken::clear::name::null());
 	kueken::draw::name Draw(kueken::draw::name::null());
 	kueken::program::name Program(kueken::program::name::null());
-	kueken::texture::name Texture(kueken::texture::name::null());
+	kueken::texture::name TextureRGB8(kueken::texture::name::null());
+	kueken::texture::name TextureBGR8(kueken::texture::name::null());
 	kueken::layout::name Layout(kueken::layout::name::null());
 	kueken::sampler::name Sampler(kueken::sampler::name::null());
 	kueken::buffer::name ArrayBuffer(kueken::buffer::name::null());
@@ -60,17 +61,16 @@ namespace
 	kueken::test::name Test(kueken::test::name::null());
 	kueken::framebuffer::name Framebuffer(kueken::framebuffer::name::null());
 
-	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE_DXT1(0);
-	kueken::program::semantic const SAMPLER_SEMANTIC_DIFFUSE_RGB8(1);
-	kueken::program::semantic const UNIFORM_SEMANTIC_MVP(1);
-	kueken::program::semantic const ATTRIB_SEMANTIC_POSITION(0);
-	kueken::program::semantic const ATTRIB_SEMANTIC_COLOR(1);
-	kueken::program::semantic const ATTRIB_SEMANTIC_TEXCOORD(4);
-	kueken::program::semantic const FRAGMENT_SEMANTIC_COLOR(0);
-
-	kueken::program::semantic const SUBROUTINE_SEMANTIC_DIFFUSE_LQ(0);
-	kueken::program::semantic const SUBROUTINE_SEMANTIC_DIFFUSE_HQ(1);
-	kueken::program::semantic const ROUTINE_SEMANTIC_DIFFUSE(0);
+	kueken::program::semantic const SEMANTIC_SAMPLER_DIFFUSE_RGB8(0);
+	kueken::program::semantic const SEMANTIC_SAMPLER_DIFFUSE_BGR8(1);
+	kueken::program::semantic const SEMANTIC_UNIFORM_MVP(2);
+	kueken::program::semantic const SEMANTIC_ATTR_POSITION(0);
+	kueken::program::semantic const SEMANTIC_ATTR_COLOR(1);
+	kueken::program::semantic const SEMANTIC_ATTR_TEXCOORD(4);
+	kueken::program::semantic const SEMANTIC_FRAG_COLOR(0);
+	kueken::program::semantic const SEMANTIC_FUNCTION_DIFFUSE_RGB8(0);
+	kueken::program::semantic const SEMANTIC_FUNCTION_DIFFUSE_BGR8(1);
+	kueken::program::semantic const SEMANTIC_SUBROUTINE_DIFFUSE(0);
 	
 }//namespace
 
@@ -138,12 +138,13 @@ bool initRasterizer()
 
 bool initTexture2D()
 {
-	{
-		gli::texture2D ImageFile = gli::load(TEXTURE_DIFFUSE);
+	gli::texture2D ImageFile = gli::load(TEXTURE_DIFFUSE);
 
+	{
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
+		Creator.setSwizzle(kueken::texture::RED, kueken::texture::GREEN, kueken::texture::BLUE, kueken::texture::ALPHA);
 		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
 		{
 			Creator.setImage(
@@ -151,11 +152,30 @@ bool initTexture2D()
 				glm::uvec3(ImageFile[Level].dimensions(), 1), 
 				ImageFile[Level].data());
 		}
-		Texture = Renderer->create(Creator);
+		TextureRGB8 = Renderer->create(Creator);
 
-		kueken::texture::object & Object = Renderer->map(Texture);
+		kueken::texture::object & Object = Renderer->map(TextureRGB8);
 		Object.generateMipmaps();
-		Renderer->unmap(Texture);
+		Renderer->unmap(TextureRGB8);
+	}
+
+	{
+		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
+		Creator.setFormat(kueken::texture::RGBA_DXT5);
+		Creator.setTarget(kueken::texture::TEXTURE2D);
+		Creator.setSwizzle(kueken::texture::BLUE, kueken::texture::GREEN, kueken::texture::RED, kueken::texture::ALPHA);
+		for(kueken::texture::level Level = 0; Level < ImageFile.levels(); ++Level)
+		{
+			Creator.setImage(
+				Level, 
+				glm::uvec3(ImageFile[Level].dimensions(), 1), 
+				ImageFile[Level].data());
+		}
+		TextureBGR8 = Renderer->create(Creator);
+
+		kueken::texture::object & Object = Renderer->map(TextureBGR8);
+		Object.generateMipmaps();
+		Renderer->unmap(TextureBGR8);
 	}
 
 	{
@@ -175,16 +195,16 @@ bool initProgram()
 	Creator.setVersion(kueken::program::CORE_400);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE_DXT1, "DiffuseDXT1");
-	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE_RGB8, "DiffuseRGB8");
-	Creator.addVariable(UNIFORM_SEMANTIC_MVP, "MVP");
-	Creator.addSemantic(ATTRIB_SEMANTIC_POSITION, "ATTR_POSITION");
-	Creator.addSemantic(ATTRIB_SEMANTIC_COLOR, "ATTR_COLOR");
-	Creator.addSemantic(ATTRIB_SEMANTIC_TEXCOORD, "ATTR_TEXCOORD");
-	Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
-	Creator.addFunction(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_LQ, "diffuseLQ");
-	Creator.addFunction(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_HQ, "diffuseHQ");
-	Creator.addRoutine(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "Diffuse");
+	Creator.addVariable(SEMANTIC_SAMPLER_DIFFUSE_RGB8, "DiffuseRGB8");
+	Creator.addVariable(SEMANTIC_SAMPLER_DIFFUSE_BGR8, "DiffuseBGR8");
+	Creator.addVariable(SEMANTIC_UNIFORM_MVP, "MVP");
+	Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
+	Creator.addSemantic(SEMANTIC_ATTR_COLOR, "ATTR_COLOR");
+	Creator.addSemantic(SEMANTIC_ATTR_TEXCOORD, "ATTR_TEXCOORD");
+	Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
+	Creator.addFunction(kueken::program::FRAGMENT, SEMANTIC_FUNCTION_DIFFUSE_RGB8, "diffuseRGB8");
+	Creator.addFunction(kueken::program::FRAGMENT, SEMANTIC_FUNCTION_DIFFUSE_BGR8, "diffuseBGR8");
+	Creator.addSubroutine(kueken::program::FRAGMENT, SEMANTIC_SUBROUTINE_DIFFUSE, "Diffuse");
 	Creator.build();
 	Program = Renderer->create(Creator);
 
@@ -196,14 +216,14 @@ bool initLayout()
 	kueken::layout::creator Creator(*Renderer);
 	Creator.setVertexArray(
 		0, 
-		ATTRIB_SEMANTIC_POSITION,
+		SEMANTIC_ATTR_POSITION,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		0, 
 		0);
 	Creator.setVertexArray(
 		0, 
-		ATTRIB_SEMANTIC_TEXCOORD,
+		SEMANTIC_ATTR_TEXCOORD,
 		kueken::layout::F32VEC2,
 		sizeof(glf::vertex_v2fv2f),
 		sizeof(glm::vec2), 
@@ -296,10 +316,10 @@ void display()
 	glm::mat4 MVP = Projection * View * Model;
 
 	kueken::program::object & Object = Renderer->map(Program);
-	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE_DXT1, kueken::sampler::SLOT0);
-	Object.setSampler(SAMPLER_SEMANTIC_DIFFUSE_RGB8, kueken::sampler::SLOT1);
-	Object.setUniform(UNIFORM_SEMANTIC_MVP, MVP);
-	Object.setSubroutine(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, SUBROUTINE_SEMANTIC_DIFFUSE_LQ);
+	Object.setSampler(SEMANTIC_SAMPLER_DIFFUSE_RGB8, kueken::sampler::SLOT0);
+	Object.setSampler(SEMANTIC_SAMPLER_DIFFUSE_BGR8, kueken::sampler::SLOT1);
+	Object.setUniform(SEMANTIC_UNIFORM_MVP, MVP);
+	Object.setSubroutine(kueken::program::FRAGMENT, SEMANTIC_SUBROUTINE_DIFFUSE, SEMANTIC_FUNCTION_DIFFUSE_BGR8);
 	Renderer->unmap(Program);
 
 	Renderer->bind(Framebuffer, kueken::framebuffer::EXEC);
@@ -315,8 +335,8 @@ void display()
 	
 	Renderer->bind(Program, kueken::program::UNIFIED);
 	
-	Renderer->bind(Texture, kueken::texture::SLOT0);
-	Renderer->bind(Texture, kueken::texture::SLOT1);
+	Renderer->bind(TextureRGB8, kueken::texture::SLOT0);
+	Renderer->bind(TextureBGR8, kueken::texture::SLOT1);
 	Renderer->bind(Sampler, kueken::sampler::SLOT0);
 	Renderer->bind(Sampler, kueken::sampler::SLOT1);
 
