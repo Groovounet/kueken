@@ -97,6 +97,81 @@ namespace detail
 		return Text;
 	}
 
+	GLenum uniform_type_cast
+	(
+		kueken::program::uniformType Type
+	)
+	{
+		static GLenum const Cast[] =
+		{
+			GL_FLOAT,		//F32VEC1,
+			GL_FLOAT_VEC2,	//F32VEC2,
+			GL_FLOAT_VEC3,	//F32VEC3,
+			GL_FLOAT_VEC4,	//F32VEC4,
+			GL_DOUBLE,		//F64VEC1,
+			GL_DOUBLE_VEC2,	//F64VEC2,
+			GL_DOUBLE_VEC3,	//F64VEC3,
+			GL_DOUBLE_VEC4,	//F64VEC4,
+			GL_INT,			//I32VEC1,
+			GL_INT_VEC2,	//I32VEC2,
+			GL_INT_VEC3,	//I32VEC3,
+			GL_INT_VEC4,	//I32VEC4,
+			GL_UNSIGNED_INT,		//U32VEC1,
+			GL_UNSIGNED_INT_VEC2,	//U32VEC2,
+			GL_UNSIGNED_INT_VEC3,	//U32VEC3,
+			GL_UNSIGNED_INT_VEC4,	//U32VEC4,
+			GL_BOOL,				//BVEC1,
+			GL_BOOL_VEC2,			//BVEC2,
+			GL_BOOL_VEC3,			//BVEC3,
+			GL_BOOL_VEC4,			//BVEC4,
+			GL_FLOAT_MAT2,			//F32MAT2X2,
+			GL_FLOAT_MAT2x3,		//F32MAT2X3,
+			GL_FLOAT_MAT2x4,		//F32MAT2X4,
+			GL_FLOAT_MAT3x2,		//F32MAT3X2,
+			GL_FLOAT_MAT3,			//F32MAT3X3,
+			GL_FLOAT_MAT3x4,		//F32MAT3X4,
+			GL_FLOAT_MAT4x2,		//F32MAT4X2,
+			GL_FLOAT_MAT4x3,		//F32MAT4X3,
+			GL_FLOAT_MAT4,			//F32MAT4X4,
+			GL_DOUBLE_MAT2,			//F64MAT2X2,
+			GL_DOUBLE_MAT2x3,		//F64MAT2X3,
+			GL_DOUBLE_MAT2x4,		//F64MAT2X4,
+			GL_DOUBLE_MAT3x2,		//F64MAT3X2,
+			GL_DOUBLE_MAT3,			//F64MAT3X3,
+			GL_DOUBLE_MAT3x4,		//F64MAT3X4,
+			GL_DOUBLE_MAT4x2,		//F64MAT4X2,
+			GL_DOUBLE_MAT4x3,		//F64MAT4X3,
+			GL_DOUBLE_MAT4			//F64MAT4X4,
+		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::program::UNIFORM_TYPE_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Type];
+	}
+
+	bool validateUniform(GLuint Program, GLuint Location, kueken::program::uniformType UniformType)
+	{
+ 		GLsizei Length = 0;
+ 		GLint Size;
+ 		GLenum ActualType;
+		GLsizei const BufSize = 64;
+		GLchar Name[BufSize];
+
+		glGetActiveUniform(
+			Program,
+ 			Location,
+ 			BufSize,
+ 			&Length,
+ 			&Size,
+ 			&ActualType,
+ 			Name);
+
+		GLenum ExpectedType = uniform_type_cast(UniformType);
+		return ExpectedType == ActualType;
+	}
+
 }//namespace detail
 
 	creator::creator(renderer & Renderer) :
@@ -460,6 +535,8 @@ namespace detail
 				assert(Location != GLuint(-1));
 				this->UniformIndirection[Creator.UniformVariables[i].Semantic] = Location;
 				this->UniformType[Creator.UniformVariables[i].Semantic] = UniformType;
+
+				assert(detail::validateUniform(this->Name, Location, UniformType));
 			}
 
 			this->SamplerIndirection.resize(Creator.SamplerSemanticsMax + 1);

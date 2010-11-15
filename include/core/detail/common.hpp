@@ -3,6 +3,12 @@
 
 // OpenGL
 #include <GL/glew.h>
+#define GL_DOUBLE_MAT2x3                                   0x8F49
+#define GL_DOUBLE_MAT2x4                                   0x8F4A
+#define GL_DOUBLE_MAT3x2                                   0x8F4B
+#define GL_DOUBLE_MAT3x4                                   0x8F4C
+#define GL_DOUBLE_MAT4x2                                   0x8F4D
+#define GL_DOUBLE_MAT4x3                                   0x8F4E
 
 // GLM
 #include <glm/glm.hpp>

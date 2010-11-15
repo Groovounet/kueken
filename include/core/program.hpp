@@ -74,10 +74,6 @@ namespace program
 
 	enum uniformType
 	{
-		F16VEC1,
-		F16VEC2,
-		F16VEC3,
-		F16VEC4,
 		F32VEC1,
 		F32VEC2,
 		F32VEC3,
@@ -86,26 +82,10 @@ namespace program
 		F64VEC2,
 		F64VEC3,
 		F64VEC4,
-		I8VEC1,
-		I8VEC2,
-		I8VEC3,
-		I8VEC4,
-		I16VEC1,
-		I16VEC2,
-		I16VEC3,
-		I16VEC4,
 		I32VEC1,
 		I32VEC2,
 		I32VEC3,
 		I32VEC4,
-		U8VEC1,
-		U8VEC2,
-		U8VEC3,
-		U8VEC4,
-		U16VEC1,
-		U16VEC2,
-		U16VEC3,
-		U16VEC4,
 		U32VEC1,
 		U32VEC2,
 		U32VEC3,
@@ -132,7 +112,7 @@ namespace program
 		F64MAT4X2,
 		F64MAT4X3,
 		F64MAT4X4,
-		FORMAT_MAX
+		UNIFORM_TYPE_MAX
 	};
 
 	enum samplerType
@@ -180,7 +160,7 @@ namespace program
 		USAMPLER_CUBE_ARRAY,
 		USAMPLER_BUFFER,
 
-		SAMPLER_MAX
+		SAMPLER_TYPE_MAX
 	};
 
 namespace detail
