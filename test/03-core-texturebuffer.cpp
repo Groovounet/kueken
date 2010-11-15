@@ -21,7 +21,7 @@ namespace
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
 	int const SAMPLE_MAJOR_VERSION(4);
-	int const SAMPLE_MINOR_VERSION(0);
+	int const SAMPLE_MINOR_VERSION(1);
 
 	glf::window Window(glm::ivec2(SAMPLE_SIZE_WIDTH, SAMPLE_SIZE_HEIGHT));
 
@@ -171,7 +171,7 @@ bool initTexture2D()
 bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
-	Creator.setVersion(kueken::program::CORE_400);
+	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(
 		kueken::program::VERTEX, 
 		kueken::program::FILE,
@@ -180,12 +180,14 @@ bool initProgram()
 		kueken::program::FRAGMENT, 
 		kueken::program::FILE,
 		FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(
+	Creator.addSampler(
 		SAMPLER_SEMANTIC_DIFFUSE, 
-		"Diffuse");
-	Creator.addVariable(
+		"Diffuse",
+		kueken::program::SAMPLER2D);
+	Creator.addSampler(
 		SAMPLER_SEMANTIC_MVP, 
-		"MVP");
+		"MVP",
+		kueken::program::SAMPLER_BUFFER);
 
 	Creator.build();
 	Program = Renderer->create(Creator);

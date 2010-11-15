@@ -25,7 +25,7 @@ namespace
 	int const SAMPLE_OFFSCREEN_X(640);
 	int const SAMPLE_OFFSCREEN_Y(480);
 	int const SAMPLE_MAJOR_VERSION(4);
-	int const SAMPLE_MINOR_VERSION(0);
+	int const SAMPLE_MINOR_VERSION(1);
 
 	glf::window Window(glm::ivec2(SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
 
@@ -300,7 +300,7 @@ bool initProgram()
 {
 	{
 		kueken::program::creator Creator(*Renderer);
-		Creator.setVersion(kueken::program::CORE_400);
+		Creator.setVersion(kueken::program::CORE_410);
 		Creator.addSource(
 			kueken::program::VERTEX, 
 			kueken::program::FILE,
@@ -309,8 +309,8 @@ bool initProgram()
 			kueken::program::FRAGMENT, 
 			kueken::program::FILE,
 			FRAG_SHADER_SOURCE0);
-		Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
-		Creator.addVariable(SEMANTIC_UNIF_MVP, "MVP");
+		Creator.addSampler(SEMANTIC_UNIF_DIFFUSE, "Diffuse", kueken::program::SAMPLER2D);
+		Creator.addUniform(SEMANTIC_UNIF_MVP, "MVP", kueken::program::F32MAT4X4);
 		Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
 		Creator.addSemantic(SEMANTIC_ATTR_TEXCOORD, "ATTR_TEXCOORD");
 		Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
@@ -320,7 +320,7 @@ bool initProgram()
 
 	{
 		kueken::program::creator Creator(*Renderer);
-		Creator.setVersion(kueken::program::CORE_400);
+		Creator.setVersion(kueken::program::CORE_410);
 		Creator.addSource(
 			kueken::program::VERTEX, 
 			kueken::program::FILE,
@@ -329,7 +329,7 @@ bool initProgram()
 			kueken::program::FRAGMENT, 
 			kueken::program::FILE,
 			FRAG_SHADER_SOURCE1);
-		Creator.addVariable(SEMANTIC_UNIF_DIFFUSE, "Diffuse");
+		Creator.addSampler(SEMANTIC_UNIF_DIFFUSE, "Diffuse", kueken::program::SAMPLER2D);
 		Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
 		Creator.addSemantic(SEMANTIC_FRAG_COLOR, "FRAG_COLOR");
 		Creator.build();

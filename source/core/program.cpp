@@ -102,6 +102,7 @@ namespace detail
 	creator::creator(renderer & Renderer) :
 		Renderer(Renderer),
 		UniformSemanticsMax(0),
+		SamplerSemanticsMax(0),
 		BlockSemanticsMax(0),
 		FeedbackBufferMode(0),
 		Quiet(false),
@@ -124,9 +125,6 @@ namespace detail
 			break;
 		case CORE_330: 
 			this->Version = std::string("#version 330 core");
-			break;
-		case CORE_400: 
-			this->Version = std::string("#version 400 core");
 			break;
 		case CORE_410: 
 			this->Version = std::string("#version 410 core");
@@ -196,16 +194,30 @@ namespace detail
 		this->Semantics += (boost::format("#define %s %d\n") % Value.c_str() % Location).str();
 	}
 
-	void creator::addVariable
+	void creator::addUniform
 	(
 		semantic const & Semantic, 
-		std::string const & Name
+		std::string const & Name,
+		uniformType const & Format
 	)
 	{
 		this->update();
 		this->UniformVariables.push_back(
-			detail::indirection(Semantic, Name));
+			detail::uniformIndirection(Semantic, Name, Format));
 		this->UniformSemanticsMax = glm::max(this->UniformSemanticsMax, Semantic);
+	}
+
+	void creator::addSampler
+	(
+		semantic const & Semantic, 
+		std::string const & Name,
+		samplerType const & Type
+	)
+	{
+		this->update();
+		this->SamplerVariables.push_back(
+			detail::samplerIndirection(Semantic, Name, Type));
+		this->SamplerSemanticsMax = glm::max(this->SamplerSemanticsMax, Semantic);
 	}
 
 	void creator::addBlock
@@ -439,12 +451,27 @@ namespace detail
 		if(Success)
 		{
 			this->UniformIndirection.resize(Creator.UniformSemanticsMax + 1);
+			this->UniformType.resize(Creator.UniformSemanticsMax + 1);
 			for(std::size_t i = 0; i < Creator.UniformVariables.size(); ++i)
 			{
-				std::string const & VariableName = Creator.UniformVariables[i].Name;
-				GLuint Location = glGetUniformLocation(this->Name, VariableName.c_str());
+				std::string const & UniformName = Creator.UniformVariables[i].Name;
+				uniformType const & UniformType = Creator.UniformVariables[i].Type;
+				GLuint Location = glGetUniformLocation(this->Name, UniformName.c_str());
 				assert(Location != GLuint(-1));
 				this->UniformIndirection[Creator.UniformVariables[i].Semantic] = Location;
+				this->UniformType[Creator.UniformVariables[i].Semantic] = UniformType;
+			}
+
+			this->SamplerIndirection.resize(Creator.SamplerSemanticsMax + 1);
+			this->SamplerType.resize(Creator.SamplerSemanticsMax + 1);
+			for(std::size_t i = 0; i < Creator.SamplerVariables.size(); ++i)
+			{
+				std::string const & SamplerName = Creator.SamplerVariables[i].Name;
+				samplerType const & SamplerType = Creator.SamplerVariables[i].Type;
+				GLuint Location = glGetUniformLocation(this->Name, SamplerName.c_str());
+				assert(Location != GLuint(-1));
+				this->SamplerIndirection[Creator.SamplerVariables[i].Semantic] = Location;
+				this->SamplerType[Creator.SamplerVariables[i].Semantic] = SamplerType;
 			}
 
 			this->BlockIndirection.resize(Creator.BlockSemanticsMax + 1);
@@ -523,6 +550,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC1);
 
 		glProgramUniform1fvEXT(
 			this->Name, 
@@ -540,8 +568,44 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC1);
 
 		glProgramUniform1fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		double const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC1);
+
+		glProgramUniform1dvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			&Value);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		double const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC1);
+
+		glProgramUniform1dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -556,6 +620,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC1);
 
 		glProgramUniform1iEXT(
 			this->Name, 
@@ -572,6 +637,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC1);
 
 		glProgramUniform1ivEXT(
 			this->Name, 
@@ -588,6 +654,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC1);
 
 		glProgramUniform1uiEXT(
 			this->Name, 
@@ -604,6 +671,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC1);
 
 		glProgramUniform1uivEXT(
 			this->Name, 
@@ -620,6 +688,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC2);
 
 		glProgramUniform2fvEXT(
 			this->Name, 
@@ -637,8 +706,44 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC2);
 
 		glProgramUniform2fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::dvec2 const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC2);
+
+		glProgramUniform2dvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::dvec2 const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC2);
+
+		glProgramUniform2dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -653,6 +758,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC2);
 
 		glProgramUniform2ivEXT(
 			this->Name, 
@@ -670,6 +776,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC2);
 
 		glProgramUniform2ivEXT(
 			this->Name, 
@@ -686,6 +793,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC2);
 
 		glProgramUniform2uivEXT(
 			this->Name, 
@@ -703,6 +811,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC2);
 
 		glProgramUniform2uivEXT(
 			this->Name, 
@@ -719,6 +828,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC3);
 
 		glProgramUniform3fvEXT(
 			this->Name, 
@@ -736,8 +846,44 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC3);
 
 		glProgramUniform3fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::dvec3 const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC3);
+
+		glProgramUniform3dvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::dvec3 const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC3);
+
+		glProgramUniform3dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -752,6 +898,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC3);
 
 		glProgramUniform3ivEXT(
 			this->Name, 
@@ -769,6 +916,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC3);
 
 		glProgramUniform3ivEXT(
 			this->Name, 
@@ -785,6 +933,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC3);
 
 		glProgramUniform3uivEXT(
 			this->Name, 
@@ -802,6 +951,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC3);
 
 		glProgramUniform3uivEXT(
 			this->Name, 
@@ -818,6 +968,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC4);
 
 		glProgramUniform4fvEXT(
 			this->Name, 
@@ -835,8 +986,44 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32VEC4);
 
 		glProgramUniform4fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, 
+			&Value[0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::dvec4 const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC4);
+
+		glProgramUniform4dvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count,
+		glm::dvec4 const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64VEC4);
+
+		glProgramUniform4dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -851,6 +1038,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC4);
 
 		glProgramUniform4ivEXT(
 			this->Name, 
@@ -868,6 +1056,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::I32VEC4);
 
 		glProgramUniform4ivEXT(
 			this->Name, 
@@ -884,6 +1073,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC4);
 
 		glProgramUniform4uivEXT(
 			this->Name, 
@@ -901,6 +1091,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::U32VEC4);
 
 		glProgramUniform4uivEXT(
 			this->Name, 
@@ -917,6 +1108,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32MAT2X2);
 
 		glProgramUniformMatrix2fvEXT(
 			this->Name, 
@@ -934,8 +1126,44 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32MAT2X2);
 
 		glProgramUniformMatrix2fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, GL_FALSE, 
+			&Value[0][0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::dmat2 const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64MAT2X2);
+
+		glProgramUniformMatrix2dvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, GL_FALSE, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count, 
+		glm::dmat2 const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64MAT2X2);
+
+		glProgramUniformMatrix2dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -950,6 +1178,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32MAT3X3);
 
 		glProgramUniformMatrix3fv(
 			this->Name, 
@@ -967,8 +1196,44 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32MAT3X3);
 
 		glProgramUniformMatrix3fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, GL_FALSE, 
+			&Value[0][0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::dmat3 const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64MAT3X3);
+
+		glProgramUniformMatrix3dv(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, GL_FALSE, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count, 
+		glm::dmat3 const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64MAT3X3);
+
+		glProgramUniformMatrix3dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -983,6 +1248,7 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32MAT4X4);
 
 		glProgramUniformMatrix4fvEXT(
 			this->Name, 
@@ -1001,8 +1267,45 @@ namespace detail
 	)
 	{
 		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F32MAT4X4);
 
 		glProgramUniformMatrix4fvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			Count, GL_FALSE, 
+			&Value[0][0][0]);
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		glm::dmat4 const & Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64MAT4X4);
+
+		glProgramUniformMatrix4dvEXT(
+			this->Name, 
+			this->UniformIndirection[Semantic], 
+			1, 
+			GL_FALSE, 
+			glm::value_ptr(Value));
+	}
+
+	template <>
+	void object::setUniform
+	(
+		semantic const & Semantic, 
+		count const & Count, 
+		glm::dmat4 const * Value
+	)
+	{
+		assert(Semantic <= this->UniformIndirection.size());
+		assert(this->UniformType[Semantic] == program::F64MAT4X4);
+
+		glProgramUniformMatrix4dvEXT(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1015,9 +1318,9 @@ namespace detail
 		sampler::slot const & Value
 	)
 	{
-		assert(Semantic <= this->UniformIndirection.size());
+		assert(Semantic <= this->SamplerIndirection.size());
 
-		GLuint Location = this->UniformIndirection[Semantic];
+		GLuint Location = this->SamplerIndirection[Semantic];
 		glProgramUniform1iEXT(this->Name, Location, Value);
 	}
 
@@ -1028,11 +1331,11 @@ namespace detail
 		sampler::slot const * Value
 	)
 	{
-		assert(Semantic <= this->UniformIndirection.size());
+		assert(Semantic <= this->SamplerIndirection.size());
 
 		glProgramUniform1ivEXT(
 			this->Name, 
-			this->UniformIndirection[Semantic], 
+			this->SamplerIndirection[Semantic], 
 			GLsizei(Count), 
 			(GLint*)Value);
 	}

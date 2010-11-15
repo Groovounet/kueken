@@ -21,7 +21,7 @@ namespace
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
 	int const SAMPLE_MAJOR_VERSION(4);
-	int const SAMPLE_MINOR_VERSION(0);
+	int const SAMPLE_MINOR_VERSION(1);
 
 	glf::window Window(glm::ivec2(SAMPLE_SIZE_WIDTH, SAMPLE_SIZE_HEIGHT));
 
@@ -192,12 +192,12 @@ bool initTexture2D()
 bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
-	Creator.setVersion(kueken::program::CORE_400);
+	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SEMANTIC_SAMPLER_DIFFUSE_RGB8, "DiffuseRGB8");
-	Creator.addVariable(SEMANTIC_SAMPLER_DIFFUSE_BGR8, "DiffuseBGR8");
-	Creator.addVariable(SEMANTIC_UNIFORM_MVP, "MVP");
+	Creator.addSampler(SEMANTIC_SAMPLER_DIFFUSE_RGB8, "DiffuseRGB8", kueken::program::SAMPLER2D);
+	Creator.addSampler(SEMANTIC_SAMPLER_DIFFUSE_BGR8, "DiffuseBGR8", kueken::program::SAMPLER2D);
+	Creator.addUniform(SEMANTIC_UNIFORM_MVP, "MVP", kueken::program::F32MAT4X4);
 	Creator.addSemantic(SEMANTIC_ATTR_POSITION, "ATTR_POSITION");
 	Creator.addSemantic(SEMANTIC_ATTR_COLOR, "ATTR_COLOR");
 	Creator.addSemantic(SEMANTIC_ATTR_TEXCOORD, "ATTR_TEXCOORD");

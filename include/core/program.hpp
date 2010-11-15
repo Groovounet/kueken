@@ -33,7 +33,6 @@ namespace program
 		DEFAULT,
 		GLES_200,
 		CORE_330,
-		CORE_400,
 		CORE_410
 	};
 
@@ -73,7 +72,7 @@ namespace program
 	typedef glm::uint32 subroutine;
 	typedef glm::uint32 function;
 
-	enum format
+	enum uniformType
 	{
 		F16VEC1,
 		F16VEC2,
@@ -202,6 +201,40 @@ namespace detail
 		std::string Name;
 	};
 
+	struct uniformIndirection
+	{
+		inline uniformIndirection
+		(
+			semantic const & Semantic,
+			std::string const & Name,
+			uniformType const & Type
+		) :
+			Semantic(Semantic),
+			Name(Name),
+			Type(Type)
+		{}
+		semantic Semantic;
+		std::string Name;
+		uniformType Type;
+	};
+
+	struct samplerIndirection
+	{
+		inline samplerIndirection
+		(
+			semantic const & Semantic,
+			std::string const & Name,
+			samplerType const & Type
+		) :
+			Semantic(Semantic),
+			Name(Name),
+			Type(Type)
+		{}
+		semantic Semantic;
+		std::string Name;
+		samplerType Type;
+	};
+
 }//namespace detail
 
 	class creator// : public kueken::detail::creator
@@ -224,9 +257,14 @@ namespace detail
 		void addSemantic(
 			semantic const & Location,
 			std::string const & Value);
-		void addVariable(
+		void addUniform(
 			semantic const & Semantic, 
-			std::string const & Name);
+			std::string const & Name,
+			uniformType const & Type);
+		void addSampler(
+			semantic const & Semantic, 
+			std::string const & Name,
+			samplerType const & Type);
 		void addBlock(
 			semantic const & Semantic, 
 			std::string const & Name);
@@ -260,8 +298,10 @@ namespace detail
 		std::string SourcesBuilt[TARGET_MAX];
 
 		std::vector<std::string> FeedbackVariables;
-		std::vector<detail::indirection> UniformVariables;
+		std::vector<detail::uniformIndirection> UniformVariables;
 		semantic UniformSemanticsMax;
+		std::vector<detail::samplerIndirection> SamplerVariables;
+		semantic SamplerSemanticsMax;
 		std::vector<detail::indirection> BlockVariables;
 		semantic BlockSemanticsMax;
 		std::array<std::vector<detail::indirection>, TARGET_MAX> FunctionVariables;
@@ -340,6 +380,9 @@ namespace detail
 	private:
 		//detail::data Data;
 		std::vector<GLuint> UniformIndirection;
+		std::vector<uniformType> UniformType;
+		std::vector<GLuint> SamplerIndirection;
+		std::vector<samplerType> SamplerType;
 		std::vector<GLuint> BlockIndirection;
 		std::array<std::vector<GLuint>, TARGET_MAX> FunctionIndirection;
 		std::array<std::vector<subroutine>, TARGET_MAX> RoutineIndirection;

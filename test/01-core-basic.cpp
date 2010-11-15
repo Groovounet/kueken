@@ -21,7 +21,7 @@ namespace
 	int const SAMPLE_SIZE_WIDTH(640);
 	int const SAMPLE_SIZE_HEIGHT(480);
 	int const SAMPLE_MAJOR_VERSION(4);
-	int const SAMPLE_MINOR_VERSION(0);
+	int const SAMPLE_MINOR_VERSION(1);
 
 	glf::window Window(glm::ivec2(SAMPLE_SIZE_WIDTH, SAMPLE_SIZE_HEIGHT));
 
@@ -174,8 +174,8 @@ bool initProgram()
 	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
-	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse");
-	Creator.addVariable(UNIFORM_SEMANTIC_MVP, "MVP");
+	Creator.addSampler(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse", kueken::program::SAMPLER2D);
+	Creator.addUniform(UNIFORM_SEMANTIC_MVP, "MVP", kueken::program::F32MAT4X4);
 	Creator.addSemantic(ATTRIB_SEMANTIC_POSITION, "ATTR_POSITION");
 	Creator.addSemantic(ATTRIB_SEMANTIC_COLOR, "ATTR_COLOR");
 	Creator.addSemantic(ATTRIB_SEMANTIC_TEXCOORD, "ATTR_TEXCOORD");
