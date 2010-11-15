@@ -171,7 +171,7 @@ bool initTexture2D()
 bool initProgram()
 {
 	kueken::program::creator Creator(*Renderer);
-	Creator.setVersion(kueken::program::CORE_400);
+	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
 	Creator.addVariable(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse");

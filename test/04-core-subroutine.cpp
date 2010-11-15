@@ -121,19 +121,15 @@ bool initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(
-			glm::ivec4(0, 0, Window.Size));
-		Creator.setScissor(
-			false, glm::ivec4(0));
+		Creator.setViewport(glm::ivec4(0, 0, Window.Size));
+		Creator.setScissor(false, glm::ivec4(0));
 		RasterizerBackground = Renderer->create(Creator);
 	}
 
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(
-			glm::ivec4(0, 0, Window.Size));
-		Creator.setScissor(
-			true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
+		Creator.setViewport(glm::ivec4(0, 0, Window.Size));
+		Creator.setScissor(true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
 		RasterizerScene = Renderer->create(Creator);
 	}
 
@@ -186,9 +182,9 @@ bool initProgram()
 	Creator.addSemantic(ATTRIB_SEMANTIC_COLOR, "ATTR_COLOR");
 	Creator.addSemantic(ATTRIB_SEMANTIC_TEXCOORD, "ATTR_TEXCOORD");
 	Creator.addSemantic(FRAGMENT_SEMANTIC_COLOR, "FRAG_COLOR");
-	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_LQ, "diffuseLQ");
-	Creator.addSubroutine(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_HQ, "diffuseHQ");
-	Creator.addSubroutineLocation(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "Diffuse");
+	Creator.addFunction(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_LQ, "diffuseLQ");
+	Creator.addFunction(kueken::program::FRAGMENT, SUBROUTINE_SEMANTIC_DIFFUSE_HQ, "diffuseHQ");
+	Creator.addRoutine(kueken::program::FRAGMENT, ROUTINE_SEMANTIC_DIFFUSE, "Diffuse");
 	Creator.build();
 	Program = Renderer->create(Creator);
 

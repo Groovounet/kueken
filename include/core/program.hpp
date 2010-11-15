@@ -67,6 +67,7 @@ namespace program
 	typedef int sampler;
 	typedef buffer::target block;
 	typedef glm::uint32 subroutine;
+	typedef glm::uint32 function;
 
 namespace detail
 {
@@ -114,13 +115,13 @@ namespace detail
 		void addBlock(
 			semantic const & Semantic, 
 			std::string const & Name);
+		void addFunction(
+			target const & Target,
+			function const & Function, 
+			std::string const & Name);
 		void addSubroutine(
 			target const & Target,
-			semantic const & Semantic, 
-			std::string const & Name);
-		void addSubroutineLocation(
-			target const & Target,
-			semantic const & Semantic, 
+			subroutine const & Subroutine, 
 			std::string const & Name);
 		void addSource(
 			target const & Target, 
@@ -148,10 +149,10 @@ namespace detail
 		semantic UniformSemanticsMax;
 		std::vector<detail::indirection> BlockVariables;
 		semantic BlockSemanticsMax;
-		std::array<std::vector<detail::indirection>, TARGET_MAX> SubroutineVariables;
-		std::array<semantic, TARGET_MAX> SubroutineSemanticsMax;
-		std::array<std::vector<detail::indirection>, TARGET_MAX> SubroutineLocationVariables;
-		std::array<semantic, TARGET_MAX> SubroutineLocationSemanticsMax;
+		std::array<std::vector<detail::indirection>, TARGET_MAX> FunctionVariables;
+		std::array<semantic, TARGET_MAX> FunctionSemanticsMax;
+		std::array<std::vector<detail::indirection>, TARGET_MAX> RoutineVariables;
+		std::array<semantic, TARGET_MAX> RoutineSemanticsMax;
 		renderer & Renderer;
 		GLenum FeedbackBufferMode;
 		bool Quiet;
@@ -212,23 +213,22 @@ namespace detail
 		// Subroutine
 		void setSubroutine(
 			target const & Target,
-			semantic const & Semantic, 
-			subroutine const & Value);
+			subroutine const & Subroutine, 
+			function const & Function);
 
 		// Subroutine array
 		void setSubroutine(
 			target const & Target,
-			semantic const & Semantic, 
+			subroutine const & Subroutine, 
 			count const & Count, 
-			subroutine const * Value);
+			function const * Value);
 
 	private:
 		//detail::data Data;
 		std::vector<GLuint> UniformIndirection;
 		std::vector<GLuint> BlockIndirection;
-		std::array<std::vector<GLuint>, TARGET_MAX> SubroutineIndirection;
-		std::array<std::vector<GLuint>, TARGET_MAX> SubroutineLocationIndirection;
-		std::array<std::vector<GLuint>, TARGET_MAX> SubroutineLocation;
+		std::array<std::vector<GLuint>, TARGET_MAX> FunctionIndirection;
+		std::array<std::vector<subroutine>, TARGET_MAX> RoutineIndirection;
 		GLuint Name;
 		std::string Log;
 	};

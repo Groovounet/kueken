@@ -124,7 +124,7 @@ include_directories("${GLI_DIRECTORY}")
 set(KUEKEN_TEST_DATA DATA_COPY)
 add_custom_target(
 	${KUEKEN_TEST_DATA}
-	COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/sample/data ${CMAKE_CURRENT_BINARY_DIR}/sample/data)
+	COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/test/data ${CMAKE_CURRENT_BINARY_DIR}/test/data)
 
 ###########
 

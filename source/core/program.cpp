@@ -107,7 +107,8 @@ namespace detail
 		Quiet(false),
 		Built(false)
 	{
-		memset(&SubroutineSemanticsMax[0], 0, sizeof(semantic) * SubroutineSemanticsMax.size());
+		memset(&FunctionSemanticsMax[0], 0, sizeof(semantic) * FunctionSemanticsMax.size());
+		memset(&RoutineSemanticsMax[0], 0, sizeof(semantic) * RoutineSemanticsMax.size());
 	}	
 
 	void creator::setVersion(version const & Version)
@@ -219,7 +220,7 @@ namespace detail
 		this->BlockSemanticsMax = glm::max(this->BlockSemanticsMax, Semantic);
 	}
 	
-	void creator::addSubroutine
+	void creator::addFunction
 	(
 		target const & Target,
 		semantic const & Semantic, 
@@ -227,12 +228,12 @@ namespace detail
 	)
 	{
 		this->update();
-		this->SubroutineVariables[Target].push_back(
+		this->FunctionVariables[Target].push_back(
 			detail::indirection(Semantic, Name));
-		this->SubroutineSemanticsMax[Target] = glm::max(this->SubroutineSemanticsMax[Target], Semantic);
+		this->FunctionSemanticsMax[Target] = glm::max(this->FunctionSemanticsMax[Target], Semantic);
 	}
 
-	void creator::addSubroutineLocation
+	void creator::addRoutine
 	(
 		target const & Target,
 		semantic const & Semantic, 
@@ -240,9 +241,9 @@ namespace detail
 	)
 	{
 		this->update();
-		this->SubroutineLocationVariables[Target].push_back(
+		this->RoutineVariables[Target].push_back(
 			detail::indirection(Semantic, Name));
-		this->SubroutineLocationSemanticsMax[Target] = glm::max(this->SubroutineLocationSemanticsMax[Target], Semantic);
+		this->RoutineSemanticsMax[Target] = glm::max(this->RoutineSemanticsMax[Target], Semantic);
 	}
 
 	void creator::addSource
@@ -455,27 +456,33 @@ namespace detail
 
 			for(std::size_t TargetIndex = 0; TargetIndex < TARGET_MAX; ++TargetIndex)
 			{
-				if(Creator.SubroutineSemanticsMax[TargetIndex] == 0)
+				if(Creator.FunctionSemanticsMax[TargetIndex] == 0)
 					continue;
 
-				this->SubroutineIndirection[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1);
+				this->FunctionIndirection[TargetIndex].resize(Creator.FunctionSemanticsMax[TargetIndex] + 1);
 
-				std::vector<detail::indirection> const & Indirections = Creator.SubroutineVariables[TargetIndex];
-				for(std::vector<detail::indirection>::size_type i = 0; i < Indirections.size(); ++i)
+				std::vector<detail::indirection> const & FunctionIndirections = Creator.FunctionVariables[TargetIndex];
+				for(std::vector<detail::indirection>::size_type i = 0; i < FunctionIndirections.size(); ++i)
 				{
-					GLuint Index = glGetSubroutineIndex(this->Name, TargetIndex, Indirections[i].Name.c_str());
+					GLuint Index = glGetSubroutineIndex(
+						this->Name, 
+						detail::program_target_cast(program::target(TargetIndex)), 
+						FunctionIndirections[i].Name.c_str());
 					assert(Index != GLuint(-1));
-					this->SubroutineIndirection[TargetIndex][Indirections[i].Semantic] = Index;
+					this->FunctionIndirection[TargetIndex][FunctionIndirections[i].Semantic] = Index;
 				}
 
-				this->SubroutineLocation[TargetIndex].resize(Creator.SubroutineSemanticsMax[TargetIndex] + 1, 0);
+				this->RoutineIndirection[TargetIndex].resize(Creator.RoutineSemanticsMax[TargetIndex] + 1, 0);
 
-				std::vector<detail::indirection> const & IndirectionLocations = Creator.SubroutineLocationVariables[TargetIndex];
-				for(std::vector<detail::indirection>::size_type i = 0; i < IndirectionLocations.size(); ++i)
+				std::vector<detail::indirection> const & RoutineIndirections = Creator.RoutineVariables[TargetIndex];
+				for(std::vector<detail::indirection>::size_type i = 0; i < RoutineIndirections.size(); ++i)
 				{
-					GLuint Location = glGetSubroutineUniformLocation(this->Name, TargetIndex, IndirectionLocations[i].Name.c_str());
+					GLuint Location = glGetSubroutineUniformLocation(
+						this->Name, 
+						detail::program_target_cast(program::target(TargetIndex)), 
+						RoutineIndirections[i].Name.c_str());
 					assert(Location != GLuint(-1));
-					this->SubroutineLocationIndirection[TargetIndex][IndirectionLocations[i].Semantic] = Location;
+					this->RoutineIndirection[TargetIndex][RoutineIndirections[i].Semantic] = Location;
 				}
 			}
 		}
@@ -494,12 +501,12 @@ namespace detail
 		glUseProgram(Name);
 		for(std::size_t Target = 0; Target < TARGET_MAX; ++Target)
 		{
-			if(this->SubroutineLocationIndirection[Target].empty())
+			if(this->RoutineIndirection[Target].empty())
 				continue;
 			glUniformSubroutinesuiv(
 				detail::program_target_cast(kueken::program::target(Target)), 
-				this->SubroutineLocationIndirection[Target].size(), 
-				&this->SubroutineLocationIndirection[Target][0]);
+				this->RoutineIndirection[Target].size(), 
+				&this->RoutineIndirection[Target][0]);
 		}
 	}
 
@@ -998,39 +1005,39 @@ namespace detail
 	void object::setSubroutine
 	(
 		target const & Target,
-		semantic const & Semantic, 
-		subroutine const & Value
+		subroutine const & Subroutine,
+		function const & Function
 	)
 	{
-		assert(Semantic <= SubroutineIndirection[Target].size());
-		assert(Semantic <= SubroutineLocationIndirection[Target].size());
+		assert(Semantic <= this->FunctionIndirection[Target].size());
+		assert(Semantic <= this->RoutineIndirection[Target].size());
 
-		GLuint Location = SubroutineLocationIndirection[Target][Semantic];
-		SubroutineIndirection[Target][Location] = Value;
+		GLuint Location = this->FunctionIndirection[Target][Semantic];
+		this->RoutineIndirection[Target][Location] = Value;
 
 		glUniformSubroutinesuiv(
 			detail::program_target_cast(Target), 
-			SubroutineIndirection[Target].size(), 
-			&SubroutineIndirection[Target][0]);
+			this->RoutineIndirection[Target].size(), 
+			&this->RoutineIndirection[Target][0]);
 	}
 
 	void object::setSubroutine
 	(
 		target const & Target,
-		semantic const & Semantic, 
+		subroutine const & Subroutine, 
 		count const & Count,
-		subroutine const * Value
+		function const * Functions
 	)
 	{
-		assert(Semantic + Count <= SubroutineIndirection[Target].size());
+		assert(Semantic + Count <= this->RoutineIndirection[Target].size());
 
 		for(count i = 0; i < Count; ++i)
-			SubroutineIndirection[Target][Semantic + i] = Value[i];
+			this->RoutineIndirection[Target][Semantic + i] = Value[i];
 
 		glUniformSubroutinesuiv(
 			detail::program_target_cast(Target), 
-			SubroutineIndirection[Target].size(), 
-			&SubroutineIndirection[Target][0]);
+			this->RoutineIndirection[Target].size(), 
+			&this->RoutineIndirection[Target][0]);
 	}
 
 }//namespace program
