@@ -16,6 +16,7 @@ namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 01";	
 	const char* VERTEX_SHADER_SOURCE = "./data/texture.vert";
+	const char* PRIM_SHADER_SOURCE = "./data/texture.geom";
 	const char* FRAGMENT_SHADER_SOURCE = "./data/texture.frag";
 	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_SIZE_WIDTH(640);
@@ -46,8 +47,7 @@ namespace
 	std::unique_ptr<kueken::renderer> Renderer(nullptr);
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
-	kueken::rasterizer::name RasterizerBackground(kueken::rasterizer::name::null());
-	kueken::rasterizer::name RasterizerScene(kueken::rasterizer::name::null());
+	kueken::rasterizer::name Rasterizer(kueken::rasterizer::name::null());
 	kueken::clear::name ClearBackground(kueken::clear::name::null());
 	kueken::clear::name ClearScene(kueken::clear::name::null());
 	kueken::draw::name Draw(kueken::draw::name::null());
@@ -81,9 +81,9 @@ bool initBlend()
 bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
-	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
 	ClearBackground = Renderer->create(Creator);
-	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
 	ClearScene = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -114,23 +114,13 @@ bool initTest()
 
 bool initRasterizer()
 {
-	{
-		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(
-			glm::ivec4(0, 0, Window.Size));
-		Creator.setScissor(
-			false, glm::ivec4(0));
-		RasterizerBackground = Renderer->create(Creator);
-	}
-
-	{
-		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(
-			glm::ivec4(0, 0, Window.Size));
-		Creator.setScissor(
-			true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
-		RasterizerScene = Renderer->create(Creator);
-	}
+	kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
+	Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, Window.Size));
+	Creator.setViewport(kueken::rasterizer::VIEWPORT1, glm::vec4(0, 0, Window.Size));
+	//Creator.setViewport(kueken::rasterizer::VIEWPORT1, glm::vec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
+	Creator.setScissor(kueken::rasterizer::VIEWPORT0, false, glm::ivec4(0));
+	Creator.setScissor(kueken::rasterizer::VIEWPORT1, true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
+	Rasterizer = Renderer->create(Creator);
 
 	return glf::checkError("initRasterizer");
 }
@@ -173,6 +163,7 @@ bool initProgram()
 	kueken::program::creator Creator(*Renderer);
 	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, VERTEX_SHADER_SOURCE);
+	Creator.addSource(kueken::program::PRIMITIVE, kueken::program::FILE, PRIM_SHADER_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	FRAGMENT_SHADER_SOURCE);
 	Creator.addSampler(SAMPLER_SEMANTIC_DIFFUSE, "Diffuse", kueken::program::SAMPLER2D);
 	Creator.addUniform(UNIFORM_SEMANTIC_MVP, "MVP", kueken::program::F32MAT4X4);
@@ -298,11 +289,9 @@ void display()
 	Renderer->unmap(Program);
 
 	Renderer->bind(Framebuffer, kueken::framebuffer::EXEC);
+	Renderer->bind(Rasterizer);
 
-	Renderer->bind(RasterizerBackground);
 	Renderer->exec(ClearBackground);
-
-	Renderer->bind(RasterizerScene);
 	Renderer->exec(ClearScene);
 
 	Renderer->bind(Test);

@@ -235,23 +235,23 @@ bool initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
-		Creator.setViewport(glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
 		RasterizerOffscreen = Renderer->create(Creator);
 	}
 
 	{
 		int const Border(8);
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
-		Creator.setViewport(glm::ivec4(Border, Border, SAMPLE_FRAMEBUFFER_X - Border * 2, SAMPLE_FRAMEBUFFER_Y - Border * 2));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(Border, Border, SAMPLE_FRAMEBUFFER_X - Border * 2, SAMPLE_FRAMEBUFFER_Y - Border * 2));
 		RasterizerOutput = Renderer->create(Creator);
 	}
 
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
-		Creator.setViewport(glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
 		RasterizerClear = Renderer->create(Creator);
 	}
 

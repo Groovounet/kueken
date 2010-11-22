@@ -114,19 +114,15 @@ bool initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(
-			glm::ivec4(0, 0, Window.Size));
-		Creator.setScissor(
-			false, glm::ivec4(0));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, Window.Size));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, false, glm::ivec4(0));
 		RasterizerBackground = Renderer->create(Creator);
 	}
 
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(
-			glm::ivec4(0, 0, Window.Size));
-		Creator.setScissor(
-			true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, Window.Size));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
 		RasterizerScene = Renderer->create(Creator);
 	}
 

@@ -57,8 +57,6 @@ namespace detail
 
 		bool DepthTest;
 		GLenum DepthFunc;
-		float DepthNear;
-		float DepthFar;
 
 		bool StencilTest;
 		GLenum StencilFunc[FACE_MAX];
@@ -79,7 +77,6 @@ namespace detail
 		creator(renderer & Renderer);
 		void setDepthEnable(bool Enabled);
 		void setDepthFunc(function Func);
-		void setDepthRange(float Near, float Far);
 
 		void setStencilEnable(bool Enabled);
 		void setStencilFunc(face Face, function Func, int Ref, glm::uint Mask);

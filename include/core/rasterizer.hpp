@@ -31,23 +31,46 @@ namespace rasterizer
 		PROMOKING_MAX
 	};
 
-namespace detail{
+	enum viewport
+	{
+		VIEWPORT0,
+		VIEWPORT1,
+		VIEWPORT2,
+		VIEWPORT3,
+		VIEWPORT4,
+		VIEWPORT5,
+		VIEWPORT6,
+		VIEWPORT7,
+/*
+		VIEWPORT8,
+		VIEWPORT9,
+		VIEWPORT10,
+		VIEWPORT11,
+		VIEWPORT12,
+		VIEWPORT13,
+		VIEWPORT14,
+		VIEWPORT15,
+*/
+		VIEWPORT_MAX
+	};
 
+namespace detail
+{
 	struct data
 	{
 		data();
 
-		glm::uint32 Id;
-
 		type Type;
 
-		glm::ivec4 Viewport;
+		std::array<glm::vec4, VIEWPORT_MAX> Viewports;
+		std::array<glm::dvec2, VIEWPORT_MAX> DepthRanges;
+		std::array<glm::ivec4, VIEWPORT_MAX> Scissors;
+		std::array<bool, VIEWPORT_MAX> ScissorsEnabled;
+
 		GLenum FrontFace;
 		GLenum CullFace;
 		bool CullFaceEnabled;
 		bool Multisampling;
-		glm::ivec4 Scissor;
-		bool ScissorEnabled;
 		float OffsetFactor;
 		float OffsetUnits;
 
@@ -62,6 +85,18 @@ namespace detail{
 		bool LineSmooth;
 		bool Discard;
 		GLenum ProvokeMode;
+	};
+
+	class creator : public kueken::detail::creator
+	{
+	public:
+		void setViewport(viewport const & Viewport, glm::vec4 const & Rect);
+		void setScissor(viewport const & Viewport, bool Enabled, glm::ivec4 const & Rect);
+		void setDepthRange(viewport const & Viewport, float Near, float Far);
+		void setMultisample(bool Multisample);
+
+	protected:
+		data Data;
 	};
 
 }//namespace detail
@@ -87,16 +122,12 @@ namespace detail{
 	{};
 
 	template <>
-	class creator<POLYGON> : public kueken::detail::creator
+	class creator<POLYGON> : public kueken::rasterizer::detail::creator
 	{
 		friend class object;
 
 	public:
 		creator(renderer & Renderer);
-		void setId(glm::uint32 Id);
-		void setViewport(glm::ivec4 const & Viewport);
-		void setMultisample(bool Multisample);
-		void setScissor(bool Enabled, glm::ivec4 const & Rect);
 
 		void setFrontFace(front Front);
 		void setCullface(cull Cull);
@@ -104,44 +135,30 @@ namespace detail{
 		void setOffset(float Factor, float Units);
 
 		virtual bool validate();
-
-	private:
-		detail::data Data;
 	};
 
 	template <>
-	class creator<LINE> : public kueken::detail::creator
+	class creator<LINE> : public kueken::rasterizer::detail::creator
 	{
 		friend class object;
 
 	public:
 		creator(renderer & Renderer);
-		void setId(glm::uint32 Id);
-		void setViewport(glm::ivec4 const & Viewport);
-		void setMultisample(bool Multisample);
-		void setScissor(bool Enabled, glm::ivec4 const & Rect);
 
 		void setSize(float Size);
 		void setSmooth(bool Enable);
 		void setProvokingVertex(provoking const & Mode);
 
 		virtual bool validate();
-
-	private:
-		detail::data Data;
 	};
 
 	template <>
-	class creator<POINT> : public kueken::detail::creator
+	class creator<POINT> : public kueken::rasterizer::detail::creator
 	{
 		friend class object;
 
 	public:
 		creator(renderer & Renderer);
-		void setId(glm::uint32 Id);
-		void setViewport(glm::ivec4 const & Viewport);
-		void setMultisample(bool Multisample);
-		void setScissor(bool Enabled, glm::ivec4 const & Rect);
 
 		void setSize(float Size, float Min, float Max);
 		void setFadeSize(float Size);
@@ -149,21 +166,15 @@ namespace detail{
 		void setSmooth(bool Enable);
 
 		virtual bool validate();
-
-	private:
-		detail::data Data;
 	};
 
 	template <>
-	class creator<DISCARD> : public kueken::detail::creator
+	class creator<DISCARD> : public kueken::rasterizer::detail::creator
 	{
 		friend class object;
 
 	public:
 		creator(renderer & Renderer);
-
-	private:
-		detail::data Data;
 	};
 
 	class object

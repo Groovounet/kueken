@@ -191,10 +191,10 @@ bool initClear()
 	kueken::clear::creator Creator(*Renderer);
 	Creator.setDepth(1.0f);
 
-	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
 	ClearOffscreen = Renderer->create(Creator);
 
-	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
 	ClearOutput = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -259,16 +259,16 @@ bool initRasterizer()
 {
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
-		Creator.setViewport(glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, SAMPLE_OFFSCREEN_X, SAMPLE_OFFSCREEN_Y));
 		Creator.setMultisample(true);
 		RasterizerOffscreen = Renderer->create(Creator);
 	}
 
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setScissor(true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
-		Creator.setViewport(glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, SAMPLE_FRAMEBUFFER_X, SAMPLE_FRAMEBUFFER_Y));
 		RasterizerOutput = Renderer->create(Creator);
 	}
 

@@ -56,14 +56,10 @@ namespace rasterizer{
 namespace detail{
 
 	data::data() :
-		Id(0),
-		Viewport(0),
 		FrontFace(GL_CCW),
 		CullFace(GL_BACK),
 		CullFaceEnabled(false),
 		Multisampling(false),
-		ScissorEnabled(false),
-		Scissor(0),
 		OffsetFactor(0),
 		OffsetUnits(0),
 
@@ -79,7 +75,53 @@ namespace detail{
 
 		Discard(false),
 		ProvokeMode(GL_LAST_VERTEX_CONVENTION)
-	{}
+	{
+		for(std::size_t i = 0; i < VIEWPORT_MAX; ++i)
+			this->ScissorsEnabled[i] = false;
+	}
+
+	///////////////////////////////
+	// detail::creator
+
+	void creator::setViewport
+	(
+		viewport const & Viewport,
+		glm::vec4 const & Sizes
+	)
+	{
+		assert(std::size_t(Viewport) < this->Data.Viewports.size());
+		this->Data.Viewports[Viewport] = Sizes;
+	}
+
+	void creator::setScissor
+	(
+		viewport const & Viewport, 
+		bool Enabled, 
+		glm::ivec4 const & Rect
+	)
+	{
+		assert(std::size_t(Viewport) < this->Data.ScissorsEnabled.size());
+		this->Data.ScissorsEnabled[Viewport] = Enabled;
+
+		assert(std::size_t(Viewport) < this->Data.Scissors.size());
+		this->Data.Scissors[Viewport] = Rect;
+	}
+
+	void creator::setDepthRange
+	(
+		viewport const & Viewport, 
+		float Near, 
+		float Far
+	)
+	{
+		assert(std::size_t(Viewport) < this->Data.DepthRanges.size());
+		this->Data.DepthRanges[Viewport] = glm::vec2(Near, Far);
+	}
+
+	void creator::setMultisample(bool Multisample)
+	{
+		this->Data.Multisampling = Multisample;
+	}
 
 }//namespace detail
 
@@ -92,16 +134,6 @@ namespace detail{
 	)
 	{}
 
-	void creator<POLYGON>::setId(glm::uint32 Id)
-	{
-		Data.Id = Id;
-	}
-
-	void creator<POLYGON>::setViewport(glm::ivec4 const & Viewport)
-	{
-		Data.Viewport = Viewport;
-	}
-
 	void creator<POLYGON>::setFrontFace(front Front)
 	{
 		Data.CullFace = rasterizer_front_cast(Front);
@@ -111,17 +143,6 @@ namespace detail{
 	{
 		Data.CullFaceEnabled = Cull != CULL_NONE;
 		Data.CullFace = rasterizer_cull_cast(Cull);
-	}
-
-	void creator<POLYGON>::setMultisample(bool Multisample)
-	{
-		Data.Multisampling = Multisample;
-	}
-
-	void creator<POLYGON>::setScissor(bool Enabled, glm::ivec4 const & Rect)
-	{
-		Data.ScissorEnabled = Enabled;
-		Data.Scissor = Rect;
 	}
 
 	void creator<POLYGON>::setProvokingVertex(provoking const & Mode)
@@ -148,27 +169,6 @@ namespace detail{
 		renderer & Renderer
 	)
 	{}
-
-	void creator<LINE>::setId(glm::uint32 Id)
-	{
-		Data.Id = Id;
-	}
-
-	void creator<LINE>::setViewport(glm::ivec4 const & Viewport)
-	{
-		Data.Viewport = Viewport;
-	}
-
-	void creator<LINE>::setMultisample(bool Multisample)
-	{
-		Data.Multisampling = Multisample;
-	}
-
-	void creator<LINE>::setScissor(bool Enabled, glm::ivec4 const & Rect)
-	{
-		Data.ScissorEnabled = Enabled;
-		Data.Scissor = Rect;
-	}
 
 	void creator<LINE>::setSize(float Size)
 	{
@@ -198,27 +198,6 @@ namespace detail{
 		renderer & Renderer
 	)
 	{}
-
-	void creator<POINT>::setId(glm::uint32 Id)
-	{
-		Data.Id = Id;
-	}
-
-	void creator<POINT>::setViewport(glm::ivec4 const & Viewport)
-	{
-		Data.Viewport = Viewport;
-	}
-
-	void creator<POINT>::setMultisample(bool Multisample)
-	{
-		Data.Multisampling = Multisample;
-	}
-
-	void creator<POINT>::setScissor(bool Enabled, glm::ivec4 const & Rect)
-	{
-		Data.ScissorEnabled = Enabled;
-		Data.Scissor = Rect;
-	}
 
 	bool creator<POINT>::validate()
 	{
@@ -350,7 +329,7 @@ namespace detail{
 	{
 		assert(glGetError() == GL_NO_ERROR);
 
-		glViewport(Data.Viewport.x, Data.Viewport.y, Data.Viewport.z, Data.Viewport.w);
+		glViewportArrayv(0, VIEWPORT_MAX, &Data.Viewports[0][0]);
 
 		assert(glGetError() == GL_NO_ERROR);
 
@@ -373,17 +352,27 @@ namespace detail{
 
 		assert(glGetError() == GL_NO_ERROR);
 
-		if(Data.ScissorEnabled)
-			glEnable(GL_SCISSOR_TEST);
-		else
-			glDisable(GL_SCISSOR_TEST);
-		glScissor(
-			Data.Scissor.x, 
-			Data.Scissor.y, 
-			Data.Scissor.z, 
-			Data.Scissor.w);
+		for(std::size_t i = 0; i < VIEWPORT_MAX; ++i)
+		{
+			if(Data.ScissorsEnabled[i])
+				glEnableIndexedEXT(GL_SCISSOR_TEST, i);
+			else
+				glDisableIndexedEXT(GL_SCISSOR_TEST, i);
+		}
 
 		assert(glGetError() == GL_NO_ERROR);
+
+		glScissorArrayv(
+			0,
+			VIEWPORT_MAX,
+			&Data.Scissors[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
+
+		glDepthRangeArrayv(
+			0,
+			VIEWPORT_MAX,
+			&Data.DepthRanges[0][0]);
 
 		glPolygonOffset(
 			Data.OffsetFactor, 

@@ -52,9 +52,7 @@ namespace detail{
 
 	data::data() :
 		DepthTest(false),
-		DepthFunc(GL_LESS),
-		DepthNear(0),
-		DepthFar(1)
+		DepthFunc(GL_LESS)
 	{
 		StencilFunc[FRONT] = GL_ALWAYS;
 		StencilRef[FRONT] = 0;
@@ -87,12 +85,6 @@ void creator::setDepthEnable(bool Enabled)
 void creator::setDepthFunc(function Func)
 {
 	Data.DepthFunc = test_function_cast(Func);
-}
-
-void creator::setDepthRange(float Near, float Far)
-{
-	Data.DepthNear = Near;
-	Data.DepthFar = Far;
 }
 
 void creator::setStencilEnable(bool Enabled)
@@ -151,7 +143,6 @@ void object::run()
 	assert(glGetError() == GL_NO_ERROR);
 
 	glDepthFunc(Data.DepthFunc);
-	glDepthRange(Data.DepthNear, Data.DepthFar);
 	assert(glGetError() == GL_NO_ERROR);
 
 	if(Data.StencilTest)

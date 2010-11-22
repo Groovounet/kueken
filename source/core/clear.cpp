@@ -10,14 +10,12 @@ namespace clear{
 namespace detail{
 
 	data::data() :
-		BitField(0),
-		Red(0.0f),
-		Green(0.0f),
-		Blue(0.0f),
-		Alpha(0.0f),
 		Depth(1.0f),
-		Stencil(0)
-	{}
+		Stencil(0),
+		Drawbuffers(0)
+	{
+		memset(&this->Color[0][0], 0, sizeof(this->Color));
+	}
 
 }//namespace detail
 
@@ -27,25 +25,26 @@ namespace detail{
 	)
 	{}
 
-	void creator::setColor(glm::vec4 const & Color)
+	void creator::setColor
+	(
+		colorbuffer const & Colorbuffer,
+		glm::vec4 const & Color
+	)
 	{
-		Data.BitField |= GL_COLOR_BUFFER_BIT;
-		Data.Red = Color.r;
-		Data.Green = Color.g;
-		Data.Blue = Color.b;
-		Data.Alpha = Color.a;
+		this->Data.Drawbuffers |= (1 << Colorbuffer);
+		this->Data.Color[Colorbuffer] = Color;
 	}
 
 	void creator::setDepth(float Depth)
 	{
-		Data.BitField |= GL_DEPTH_BUFFER_BIT;
-		Data.Depth = Depth;
+		this->Data.Drawbuffers |= DEPTHBUFFER_BIT;
+		this->Data.Depth = Depth;
 	}
 
 	void creator::setStencil(int Stencil)
 	{
-		Data.BitField |= GL_STENCIL_BUFFER_BIT;
-		Data.Stencil = Stencil;
+		this->Data.Drawbuffers |= STENCILBUFFER_BIT;
+		this->Data.Stencil = Stencil;
 	}
 
 	bool creator::validate()
@@ -62,14 +61,15 @@ namespace detail{
 
 	void object::exec()
 	{
-		if(Data.BitField & GL_COLOR_BUFFER_BIT)
-			glClearColor(Data.Red, Data.Green, Data.Blue, Data.Alpha);
-		if(Data.BitField & GL_DEPTH_BUFFER_BIT)
-			glClearDepth(Data.Depth);
-		if(Data.BitField & GL_STENCIL_BUFFER_BIT)
-			glClearStencil(Data.Stencil);
-
-		glClear(Data.BitField);
+		for(std::size_t i = 0; i < COLORBUFFER_MAX; ++i)
+			if(this->Data.Drawbuffers & (1 << i))
+				glClearBufferfv(GL_COLOR, i, &this->Data.Color[i][0]);
+		if((this->Data.Drawbuffers & DEPTHBUFFER_BIT) && (this->Data.Drawbuffers & STENCILBUFFER_BIT))
+			glClearBufferfi(GL_DEPTH_STENCIL, 0, this->Data.Depth, this->Data.Stencil);
+		else if(this->Data.Drawbuffers & DEPTHBUFFER_BIT)
+			glClearBufferfv(0, GL_DEPTH, &this->Data.Depth);
+		else if(this->Data.Drawbuffers & STENCILBUFFER_BIT)
+			glClearBufferiv(0, GL_STENCIL, &this->Data.Stencil);
 	}
 
 }//namespace clear
