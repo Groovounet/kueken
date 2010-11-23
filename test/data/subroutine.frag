@@ -3,11 +3,10 @@ layout(location = FRAG_COLOR, index = 0) out vec4 Color;
 uniform sampler2D DiffuseRGB8;
 uniform sampler2D DiffuseBGR8;
 
-in geom
+in vert
 {
-	smooth vec2 Texcoord;
-	flat int Invocation;
-} Geom;
+	vec2 Texcoord;
+} Vert;
 
 subroutine vec4 diffuse();
 

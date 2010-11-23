@@ -168,10 +168,10 @@ bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
 
-	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
 	ClearOutput = Renderer->create(Creator);
 
-	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
 	ClearOffscreen = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -262,7 +262,7 @@ bool initSampler()
 {
 	{
 		kueken::sampler::creator Creator(*Renderer);
-		//Creator.setFilter(kueken::sampler::TRILINEAR);
+		Creator.setFilter(kueken::sampler::TRILINEAR);
 		Creator.setWrap(kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE);
 		Creator.setAnisotropy(16.f);
 		SamplerOffscreen = Renderer->create(Creator);
@@ -270,7 +270,7 @@ bool initSampler()
 
 	{
 		kueken::sampler::creator Creator(*Renderer);
-		//Creator.setFilter(kueken::sampler::NEAREST);
+		Creator.setFilter(kueken::sampler::BILINEAR);
 		Creator.setWrap(kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE, kueken::sampler::CLAMP_TO_EDGE);
 		Creator.setAnisotropy(1.f);
 		SamplerOutput = Renderer->create(Creator);

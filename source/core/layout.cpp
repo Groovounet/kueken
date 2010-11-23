@@ -158,6 +158,8 @@ namespace layout
 
 	void object::bind()
 	{
+		assert(glGetError() == GL_NO_ERROR);
+
 		for(detail::slotData::size_type SlotIndex = 0; SlotIndex < this->SlotData.size(); ++SlotIndex)
 		{
 			detail::semanticData const & SemanticsData = this->SlotData[SlotIndex];
@@ -188,6 +190,8 @@ namespace layout
 						GL_FALSE, 
 						VertexArray.Stride,
 						VertexArray.Offset);
+					break;
+					assert(glGetError() == GL_NO_ERROR);
 				case INTEGER:
 					glVertexAttribIPointer(
 						VertexArray.Semantic, 
@@ -195,6 +199,8 @@ namespace layout
 						VertexArray.Type,
 						VertexArray.Stride,
 						VertexArray.Offset);
+					break;
+					assert(glGetError() == GL_NO_ERROR);
 				case DOUBLE:
 					glVertexAttribLPointer(
 						VertexArray.Semantic, 
@@ -202,16 +208,22 @@ namespace layout
 						VertexArray.Type,
 						VertexArray.Stride,
 						VertexArray.Offset);
+					break;
+					assert(glGetError() == GL_NO_ERROR);
 				};
 
 				glVertexAttribDivisor(
 					VertexArray.Semantic, 
 					VertexArray.Divisor);
+				assert(glGetError() == GL_NO_ERROR);
 
 				glEnableVertexAttribArray(
 					VertexArray.Semantic);
+				assert(glGetError() == GL_NO_ERROR);
 			}
 		}
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 }//namespace layout

@@ -79,9 +79,9 @@ bool initBlend()
 bool initClear()
 {
 	kueken::clear::creator Creator(*Renderer);
-	Creator.setColor(glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(1.0f, 0.8f, 0.6f, 1.0f));
 	ClearBackground = Renderer->create(Creator);
-	Creator.setColor(glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
+	Creator.setColor(kueken::clear::COLORBUFFER0, glm::vec4(0.6f, 0.8f, 1.0f, 1.0f));
 	ClearScene = Renderer->create(Creator);
 
 	return glf::checkError("initClear");
@@ -121,7 +121,7 @@ bool initRasterizer()
 
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
-		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, Window.Size));
+		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
 		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(glm::ivec2(8), Window.Size - glm::ivec2(16)));
 		RasterizerScene = Renderer->create(Creator);
 	}

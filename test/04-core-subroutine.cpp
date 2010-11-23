@@ -16,7 +16,6 @@ namespace
 {
 	const char* SAMPLE_NAME = "Kueken sample 04";	
 	const char* PROGRAM_VERT_SOURCE = "./data/subroutine.vert";
-	const char* PROGRAM_PRIM_SOURCE = "./data/subroutine.geom";
 	const char* PROGRAM_FRAG_SOURCE = "./data/subroutine.frag";
 	const char* TEXTURE_DIFFUSE = "./data/küken256dxt5.dds";
 	int const SAMPLE_SIZE_WIDTH(640);
@@ -130,9 +129,7 @@ bool initRasterizer()
 	{
 		kueken::rasterizer::creator<kueken::rasterizer::POLYGON> Creator(*Renderer);
 		Creator.setViewport(kueken::rasterizer::VIEWPORT0, glm::vec4(0, 0, Window.Size));
-		Creator.setViewport(kueken::rasterizer::VIEWPORT1, glm::vec4(Window.Size.x >> 1, 0, Window.Size.x >> 1, Window.Size.y));
-		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(glm::ivec2(8), Window.Size.x / int(2) - int(16), Window.Size.y - int(16)));
-		Creator.setScissor(kueken::rasterizer::VIEWPORT1, true, glm::ivec4(glm::ivec2(8), Window.Size.x / int(2) - int(16), Window.Size.y - int(16)));
+		Creator.setScissor(kueken::rasterizer::VIEWPORT0, true, glm::ivec4(glm::ivec2(8), Window.Size.x - int(16), Window.Size.y - int(16)));
 		RasterizerScene = Renderer->create(Creator);
 	}
 
@@ -197,7 +194,6 @@ bool initProgram()
 	kueken::program::creator Creator(*Renderer);
 	Creator.setVersion(kueken::program::CORE_410);
 	Creator.addSource(kueken::program::VERTEX, kueken::program::FILE, PROGRAM_VERT_SOURCE);
-	Creator.addSource(kueken::program::PRIMITIVE, kueken::program::FILE, PROGRAM_PRIM_SOURCE);
 	Creator.addSource(kueken::program::FRAGMENT, kueken::program::FILE,	PROGRAM_FRAG_SOURCE);
 	Creator.addSampler(SEMANTIC_SAMPLER_DIFFUSE_RGB8, "DiffuseRGB8", kueken::program::SAMPLER2D);
 	Creator.addSampler(SEMANTIC_SAMPLER_DIFFUSE_BGR8, "DiffuseBGR8", kueken::program::SAMPLER2D);

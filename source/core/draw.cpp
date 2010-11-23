@@ -386,6 +386,7 @@ namespace detail{
 			this->Data.First, 
 			this->Data.Count, 
 			this->Data.PrimCount);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	objectElement::objectElement
@@ -407,6 +408,7 @@ namespace detail{
 			this->Data.Indices, 
 			this->Data.PrimCount,
 			this->Data.BaseVertex);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	objectArrayIndirect::objectArrayIndirect
@@ -424,6 +426,7 @@ namespace detail{
 		glDrawArraysIndirect(
 			this->Data.Mode, 
 			0);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	objectElementIndirect::objectElementIndirect
@@ -442,6 +445,7 @@ namespace detail{
 			this->Data.Mode, 
 			this->Data.ElementType,
 			0);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 }//namespace draw

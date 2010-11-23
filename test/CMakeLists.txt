@@ -18,7 +18,7 @@ function(glCreateTestGTC NAME)
 	add_dependencies(${TESTS_NAME} ${TEST_NAME})
 endfunction(glCreateTestGTC)
 
-set(GL_SHADER_GTC texture.vert texture.geom texture.frag)
+set(GL_SHADER_GTC texture.vert texture.frag)
 glCreateTestGTC(01-core-basic)
 set(GL_SHADER_GTC uniform-buffer.vert uniform-buffer.frag)
 glCreateTestGTC(02-core-uniformbuffer)

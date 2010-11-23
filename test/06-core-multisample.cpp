@@ -101,7 +101,6 @@ void display()
 		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
 		Object.setUniform(SEMANTIC_UNIF_MVP, MVP);
 		Renderer->unmap(ProgramOffscreen);
-		glf::checkError("Render 1");
 
 		Renderer->bind(RasterizerOffscreen);
 		Renderer->bind(FramebufferOffscreen, kueken::framebuffer::EXEC);
@@ -114,15 +113,12 @@ void display()
 		Renderer->bind(ElementBuffer, kueken::buffer::ELEMENT);
 		Renderer->bind(ArrayBuffer, kueken::buffer::ARRAY);
 		Renderer->bind(Layout);
-		glf::checkError("Render 2");
 
 		Renderer->exec(Draw);
-		glf::checkError("Render 3");
 
 		Renderer->bind(FramebufferOffscreen, kueken::framebuffer::READ);
 		Renderer->bind(FramebufferResolve, kueken::framebuffer::DRAW);
 		Renderer->exec(Blit);
-		glf::checkError("Render 4");
 	}
 
 	{
@@ -130,12 +126,10 @@ void display()
 		Object.setSampler(SEMANTIC_UNIF_DIFFUSE, kueken::sampler::SLOT0);
 		Renderer->unmap(ProgramOutput);
 
-		glf::checkError("Render 6");
 		Renderer->bind(RasterizerOutput);
 		Renderer->bind(FramebufferOutput, kueken::framebuffer::EXEC);
 		Renderer->exec(ClearOutput);
 
-		glf::checkError("Render 9");
 		Renderer->bind(ProgramOutput, kueken::program::UNIFIED);
 		Renderer->bind(SamplerSplash, kueken::sampler::SLOT0);
 		Renderer->bind(TextureColorbuffer, kueken::texture::SLOT0);

@@ -117,11 +117,13 @@ namespace buffer
 			Data.Size, 
 			Data.Pointer, 
 			Data.Usage);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	object::~object()
 	{
 		glDeleteBuffers(1, &Name);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::bind(target const & Target)
@@ -132,6 +134,7 @@ namespace buffer
 			glBindBufferBase(buffer_target_cast(Target), Target - FEEDBACK, this->Name);
 		else
 			glBindBuffer(buffer_target_cast(Target), this->Name);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	GLuint object::GetName() const
@@ -163,6 +166,7 @@ namespace buffer
 	{
 		assert((Offset + Size) <= std::size_t(Data.Size));
 		glNamedBufferSubDataEXT(Name, Offset, Size, Pointer);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 }//namespace buffer

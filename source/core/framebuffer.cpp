@@ -174,10 +174,9 @@ namespace framebuffer
 		}
 
 		bool Error = glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
-		
+
 		assert(!Error);
-		if(Error)
-			return;
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	object::~object()
@@ -187,7 +186,11 @@ namespace framebuffer
 
 	void object::bind(target const & Target)
 	{
+		assert(glGetError() == GL_NO_ERROR);
+
 		glBindFramebuffer(framebuffer_format_cast(Target), Name);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 }//namespace framebuffer

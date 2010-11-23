@@ -596,6 +596,7 @@ namespace detail
 			}
 		}
 
+		assert(glGetError() == GL_NO_ERROR);
 		assert(Success);
 	}
 
@@ -603,6 +604,8 @@ namespace detail
 	{
 		if(Name)
 			glDeleteProgram(Name);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::bind()
@@ -617,6 +620,8 @@ namespace detail
 				this->Subroutines[Target].size(), 
 				&this->Subroutines[Target][0]);
 		}
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -634,6 +639,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			&Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -652,6 +659,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -669,6 +678,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			&Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -687,6 +698,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -703,6 +716,8 @@ namespace detail
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -721,6 +736,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			GLsizei(Count), 
 			Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -737,6 +754,8 @@ namespace detail
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -755,6 +774,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			GLsizei(Count), 
 			Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -772,6 +793,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -790,6 +813,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -807,6 +832,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -825,6 +852,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -842,6 +871,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -860,6 +891,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -877,6 +910,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -895,6 +930,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -912,6 +949,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -930,6 +969,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -947,6 +988,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -965,6 +1008,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -982,6 +1027,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1000,6 +1047,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1017,6 +1066,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1035,6 +1086,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1052,6 +1105,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1070,6 +1125,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1087,6 +1144,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1105,6 +1164,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1122,6 +1183,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1140,6 +1203,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1157,6 +1222,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1175,6 +1242,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, 
 			&Value[0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1192,6 +1261,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1210,6 +1281,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
 			&Value[0][0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1227,6 +1300,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1245,6 +1320,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
 			&Value[0][0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1262,6 +1339,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1280,6 +1359,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
 			&Value[0][0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1297,6 +1378,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1315,6 +1398,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
 			&Value[0][0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1333,6 +1418,8 @@ namespace detail
 			1, 
 			GL_FALSE, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1351,6 +1438,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
 			&Value[0][0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1369,6 +1458,8 @@ namespace detail
 			1, 
 			GL_FALSE, 
 			glm::value_ptr(Value));
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	template <>
@@ -1387,6 +1478,8 @@ namespace detail
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
 			&Value[0][0][0]);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::setSampler
@@ -1399,6 +1492,8 @@ namespace detail
 
 		GLuint Location = this->SamplerIndirection[Semantic];
 		glProgramUniform1iEXT(this->Name, Location, Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::setSampler
@@ -1415,6 +1510,8 @@ namespace detail
 			this->SamplerIndirection[Semantic], 
 			GLsizei(Count), 
 			(GLint*)Value);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::setBlock
@@ -1429,6 +1526,8 @@ namespace detail
 			this->Name, 
 			this->BlockIndirection[Semantic], 
 			Value - buffer::UNIFORM);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::setBlock
@@ -1447,6 +1546,8 @@ namespace detail
 				this->BlockIndirection[Semantic] + Index, 
 				GLuint(Value - buffer::UNIFORM + Index));
 		}
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::setSubroutine
@@ -1467,6 +1568,7 @@ namespace detail
 		//	detail::program_target_cast(Target), 
 		//	this->Subroutines[Target].size(), 
 		//	&this->Subroutines[Target][0]);
+		//assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::setSubroutine
@@ -1489,6 +1591,7 @@ namespace detail
 		//	detail::program_target_cast(Target), 
 		//	this->Subroutines[Target].size(), 
 		//	&this->Subroutines[Target][0]);
+		//assert(glGetError() == GL_NO_ERROR);
 	}
 
 }//namespace program

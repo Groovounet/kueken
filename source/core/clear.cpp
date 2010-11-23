@@ -62,14 +62,22 @@ namespace detail{
 	void object::exec()
 	{
 		for(std::size_t i = 0; i < COLORBUFFER_MAX; ++i)
-			if(this->Data.Drawbuffers & (1 << i))
-				glClearBufferfv(GL_COLOR, i, &this->Data.Color[i][0]);
+		{
+			if(!(this->Data.Drawbuffers & (1 << i)))
+				continue;
+			// Bug on AMD?
+			//glClearBufferfv(GL_COLOR, i, &this->Data.Color[i][0]);
+			glClearColor(this->Data.Color[i].r, this->Data.Color[i].g, this->Data.Color[i].b, this->Data.Color[i].a);
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
 		if((this->Data.Drawbuffers & DEPTHBUFFER_BIT) && (this->Data.Drawbuffers & STENCILBUFFER_BIT))
 			glClearBufferfi(GL_DEPTH_STENCIL, 0, this->Data.Depth, this->Data.Stencil);
 		else if(this->Data.Drawbuffers & DEPTHBUFFER_BIT)
-			glClearBufferfv(0, GL_DEPTH, &this->Data.Depth);
+			glClearBufferfv(GL_DEPTH, 0, &this->Data.Depth);
 		else if(this->Data.Drawbuffers & STENCILBUFFER_BIT)
-			glClearBufferiv(0, GL_STENCIL, &this->Data.Stencil);
+			glClearBufferiv(GL_STENCIL, 0, &this->Data.Stencil);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 }//namespace clear
