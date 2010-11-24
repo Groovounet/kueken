@@ -98,6 +98,31 @@ namespace detail{
 		USAGE_MAX
 	};
 
+	enum address
+	{
+		ADDRESS,
+		ADDRESS0 = ADDRESS,
+		ADDRESS1,
+		ADDRESS2,
+		ADDRESS3,
+		ADDRESS4,
+		ADDRESS5,
+		ADDRESS6,
+		ADDRESS7,
+		ADDRESS_MAX
+	};
+
+	enum access
+	{
+		READ_BIT,
+		WRITE_BIT,
+		INVALIDATE_RANGE_BIT,
+		INVALIDATE_BUFFER_BIT,
+		FLUSH_EXPLICIT_BIT,
+		UNSYNCHRONIZED_BIT,
+		ACCESS_MAX
+	};
+
 	class creator// : public kueken::detail::creator
 	{
 		friend class object;
@@ -116,21 +141,48 @@ namespace detail{
 
 	class object
 	{
+		struct mapping
+		{
+			GLvoid* Pointer;
+			std::size_t Offset;
+			std::size_t Length;
+		};
+
 	public:
 		object(creator const & Creator);
 		~object();
 
 		void bind(target const & Target);
-		//void* map();
-		//void unmap();
-		//void flush();
-		void set(std::size_t Offset, std::size_t Size, void const * const Data);
+		address map(
+			std::size_t const & Offset, 
+			std::size_t const & Length,
+			access const & Access);
+		void unmap();
+		void flush(
+			std::size_t const & Offset, 
+			std::size_t const & Length);
+		void set(
+			std::size_t Offset, 
+			std::size_t Size, 
+			void const * const Data);
+		void set(
+			address const & Address,
+			std::size_t Offset, 
+			std::size_t Size, 
+			void const * const Data);
+		void copy(
+			object const & ObjectSrc, 
+			std::size_t const & OffsetSrc, 
+			std::size_t const & OffsetDst, 
+			std::size_t const & Size);
 
 		GLuint GetName() const;
 
 	private:
 		detail::data Data;
 		GLuint Name;
+		std::array<mapping, ADDRESS_MAX> Mappings;
+		std::size_t PointerIndex;
 	};
 
 	typedef kueken::detail::name<object> name;

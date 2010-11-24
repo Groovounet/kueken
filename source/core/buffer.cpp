@@ -24,6 +24,25 @@ namespace
 		return Cast[Usage];
 	}
 
+	GLenum buffer_access_cast(kueken::buffer::access Access)
+	{
+		static GLenum const Cast[] = 
+		{
+			GL_MAP_READ_BIT, // READ_BIT
+			GL_MAP_WRITE_BIT, // WRITE_BIT
+			GL_MAP_INVALIDATE_RANGE_BIT, // INVALIDATE_RANGE_BIT
+			GL_MAP_INVALIDATE_BUFFER_BIT, // INVALIDATE_BUFFER_BIT
+			GL_MAP_FLUSH_EXPLICIT_BIT, // FLUSH_EXPLICIT_BIT
+			GL_MAP_UNSYNCHRONIZED_BIT // UNSYNCHRONIZED_BIT
+		};
+
+		static_assert(
+			sizeof(Cast) / sizeof(GLenum) == kueken::buffer::ACCESS_MAX,
+			"Cast array size mismatch");
+
+		return Cast[Access];
+	}
+
 	GLenum buffer_target_cast(kueken::buffer::target Target)
 	{
 		static GLenum const Cast[] =
@@ -107,22 +126,30 @@ namespace buffer
 	}
 
 	object::object(creator const & Creator) :
-		Data(Creator.Data)
+		Data(Creator.Data),
+		PointerIndex(0)
 	{
-		glGenBuffers(1, &Name);
+		for(std::size_t i = ADDRESS; i < ADDRESS_MAX; ++i)
+		{
+			this->Mappings[i].Length = 0;
+			this->Mappings[i].Offset = 0;
+			this->Mappings[i].Pointer = nullptr;
+		}
+
+		glGenBuffers(1, &this->Name);
 
 		// Reserve buffer memory
 		glNamedBufferDataEXT(
-			Name, 
-			Data.Size, 
-			Data.Pointer, 
-			Data.Usage);
+			this->Name, 
+			this->Data.Size, 
+			this->Data.Pointer, 
+			this->Data.Usage);
 		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	object::~object()
 	{
-		glDeleteBuffers(1, &Name);
+		glDeleteBuffers(1, &this->Name);
 		assert(glGetError() == GL_NO_ERROR);
 	}
 
@@ -139,23 +166,46 @@ namespace buffer
 
 	GLuint object::GetName() const
 	{
-		return Name;
+		return this->Name;
 	}
 
-	//void* object::map()
-	//{
-	//	return glMapBuffer(GL_ARRAY_BUFFER);
-	//}
+	address object::map
+	(
+		std::size_t const & Offset, 
+		std::size_t const & Length,
+		access const & Access
+	)
+	{
+		this->Mappings[PointerIndex].Offset = Offset;
+		this->Mappings[PointerIndex].Length = Length;
+        this->Mappings[PointerIndex].Pointer = glMapNamedBufferRangeEXT(
+			this->Name, Offset, Length, buffer_access_cast(Access));
+		address Result = address(PointerIndex);
+		++PointerIndex;
+		assert(PointerIndex < ADDRESS_MAX);
+		return Result;
+	}
 
-	//void object::unmap()
-	//{
-	//	glUnmapBuffer(GL_ARRAY_BUFFER);
-	//}
+	void object::unmap()
+	{
+        GLboolean Result = glUnmapNamedBufferEXT(this->Name);
+		for(std::size_t i = ADDRESS; i < ADDRESS_MAX; ++i)
+		{
+			this->Mappings[i].Length = 0;
+			this->Mappings[i].Offset = 0;
+			this->Mappings[i].Pointer = nullptr;
+		}
+		assert(Result == GL_TRUE);
+	}
 
-	//void object::flush()
-	//{
-	//	
-	//}
+	void object::flush
+	(
+		std::size_t const & Offset, 
+		std::size_t const & Length
+	)
+	{
+		glFlushMappedNamedBufferRangeEXT(this->Name, Offset, Length);
+	}
 
 	void object::set
 	(
@@ -164,8 +214,38 @@ namespace buffer
 		void const * const Pointer
 	)
 	{
-		assert((Offset + Size) <= std::size_t(Data.Size));
-		glNamedBufferSubDataEXT(Name, Offset, Size, Pointer);
+		assert((Size + Offset) <= std::size_t(this->Data.Size));
+		glNamedBufferSubDataEXT(this->Name, Offset, Size, Pointer);
+		assert(glGetError() == GL_NO_ERROR);
+	}
+
+	void object::set
+	(
+		address const & Address,
+		std::size_t Offset, 
+		std::size_t Size, 
+		void const * const Pointer
+	)
+	{
+		assert((Size + Offset) <= std::size_t(this->Mappings[Address].Length));
+		
+		memcpy(reinterpret_cast<glm::byte*>(this->Mappings[Address].Pointer) + Offset, Pointer, Size);
+	}
+
+	void object::copy
+	(
+		object const & ObjectSrc,
+		std::size_t const & OffsetSrc, 
+		std::size_t const & OffsetDst, 
+		std::size_t const & Size
+	)
+	{
+		assert((OffsetSrc + Size) <= std::size_t(Data.Size) - OffsetDst);
+
+		glNamedCopyBufferSubDataEXT(
+			ObjectSrc.Name, this->Name, 
+			GLintptr(OffsetSrc), GLintptr(OffsetDst), GLsizeiptr(Size));
+
 		assert(glGetError() == GL_NO_ERROR);
 	}
 
