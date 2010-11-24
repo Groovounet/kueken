@@ -66,9 +66,9 @@ namespace detail{
 			if(!(this->Data.Drawbuffers & (1 << i)))
 				continue;
 			// Bug on AMD?
-			//glClearBufferfv(GL_COLOR, i, &this->Data.Color[i][0]);
-			glClearColor(this->Data.Color[i].r, this->Data.Color[i].g, this->Data.Color[i].b, this->Data.Color[i].a);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClearBufferfv(GL_COLOR, i, &this->Data.Color[i][0]);
+			//glClearColor(this->Data.Color[i].r, this->Data.Color[i].g, this->Data.Color[i].b, this->Data.Color[i].a);
+			//glClear(GL_COLOR_BUFFER_BIT);
 		}
 		if((this->Data.Drawbuffers & DEPTHBUFFER_BIT) && (this->Data.Drawbuffers & STENCILBUFFER_BIT))
 			glClearBufferfi(GL_DEPTH_STENCIL, 0, this->Data.Depth, this->Data.Stencil);
