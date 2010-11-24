@@ -98,29 +98,39 @@ namespace detail{
 		USAGE_MAX
 	};
 
-	enum address
+	enum stream
 	{
-		ADDRESS,
-		ADDRESS0 = ADDRESS,
-		ADDRESS1,
-		ADDRESS2,
-		ADDRESS3,
-		ADDRESS4,
-		ADDRESS5,
-		ADDRESS6,
-		ADDRESS7,
-		ADDRESS_MAX
+		STREAM,
+		STREAM0 = STREAM,
+		STREAM1,
+		STREAM2,
+		STREAM3,
+		STREAM4,
+		STREAM5,
+		STREAM6,
+		STREAM7,
+		STREAM_MAX
 	};
 
 	enum access
 	{
-		READ_BIT,
-		WRITE_BIT,
-		INVALIDATE_RANGE_BIT,
-		INVALIDATE_BUFFER_BIT,
-		FLUSH_EXPLICIT_BIT,
-		UNSYNCHRONIZED_BIT,
+		READ,
+		WRITE,
+		INVALIDATE_RANGE,
+		INVALIDATE_BUFFER,
+		FLUSH_EXPLICIT,
+		UNSYNCHRONIZED,
 		ACCESS_MAX
+	};
+
+	enum
+	{
+		READ_BIT = (1 << READ),
+		WRITE_BIT = (1 << WRITE),
+		INVALIDATE_RANGE_BIT = (1 << INVALIDATE_RANGE),
+		INVALIDATE_BUFFER_BIT = (1 << INVALIDATE_BUFFER),
+		FLUSH_EXPLICIT_BIT = (1 << FLUSH_EXPLICIT),
+		UNSYNCHRONIZED_BIT = (1 << UNSYNCHRONIZED),
 	};
 
 	class creator// : public kueken::detail::creator
@@ -143,9 +153,17 @@ namespace detail{
 	{
 		struct mapping
 		{
+			mapping() :
+				Pointer(nullptr),
+				Offset(0),
+				Length(0),
+				BitField(0)
+			{}
+
 			GLvoid* Pointer;
 			std::size_t Offset;
 			std::size_t Length;
+			glm::uint32 BitField;
 		};
 
 	public:
@@ -153,10 +171,10 @@ namespace detail{
 		~object();
 
 		void bind(target const & Target);
-		address map(
+		stream map(
 			std::size_t const & Offset, 
 			std::size_t const & Length,
-			access const & Access);
+			glm::uint32 const & Access);
 		void unmap();
 		void flush(
 			std::size_t const & Offset, 
@@ -166,22 +184,23 @@ namespace detail{
 			std::size_t Size, 
 			void const * const Data);
 		void set(
-			address const & Address,
+			stream const & Stream,
 			std::size_t Offset, 
 			std::size_t Size, 
 			void const * const Data);
+		void const * const get(
+			stream const & Stream);
 		void copy(
 			object const & ObjectSrc, 
 			std::size_t const & OffsetSrc, 
 			std::size_t const & OffsetDst, 
 			std::size_t const & Size);
-
 		GLuint GetName() const;
 
 	private:
 		detail::data Data;
 		GLuint Name;
-		std::array<mapping, ADDRESS_MAX> Mappings;
+		std::array<mapping, STREAM_MAX> Mappings;
 		std::size_t PointerIndex;
 	};
 

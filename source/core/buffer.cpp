@@ -24,23 +24,34 @@ namespace
 		return Cast[Usage];
 	}
 
-	GLenum buffer_access_cast(kueken::buffer::access Access)
+	GLenum buffer_access_cast(glm::uint32 const & Access)
 	{
-		static GLenum const Cast[] = 
-		{
-			GL_MAP_READ_BIT, // READ_BIT
-			GL_MAP_WRITE_BIT, // WRITE_BIT
-			GL_MAP_INVALIDATE_RANGE_BIT, // INVALIDATE_RANGE_BIT
-			GL_MAP_INVALIDATE_BUFFER_BIT, // INVALIDATE_BUFFER_BIT
-			GL_MAP_FLUSH_EXPLICIT_BIT, // FLUSH_EXPLICIT_BIT
-			GL_MAP_UNSYNCHRONIZED_BIT // UNSYNCHRONIZED_BIT
-		};
+		assert(!(
+			Access & kueken::buffer::READ_BIT && 
+			Access != kueken::buffer::READ_BIT));
+		assert(!(
+			(Access & kueken::buffer::WRITE_BIT) && 
+			(Access & kueken::buffer::FLUSH_EXPLICIT_BIT) && 
+			(Access != (kueken::buffer::WRITE_BIT | kueken::buffer::FLUSH_EXPLICIT_BIT))));
+		assert(
+			(Access & kueken::buffer::READ_BIT) || 
+			(Access & kueken::buffer::WRITE_BIT));
 
-		static_assert(
-			sizeof(Cast) / sizeof(GLenum) == kueken::buffer::ACCESS_MAX,
-			"Cast array size mismatch");
+		if(Access & kueken::buffer::READ_BIT)
+			return GL_MAP_READ_BIT;
 
-		return Cast[Access];
+		GLbitfield Result = GL_MAP_WRITE_BIT;
+
+		if(Access & kueken::buffer::INVALIDATE_RANGE_BIT)
+			Result |= GL_MAP_INVALIDATE_RANGE_BIT;
+		if(Access & kueken::buffer::INVALIDATE_BUFFER_BIT)
+			Result |= GL_MAP_INVALIDATE_BUFFER_BIT;
+		if(Access & kueken::buffer::FLUSH_EXPLICIT_BIT)
+			Result |= GL_MAP_FLUSH_EXPLICIT_BIT;
+		if(Access & kueken::buffer::UNSYNCHRONIZED_BIT)
+			Result |= GL_MAP_UNSYNCHRONIZED_BIT;
+
+		return Result;
 	}
 
 	GLenum buffer_target_cast(kueken::buffer::target Target)
@@ -129,21 +140,13 @@ namespace buffer
 		Data(Creator.Data),
 		PointerIndex(0)
 	{
-		for(std::size_t i = ADDRESS; i < ADDRESS_MAX; ++i)
-		{
-			this->Mappings[i].Length = 0;
-			this->Mappings[i].Offset = 0;
-			this->Mappings[i].Pointer = nullptr;
-		}
-
 		glGenBuffers(1, &this->Name);
-
-		// Reserve buffer memory
 		glNamedBufferDataEXT(
 			this->Name, 
 			this->Data.Size, 
 			this->Data.Pointer, 
 			this->Data.Usage);
+
 		assert(glGetError() == GL_NO_ERROR);
 	}
 
@@ -169,33 +172,35 @@ namespace buffer
 		return this->Name;
 	}
 
-	address object::map
+	stream object::map
 	(
 		std::size_t const & Offset, 
 		std::size_t const & Length,
-		access const & Access
+		glm::uint32 const & Access
 	)
 	{
 		this->Mappings[PointerIndex].Offset = Offset;
 		this->Mappings[PointerIndex].Length = Length;
+		this->Mappings[PointerIndex].BitField = Access;
         this->Mappings[PointerIndex].Pointer = glMapNamedBufferRangeEXT(
 			this->Name, Offset, Length, buffer_access_cast(Access));
-		address Result = address(PointerIndex);
+		stream Result = stream(PointerIndex);
 		++PointerIndex;
-		assert(PointerIndex < ADDRESS_MAX);
+		
+		assert(PointerIndex < STREAM_MAX);
+		assert(glGetError() == GL_NO_ERROR);
+
 		return Result;
 	}
 
 	void object::unmap()
 	{
         GLboolean Result = glUnmapNamedBufferEXT(this->Name);
-		for(std::size_t i = ADDRESS; i < ADDRESS_MAX; ++i)
-		{
-			this->Mappings[i].Length = 0;
-			this->Mappings[i].Offset = 0;
-			this->Mappings[i].Pointer = nullptr;
-		}
+		for(std::size_t i = STREAM; i < STREAM_MAX; ++i)
+			this->Mappings[i] = mapping();
+
 		assert(Result == GL_TRUE);
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::flush
@@ -204,7 +209,11 @@ namespace buffer
 		std::size_t const & Length
 	)
 	{
+		assert(this->Mappings[Stream].BitField == WRITE_BIT | FLUSH_EXPLICIT_BIT);
+
 		glFlushMappedNamedBufferRangeEXT(this->Name, Offset, Length);
+
+		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::set
@@ -215,21 +224,34 @@ namespace buffer
 	)
 	{
 		assert((Size + Offset) <= std::size_t(this->Data.Size));
+
 		glNamedBufferSubDataEXT(this->Name, Offset, Size, Pointer);
+
 		assert(glGetError() == GL_NO_ERROR);
 	}
 
 	void object::set
 	(
-		address const & Address,
+		stream const & Stream,
 		std::size_t Offset, 
 		std::size_t Size, 
 		void const * const Pointer
 	)
 	{
-		assert((Size + Offset) <= std::size_t(this->Mappings[Address].Length));
+		assert((Size + Offset) <= std::size_t(this->Mappings[Stream].Length));
+		assert(!(this->Mappings[Stream].BitField & READ_BIT));
 		
-		memcpy(reinterpret_cast<glm::byte*>(this->Mappings[Address].Pointer) + Offset, Pointer, Size);
+		memcpy(reinterpret_cast<glm::byte*>(this->Mappings[Stream].Pointer) + Offset, Pointer, Size);
+	}
+
+	void const * const object::get
+	(
+		stream const & Stream
+	)
+	{
+		assert(this->Mappings[Stream].BitField == READ_BIT);
+
+		return this->Mappings[Stream].Pointer;
 	}
 
 	void object::copy
