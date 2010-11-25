@@ -96,6 +96,8 @@ namespace detail
 
 		void bind();
 
+		bool isDepthTest() const;
+
 	private:
 		void run();
 

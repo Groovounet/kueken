@@ -209,7 +209,7 @@ namespace buffer
 		std::size_t const & Length
 	)
 	{
-		assert(this->Mappings[Stream].BitField == WRITE_BIT | FLUSH_EXPLICIT_BIT);
+		//assert(this->Mappings[Stream].BitField == WRITE_BIT | FLUSH_EXPLICIT_BIT);
 
 		glFlushMappedNamedBufferRangeEXT(this->Name, Offset, Length);
 

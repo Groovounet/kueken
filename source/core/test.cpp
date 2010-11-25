@@ -134,6 +134,11 @@ void object::bind()
 #endif//KUEKEN_STATE_OBJECTS
 }
 
+bool object::isDepthTest() const
+{
+	return this->Data.DepthTest;
+}
+
 void object::run()
 {
 	if(Data.DepthTest)

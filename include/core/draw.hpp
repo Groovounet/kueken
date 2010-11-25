@@ -78,7 +78,9 @@ namespace detail
 {
 	struct data
 	{
-		data(type const & Type);
+		data(
+			type const & Type,
+			renderer & Renderer);
 		type Type;
 		GLenum Mode;
 		GLint First;
@@ -87,6 +89,7 @@ namespace detail
 		const void* Indices;
 		GLsizei PrimCount; 
 		GLint BaseVertex;
+		renderer & Renderer;
 	};
 }//namespace detail
 

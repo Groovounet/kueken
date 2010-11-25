@@ -12,7 +12,7 @@ namespace
 			GL_PRIMITIVES_GENERATED,					//PRIMITIVES_GENERATED,
 			GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN,	//PRIMITIVES_WRITTEN,
 			GL_SAMPLES_PASSED,							//SAMPLES_PASSED
-			GL_TIME_ELAPSED_EXT							//TIME
+			GL_TIME_ELAPSED								//TIME
 		};
 
 		static_assert(
@@ -67,14 +67,19 @@ namespace detail{
 	//	Enabled(false)
 	//{}
 
-	data::data(type const & Type) :
+	data::data
+	(
+		type const & Type,
+		renderer & Renderer
+	) :
 		Type(Type),
 		Mode(GL_NONE),
 		Count(0),
 		ElementType(GL_UNSIGNED_INT),
 		Indices(0),
 		PrimCount(1),
-		BaseVertex(0)
+		BaseVertex(0),
+		Renderer(Renderer)
 	{}
 }//namespace detail
 
@@ -82,7 +87,7 @@ namespace detail{
 	// creator<ARRAY>
 
 	creator<ARRAY>::creator(renderer & Renderer) :
-		Data(ARRAY)
+		Data(ARRAY, Renderer)
 	{}
 
 	void creator<ARRAY>::setPrimitive(primitive const & Primitive)
@@ -125,7 +130,7 @@ namespace detail{
 	(
 		renderer & Renderer
 	) :
-		Data(ARRAY_INDIRECT)
+		Data(ARRAY_INDIRECT, Renderer)
 	{}
 
 	void creator<ARRAY_INDIRECT>::setPrimitive(primitive const & Primitive)
@@ -153,7 +158,7 @@ namespace detail{
 	(
 		renderer & Renderer
 	) :
-		Data(ELEMENT)
+		Data(ELEMENT, Renderer)
 	{}
 
 	void creator<ELEMENT>::setPrimitive(primitive const & Primitive)
@@ -216,7 +221,7 @@ namespace detail{
 	(
 		renderer & Renderer
 	) :
-		Data(ELEMENT_INDIRECT)
+		Data(ELEMENT_INDIRECT, Renderer)
 	{}
 
 	void creator<ELEMENT_INDIRECT>::setPrimitive(primitive const & Primitive)
@@ -381,6 +386,8 @@ namespace detail{
 
 	void objectArray::exec()
 	{
+		//assert(kueken::manager::instance().Test.getCurrentObject().isDepthTest());
+
 		glDrawArraysInstanced(
 			this->Data.Mode, 
 			this->Data.First, 
