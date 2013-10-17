@@ -317,7 +317,7 @@ namespace detail
 		this->update();
 		this->FunctionVariables[Target].push_back(
 			detail::indirection(Function, Name));
-		this->FunctionSemanticsMax[Target] = glm::max(this->FunctionSemanticsMax[Target], Function);
+		this->FunctionSemanticsMax[Target] = glm::max<kueken::program::semantic>(this->FunctionSemanticsMax[Target], Function);
 	}
 
 	void creator::addSubroutine
@@ -330,7 +330,7 @@ namespace detail
 		this->update();
 		this->RoutineVariables[Target].push_back(
 			detail::indirection(Subroutine, Name));
-		this->RoutineSemanticsMax[Target] = glm::max(this->RoutineSemanticsMax[Target], Subroutine);
+		this->RoutineSemanticsMax[Target] = glm::max<kueken::program::semantic>(this->RoutineSemanticsMax[Target], Subroutine);
 	}
 
 	void creator::addSource
@@ -617,7 +617,7 @@ namespace detail
 				continue;
 			glUniformSubroutinesuiv(
 				detail::program_target_cast(kueken::program::target(Target)), 
-				this->Subroutines[Target].size(), 
+				static_cast<GLsizei>(this->Subroutines[Target].size()),
 				&this->Subroutines[Target][0]);
 		}
 
@@ -673,7 +673,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC1);
 
-		glProgramUniform1dvEXT(
+		glProgramUniform1dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -693,7 +693,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC1);
 
-		glProgramUniform1dvEXT(
+		glProgramUniform1dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -731,7 +731,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::I32VEC1);
 
-		glProgramUniform1ivEXT(
+		glProgramUniform1iv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			GLsizei(Count), 
@@ -827,7 +827,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC2);
 
-		glProgramUniform2dvEXT(
+		glProgramUniform2dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -847,7 +847,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC2);
 
-		glProgramUniform2dvEXT(
+		glProgramUniform2dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -983,7 +983,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC3);
 
-		glProgramUniform3dvEXT(
+		glProgramUniform3dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -1003,7 +1003,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC3);
 
-		glProgramUniform3dvEXT(
+		glProgramUniform3dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -1139,7 +1139,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC4);
 
-		glProgramUniform4dvEXT(
+		glProgramUniform4dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -1159,10 +1159,10 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64VEC4);
 
-		glProgramUniform4dvEXT(
+		glProgramUniform4dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
-			Count, 
+			static_cast<GLsizei>(Count), 
 			&Value[0][0]);
 
 		assert(glGetError() == GL_NO_ERROR);
@@ -1178,7 +1178,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::I32VEC4);
 
-		glProgramUniform4ivEXT(
+		glProgramUniform4iv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -1198,10 +1198,10 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::I32VEC4);
 
-		glProgramUniform4ivEXT(
+		glProgramUniform4iv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
-			Count, 
+			static_cast<GLsizei>(Count), 
 			&Value[0][0]);
 
 		assert(glGetError() == GL_NO_ERROR);
@@ -1217,7 +1217,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::U32VEC4);
 
-		glProgramUniform4uivEXT(
+		glProgramUniform4uiv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -1237,7 +1237,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::U32VEC4);
 
-		glProgramUniform4uivEXT(
+		glProgramUniform4uiv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, 
@@ -1256,7 +1256,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F32MAT2X2);
 
-		glProgramUniformMatrix2fvEXT(
+		glProgramUniformMatrix2fv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
@@ -1276,7 +1276,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F32MAT2X2);
 
-		glProgramUniformMatrix2fvEXT(
+		glProgramUniformMatrix2fv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1295,7 +1295,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64MAT2X2);
 
-		glProgramUniformMatrix2dvEXT(
+		glProgramUniformMatrix2dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, GL_FALSE, 
@@ -1315,7 +1315,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64MAT2X2);
 
-		glProgramUniformMatrix2dvEXT(
+		glProgramUniformMatrix2dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1354,7 +1354,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F32MAT3X3);
 
-		glProgramUniformMatrix3fvEXT(
+		glProgramUniformMatrix3fv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1393,7 +1393,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64MAT3X3);
 
-		glProgramUniformMatrix3dvEXT(
+		glProgramUniformMatrix3dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1412,7 +1412,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F32MAT4X4);
 
-		glProgramUniformMatrix4fvEXT(
+		glProgramUniformMatrix4fv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -1433,7 +1433,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F32MAT4X4);
 
-		glProgramUniformMatrix4fvEXT(
+		glProgramUniformMatrix4fv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1452,7 +1452,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64MAT4X4);
 
-		glProgramUniformMatrix4dvEXT(
+		glProgramUniformMatrix4dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			1, 
@@ -1473,7 +1473,7 @@ namespace detail
 		assert(Semantic <= this->UniformIndirection.size());
 		assert(this->UniformType[Semantic] == program::F64MAT4X4);
 
-		glProgramUniformMatrix4dvEXT(
+		glProgramUniformMatrix4dv(
 			this->Name, 
 			this->UniformIndirection[Semantic], 
 			Count, GL_FALSE, 
@@ -1491,7 +1491,7 @@ namespace detail
 		assert(Semantic <= this->SamplerIndirection.size());
 
 		GLuint Location = this->SamplerIndirection[Semantic];
-		glProgramUniform1iEXT(this->Name, Location, Value);
+		glProgramUniform1i(this->Name, Location, Value);
 
 		assert(glGetError() == GL_NO_ERROR);
 	}
@@ -1505,7 +1505,7 @@ namespace detail
 	{
 		assert(Semantic <= this->SamplerIndirection.size());
 
-		glProgramUniform1ivEXT(
+		glProgramUniform1iv(
 			this->Name, 
 			this->SamplerIndirection[Semantic], 
 			GLsizei(Count), 

@@ -47,7 +47,7 @@ namespace
 		2, 3, 0
 	};
 
-	std::unique_ptr<kueken::renderer> Renderer(nullptr);
+	std::unique_ptr<kueken::renderer> Renderer;
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
 	kueken::blit::name Blit(kueken::blit::name::null());
@@ -219,17 +219,17 @@ bool initTexture2D()
 	}
 
 	{
-		gli::texture2D Texture = gli::load(TEXTURE_DIFFUSE);
+		gli::texture2D Texture(gli::loadStorageDDS(TEXTURE_DIFFUSE));
 
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
 		Creator.setTarget(kueken::texture::TEXTURE2D);
-		Creator.setLevel(0, Texture.levels());
+		Creator.setLevel(0, static_cast<glm::int32>(Texture.levels()));
 		for(kueken::texture::level Level = 0; Level < Texture.levels(); ++Level)
 		{
 			Creator.setImage(
 				Level, 
-				glm::uvec3(Texture[Level].dimensions(), 1), 
+				Texture[Level].dimensions(), 
 				Texture[Level].data());
 		}
 		TextureDiffuse = Renderer->create(Creator);

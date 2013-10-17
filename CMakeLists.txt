@@ -30,13 +30,13 @@ endif(NOT MSVC)
 ##########################
 # Setup binary directory
 
-if(MSVC)
-	if(MSVC_VERSION EQUAL 1600)
-		set(BINARY_DIRECTORY "win32-vc2010")
-	endif(MSVC_VERSION EQUAL 1600)
-else(MSVC)
-	set(BINARY_DIRECTORY "win32-vc2008")
-endif(MSVC)
+if(MSVC AND NOT CMAKE_CL_64)
+	set(BINARY_DIRECTORY "win32")
+endif(MSVC AND NOT CMAKE_CL_64)
+
+if(MSVC AND CMAKE_CL_64)
+	set(BINARY_DIRECTORY "win64")
+endif(MSVC AND CMAKE_CL_64)
 
 set(GLF_LIBRARY_BINARY_FILE_SDL "tinyxml")
 set(GLF_LIBRARY_BINARY_FILE_OGL "opengl32" "glew32s" "freeglut_static")
@@ -73,7 +73,7 @@ link_directories("${GLUT_DIRECTORY}/lib/${BINARY_DIRECTORY}")
 ############
 # Add GLEW 
 
-set(GLEW_VERSION "glew-1.5.6")
+set(GLEW_VERSION "glew-1.10.0")
 set(GLEW_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLEW_VERSION})
 
 add_definitions(-DGLEW_STATIC)
@@ -97,7 +97,7 @@ include_directories("${GLF_DIRECTORY}")
 ###########
 # Add GLM 
 
-set(GLM_VERSION "glm")
+set(GLM_VERSION "glm-0.9.5.B")
 set(GLM_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLM_VERSION})
 
 include_directories("${GLM_DIRECTORY}")
@@ -113,7 +113,7 @@ include_directories("${GLV_DIRECTORY}")
 ###########
 # Add GLI
 
-set(GLI_VERSION "gli")
+set(GLI_VERSION "gli-0.4.1.0")
 set(GLI_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/${GLI_VERSION})
 
 include_directories("${GLI_DIRECTORY}")

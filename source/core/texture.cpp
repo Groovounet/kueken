@@ -537,7 +537,7 @@ namespace texture
 					Data.Mipmaps[Level].Width, 
 					Data.Mipmaps[Level].Height, 
 					0, 
-					Size, 
+					static_cast<GLsizei>(Size),
 					Data.Mipmaps[Level].Data);
 
 				assert(glGetError() == GL_NO_ERROR);
@@ -591,11 +591,11 @@ namespace texture
 		glTextureSubImage2DEXT(
 			Name, 
 			Data.Target,
-			Level, 
+			static_cast<GLint>(Level),
 			Position.x,
 			Position.y,
-			Size.x, 
-			Size.y, 
+			static_cast<GLsizei>(Size.x),
+			static_cast<GLsizei>(Size.y),
 			Data.Format, 
 			Data.Type, 
 			Pointer);

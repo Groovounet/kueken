@@ -24,7 +24,7 @@ namespace program
 		CONTROL,
 		EVALUATION,
 		PRIMITIVE,
-        FRAGMENT,
+		FRAGMENT,
 		TARGET_MAX
 	};
 

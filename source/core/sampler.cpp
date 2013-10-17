@@ -201,7 +201,7 @@ namespace sampler
 
 	void object::bind(std::size_t Unit)
 	{
-		glBindSampler(Unit, Name);
+		glBindSampler(static_cast<GLuint>(Unit), Name);
 	}
 
 }//namespace sampler

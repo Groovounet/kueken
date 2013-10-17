@@ -1,4 +1,6 @@
 #include <core/manager.hpp>
+#include <cstddef>
+#include <memory>
 
 namespace
 {
@@ -7,7 +9,7 @@ namespace
 
 namespace kueken
 {
-	std::unique_ptr<manager> manager::Manager(nullptr);
+	std::unique_ptr<manager> manager::Manager;
 
 	manager::manager() :
 		Blend(1),

@@ -43,7 +43,7 @@ namespace
 		2, 3, 0
 	};
 
-	std::unique_ptr<kueken::renderer> Renderer(nullptr);
+	std::unique_ptr<kueken::renderer> Renderer;
 	
 	kueken::blend::name Blend(kueken::blend::name::null());
 	kueken::rasterizer::name RasterizerBackground(kueken::rasterizer::name::null());
@@ -134,7 +134,7 @@ bool initRasterizer()
 bool initTexture2D()
 {
 	{
-		gli::texture2D ImageFile = gli::load(TEXTURE_DIFFUSE);
+		gli::texture2D ImageFile(gli::loadStorageDDS(TEXTURE_DIFFUSE));
 
 		kueken::texture::creator<kueken::texture::IMAGE> Creator(*Renderer);
 		Creator.setFormat(kueken::texture::RGBA_DXT5);
@@ -143,7 +143,7 @@ bool initTexture2D()
 		{
 			Creator.setImage(
 				Level, 
-				glm::uvec3(ImageFile[Level].dimensions(), 1), 
+				ImageFile[Level].dimensions(), 
 				ImageFile[Level].data());
 		}
 		TextureDiffuse = Renderer->create(Creator);
